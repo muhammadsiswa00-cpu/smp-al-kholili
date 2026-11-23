@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSiteSettings } from '../lib/data';
+
+const siteSettings = await getSiteSettings();
+const mapsEmbed = siteSettings.maps_embed || 'https://maps.google.com/maps?q=Kedopok,+Kota+Probolinggo,+Jawa+Timur&t=&z=15&ie=UTF8&iwloc=&output=embed';
+---
+
+<Layout 
+  title="Kontak & Alamat - SMP Islam Al-Kholili Probolinggo"
+  description="Hubungi SMP Islam Al-Kholili Kota Probolinggo. Alamat: Jl. KUA Blok Masjid Baiturrohman RT03 RW04 Kel. Kedopok. Layanan informasi WhatsApp & Maps."
+  currentPage="kontak"
+>
+  <!-- Page Header Banner -->
+  <section class="bg-gradient-to-r from-brand-950 via-brand-900 to-emerald-900 text-white py-14 border-b border-brand-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-gold-400 uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-address-book"></i> Hubungi Kami
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-heading font-extrabold tracking-tight">Kontak & Lokasi Sekolah</h1>
+        <p class="text-emerald-200 text-sm mt-2 max-w-xl">
+          Kami siap melayani pertanyaan seputar PPDB, informasi kurikulum, kerjasama, dan kunjungan silaturahmi.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-300 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm">
+        <a href="/" class="hover:text-white transition">Beranda</a>
+        <span>/</span>
+        <span class="text-gold-400 font-semibold">Kontak</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact & Map Section -->
+  <section class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Contact Cards Left -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+            <h3 class="font-heading font-extrabold text-xl text-slate-900 border-b border-slate-100 pb-4">
+              Informasi Sekolah
+            </h3>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand-700 flex items-center justify-center text-xl flex-shrink-0">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Alamat Kampus</h4>
+                <p class="text-sm font-semibold text-slate-800 leading-relaxed">
+                  {siteSettings.alamat}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-gold-100 text-gold-600 flex items-center justify-center text-xl flex-shrink-0">
+                <i class="fa-brands fa-whatsapp"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Layanan WhatsApp</h4>
+                <p class="text-sm font-semibold text-slate-800">
+                  <a href={`https://wa.me/${siteSettings.whatsapp_number}?text=Halo%20Admin%20SMP%20Islam%20Al-Kholili`} target="_blank" rel="noopener noreferrer" class="text-brand-700 hover:underline">
+                    {siteSettings.whatsapp_display}
+                  </a>
+                </p>
+                <span class="text-xs text-slate-500">Respon cepat jam kerja operasional</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
+                <i class="fa-regular fa-envelope"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Email Resmi</h4>
+                <p class="text-sm font-semibold text-slate-800">
+                  <a href={`mailto:${siteSettings.email}`} class="text-brand-700 hover:underline">
+                    {siteSettings.email}
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl flex-shrink-0">
+                <i class="fa-regular fa-clock"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Jam Pelayanan</h4>
+                <p class="text-sm font-semibold text-slate-800">
+                  {siteSettings.jam_kerja}
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Google Maps Embed & Direct WA Contact Right -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+            <h3 class="font-heading font-extrabold text-xl text-slate-900 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot text-brand-700"></i> Peta Lokasi Kampus
+            </h3>
+            
+            <div class="w-full h-80 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+              <iframe 
+                src={mapsEmbed} 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Peta Lokasi SMP Islam Al-Kholili Kedopok Probolinggo"
+              ></iframe>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-brand-50 border border-brand-200">
+              <div class="text-xs text-brand-900">
+                <strong>Ingin berkunjung langsung?</strong><br />
+                Silakan hubungi kami terlebih dahulu untuk penjadwalan temu dengan kepala sekolah atau panitia PPDB.
+              </div>
+              <a href={`https://wa.me/${siteSettings.whatsapp_number}?text=Halo%20Admin%20SMP%20Islam%20Al-Kholili,%20saya%20ingin%20jadwalkan%20kunjungan%20ke%20sekolah`} target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 transition whitespace-nowrap shadow flex items-center gap-1.5">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Jadwalkan Kunjungan
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</Layout>

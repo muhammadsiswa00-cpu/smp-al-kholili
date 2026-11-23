@@ -1,0 +1,251 @@
+<?php
+require_once __DIR__ . '/includes/settings.php';
+$siteSettings = get_all_settings();
+
+$page_title = "Profil SMP Islam Al-Kholili Kota Probolinggo";
+$page_desc = "Profil resmi SMP Islam Al-Kholili Kota Probolinggo: sejarah, visi, misi, kurikulum kepesantrenan, dan sambutan Kepala Sekolah di Kedopok Probolinggo.";
+$current_page = "profil";
+include 'includes/header.php';
+?>
+
+<!-- Page Header Banner -->
+<section class="bg-gradient-to-r from-brand-950 via-brand-900 to-emerald-900 text-white py-14 border-b border-brand-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div>
+            <div class="inline-flex items-center gap-2 text-xs font-semibold text-gold-400 uppercase tracking-widest mb-2">
+                <i class="fa-solid fa-school"></i> Tentang Kami
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-heading font-extrabold tracking-tight">Profil SMP Islam Al-Kholili</h1>
+            <p class="text-emerald-200 text-sm mt-2 max-w-xl">
+                Mengenal lebih dekat visi, misi, sejarah, dan nilai-nilai pendidikan karakter di SMP Islam Al-Kholili Kota Probolinggo.
+            </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-300 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm">
+            <a href="index.php" class="hover:text-white transition">Beranda</a>
+            <span>/</span>
+            <span class="text-gold-400 font-semibold">Profil</span>
+        </div>
+    </div>
+</section>
+
+<!-- Profil & Sambutan Kepala Sekolah -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left: Foto Kepala Sekolah -->
+            <div class="lg:col-span-5 text-center">
+                <div class="relative inline-block mt-4 sm:mt-5">
+                    
+                    <!-- Lencana di ATAS Foto: Kepala SMP Islam Al-Kholili -->
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brand-900 to-emerald-800 text-gold-300 font-heading font-extrabold text-xs py-1.5 px-5 rounded-full shadow-lg border border-gold-400/50 whitespace-nowrap z-10 flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-tie text-gold-400 text-[11px]"></i>
+                        <span>Kepala SMP Islam Al-Kholili</span>
+                    </div>
+
+                    <div class="w-64 h-64 sm:w-72 sm:h-72 p-2.5 bg-gradient-to-tr from-brand-700 via-emerald-600 to-gold-400 rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden">
+                        <?php 
+                        $fotoKepsek = $siteSettings['kepala_sekolah_foto'] ?? 'assets/img/kepala-sekolah.jpg';
+                        $namaKepsek = !empty($siteSettings['nama_kepala_sekolah']) ? $siteSettings['nama_kepala_sekolah'] : 'Nama Kepala Sekolah';
+                        ?>
+                        <img src="<?= htmlspecialchars($fotoKepsek) ?>" alt="<?= htmlspecialchars($namaKepsek) ?>" class="w-full h-full object-cover rounded-2xl bg-slate-100 shadow-inner">
+                    </div>
+
+                    <!-- Lencana di BAWAH Foto: NAMA KEPALA SEKOLAH -->
+                    <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-brand-950 text-white font-heading font-extrabold text-xs sm:text-sm py-2 px-6 rounded-xl shadow-xl border border-gold-400/50 whitespace-nowrap z-10 flex items-center gap-2">
+                        <i class="fa-solid fa-id-badge text-gold-400"></i>
+                        <span><?= htmlspecialchars($namaKepsek) ?></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right: Teks Sambutan Resmi Kepala Sekolah -->
+            <div class="lg:col-span-7 space-y-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-3.5 py-1.5 rounded-full inline-block">
+                    <i class="fa-solid fa-bullhorn mr-1 text-emerald-600"></i> Sambutan Kepala Sekolah
+                </span>
+                
+                <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 leading-tight">
+                    Assalamu’alaikum Warahmatullahi Wabarakaatuh
+                </h2>
+
+                <div class="text-slate-600 text-sm sm:text-base leading-relaxed space-y-3 text-justify">
+                    <p>
+                        Salam sejahtera untuk kita semua. Selamat datang di website SMP Islam Al-Kholili. Website ini dibangun sebagai sarana atau media informasi dan komunikasi sekolah, karena sejalan dengan perkembangan teknologi industri 4.0 yang berguna untuk memudahkan mencari informasi tentang SMP Islam Al-Kholili. Kualitas layanan menjadi salah satu misi sekolah dan kaitannya dengan transparansi dan akuntabilitas sekolah.
+                    </p>
+                    <p>
+                        Menjalankan sebagai pimpinan di SMP Islam Al-Kholili, harapan tentu untuk mengembangkan sekolah besar ini menjadi lebih baik lagi, bertabur bintang baik akademik maupun non akademik. Sekolah yang akan melahirkan generasi yang inovatif, kreatif, religius, dan akhlakul karimah yang berwawasan luas serta mengabdi kepada agama, bangsa, dan negara.
+                    </p>
+                    <p>
+                        Selaku pimpinan saya mendorong terus perkembangan inovasi dan kreasi warga sekolah. Mengeratkan tali saliturahmi, kekeluargaan, dan kerjasama seluruh warga sekolah. Dari lubuk hati yang paling dalam. Saya mengajak kepada seluruh civitas akademik SMP Islam Al-Kholili untuk sama-sama bergandeng tangan, berkolaborasi guna mengembangkan sekolah nyaman, aman, dan menyenangkan sebagai tempat belajar untuk putra-putri kita menuntut ilmu dan tetap mempertahankan serta mengembangkan image SMP Islam Al-Kholili sebagai sekolah unggulan di Kota Probolinggo.
+                    </p>
+                    <p class="font-semibold text-brand-900 pt-1">
+                        Wassalamu’alaikum Warohmatullahi Wabarokatuh.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Sejarah Singkat Sekolah -->
+<section class="py-12 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-sm">
+            <div class="max-w-3xl">
+                <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-3 py-1 rounded-md mb-2 inline-block">
+                    Sejarah Singkat & Identitas
+                </span>
+                <h3 class="text-xl sm:text-2xl font-heading font-extrabold text-slate-900 mb-4">
+                    Dedikasi Membangun Generasi Qur'ani di Kota Probolinggo
+                </h3>
+                <div class="text-slate-600 text-sm leading-relaxed space-y-3">
+                    <p>
+                        <strong>SMP Islam Al-Kholili</strong> didirikan dengan semangat luhur untuk menyediakan pendidikan tingkat menengah pertama yang mengintegrasikan kurikulum nasional dengan nilai-nilai kepesantrenan dan akhlakul karimah.
+                    </p>
+                    <p>
+                        Berlokasi di kawasan yang strategis dan tenang di <strong>Jl. KUA Blok Masjid Baiturrohman RT03 RW04, Kelurahan Kedopok, Kecamatan Kedopok, Kota Probolinggo</strong>, sekolah ini tumbuh berdampingan erat dengan pusat ibadah Masjid Baiturrohman, sehingga pembiasaan sholat berjamaah, tilawah, dan pendidikan adab menjadi detak jantung harian seluruh siswa.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Visi, Misi & Tujuan -->
+<section class="py-16 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Visi Card -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -z-0"></div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-brand-700 text-white flex items-center justify-center text-xl shadow mb-5">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h3 class="text-xl font-heading font-extrabold text-slate-900 mb-3">Visi Sekolah</h3>
+                    <p class="text-brand-800 font-semibold text-lg italic leading-snug p-4 rounded-xl bg-emerald-50/60 border-l-4 border-brand-700 mb-4">
+                        "Terwujudnya Peserta Didik yang Berakhlakul Karimah, Unggul dalam Prestasi, Mandiri, dan Menguasai IPTEK Berlandaskan Nilai-Nilai Al-Qur'an."
+                    </p>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Indikator Ketercapaian Visi:</h4>
+                    <ul class="text-xs sm:text-sm text-slate-600 space-y-2">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Memiliki adab islami dalam bertutur dan bersikap.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Tertib melaksanakan sholat berjamaah & membaca Al-Qur'an.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Berprestasi dalam bidang akademik dan non-akademik.</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Terampil menggunakan perangkat teknologi secara positif.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Misi Card -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full -z-0"></div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-gold-500 text-white flex items-center justify-center text-xl shadow mb-5">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-xl font-heading font-extrabold text-slate-900 mb-3">Misi Sekolah</h3>
+                    <ul class="text-xs sm:text-sm text-slate-600 space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-brand-800 font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5">1</span>
+                            <span>Menanamkan nilai-nilai keimanan, ketakwaan, dan akhlakul karimah melalui pembiasaan ibadah harian.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-brand-800 font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5">2</span>
+                            <span>Melaksanakan program bimbingan tahfidz dan tahsin Al-Qur'an secara berkesinambungan.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-brand-800 font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5">3</span>
+                            <span>Menyelenggarakan pembelajaran aktif, inovatif, kreatif, dan berorientasi pada pencapaian prestasi akademik.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-brand-800 font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5">4</span>
+                            <span>Mengembangkan minat, bakat, dan potensi peserta didik melalui kegiatan ekstrakurikuler kepanduan, seni islami, dan olahraga.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-brand-800 font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5">5</span>
+                            <span>Menumbuhkan budaya literasi, kepedulian lingkungan hidup, serta penguasaan teknologi informatika.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- Sarana & Prasarana Fasilitas -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-3.5 py-1.5 rounded-full">
+                Fasilitas sekolah
+            </span>
+            <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-slate-900 mt-2">
+                Sarana & Prasarana Penunjang
+            </h2>
+            <p class="text-slate-500 text-sm mt-1">Fasilitas yang representatif dan kondusif untuk mendukung kegiatan belajar mengajar.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover-card">
+                <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-mosque"></i>
+                </div>
+                <h4 class="font-heading font-bold text-base text-slate-900 mb-1">Masjid Baiturrohman</h4>
+                <p class="text-xs sm:text-sm text-slate-600">Pusat sholat Dhuha, Dhuhur berjamaah, dan kegiatan halaqah tahfidz yang nyaman dan asri.</p>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover-card">
+                <div class="w-12 h-12 rounded-xl bg-gold-100 text-gold-600 flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-chalkboard"></i>
+                </div>
+                <h4 class="font-heading font-bold text-base text-slate-900 mb-1">Ruang Kelas Nyaman</h4>
+                <p class="text-xs sm:text-sm text-slate-600">Ruang belajar berpencahayaan baik, sirkulasi udara optimal, dan dilengkapi sarana multimedia.</p>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover-card">
+                <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-computer"></i>
+                </div>
+                <h4 class="font-heading font-bold text-base text-slate-900 mb-1">Laboratorium Komputer</h4>
+                <p class="text-xs sm:text-sm text-slate-600">Dilengkapi perangkat komputer dan koneksi internet stabil untuk ANBK dan pembelajaran IT.</p>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover-card">
+                <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                <h4 class="font-heading font-bold text-base text-slate-900 mb-1">Perpustakaan & Pojok Baca</h4>
+                <p class="text-xs sm:text-sm text-slate-600">Koleksi buku pelajaran, ensiklopedia Islam, sastra anak, dan literatur penunjang wawasan.</p>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover-card">
+                <div class="w-12 h-12 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-futbol"></i>
+                </div>
+                <h4 class="font-heading font-bold text-base text-slate-900 mb-1">Lapangan Olahraga</h4>
+                <p class="text-xs sm:text-sm text-slate-600">Sarana olahraga untuk senam kesegaran jasmani, futsal, voli, bulutangkis, dan kegiatan upacara.</p>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover-card">
+                <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl mb-4">
+                    <i class="fa-solid fa-hand-holding-medical"></i>
+                </div>
+                <h4 class="font-heading font-bold text-base text-slate-900 mb-1">Ruang UKS & Konseling</h4>
+                <p class="text-xs sm:text-sm text-slate-600">Fasilitas pertolongan pertama kesehatan siswa serta ruang bimbingan konseling pribadi.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<?php include 'includes/footer.php'; ?>

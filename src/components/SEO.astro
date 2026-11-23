@@ -1,0 +1,159 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  isHome?: boolean;
+}
+
+const {
+  title = "SMP Islam Al-Kholili Kota Probolinggo - Sekolah Qur'ani",
+  description = "Website Resmi SMP Islam Al-Kholili Kota Probolinggo. Sekolah Menengah Pertama Islam berkarakter Qur'ani & teknologi di Kedopok. Info PPDB lengkap.",
+  canonicalUrl = Astro.url.href,
+  ogImage = "assets/img/logo.png",
+  isHome = false,
+} = Astro.props;
+
+const siteBaseUrl = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://smpislam-alkholili.sch.id';
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteBaseUrl}/${ogImage.replace(/^\//, '')}`;
+
+// Structured Data JSON-LD Schemas
+const schoolSchema = {
+  "@context": "https://schema.org",
+  "@type": "School",
+  "@id": `${siteBaseUrl}/#school`,
+  "name": "SMP Islam Al-Kholili",
+  "alternateName": ["SMP Islam Al-Kholili Kota Probolinggo", "SMP Al-Kholili Kedopok"],
+  "url": siteBaseUrl,
+  "logo": fullOgImage,
+  "image": fullOgImage,
+  "description": "Sekolah Menengah Pertama Islam berlandaskan nilai-nilai Qur'ani dan kurikulum nasional di Kecamatan Kedopok, Kota Probolinggo, Jawa Timur.",
+  "telephone": "6285234567890",
+  "email": "info@smpislam-alkholili.sch.id",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Jl. KUA Blok Masjid Baiturrohman RT 03 / RW 04",
+    "addressLocality": "Kedopok",
+    "addressRegion": "Kota Probolinggo",
+    "postalCode": "67228",
+    "addressCountry": "ID"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -7.7667,
+    "longitude": 113.2167
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "07:00",
+      "closes": "14:00"
+    }
+  ]
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteBaseUrl}/#website`,
+  "url": siteBaseUrl,
+  "name": "SMP Islam Al-Kholili Kota Probolinggo"
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Apakah pendaftaran siswa baru (PPDB) SMP Islam Al-Kholili dapat dilakukan secara online?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ya, pendaftaran siswa baru (PPDB) SMP Islam Al-Kholili dapat dilakukan secara online melalui website resmi PPDB atau datang langsung ke ruang sekretariat panitia PPDB di Kampus SMP Islam Al-Kholili (Jl. KUA Blok Masjid Baiturrohman Kedopok, Kota Probolinggo)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apa saja program unggulan di SMP Islam Al-Kholili?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Program unggulan SMP Islam Al-Kholili meliputi Tahfidzul Qur'an (Juz 30 & pilihan), pembiasaan sholat berjamaah & sholat Dhuha di Masjid Baiturrohman, Kajian Kitab Dasar Akhlak, Pembelajaran Berbasis IT, serta ekstrakurikuler seni Hadrah, Pramuka, dan Olahraga."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Apakah ada beasiswa di SMP Islam Al-Kholili?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ya, SMP Islam Al-Kholili menyediakan jalur beasiswa prestasi akademik dan non-akademik, beasiswa tahfidz Qur'an, serta program bantuan pendidikan bagi anak yatim/piatu dan siswa dari keluarga pra-sejahtera."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Di mana lokasi tepat kampus SMP Islam Al-Kholili?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SMP Islam Al-Kholili berlokasi strategis di Jl. KUA Blok Masjid Baiturrohman, RT 03 / RW 04, Kelurahan Kedopok, Kecamatan Kedopok, Kota Probolinggo, Jawa Timur."
+      }
+    }
+  ]
+};
+
+const breadcrumbSchema = !isHome ? {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Beranda",
+      "item": `${siteBaseUrl}/`
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": title,
+      "item": canonicalUrl
+    }
+  ]
+} : null;
+---
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Meta SEO & Search Engine Indexing -->
+<meta name="description" content={description} />
+<meta name="keywords" content="SMP Islam Al-Kholili, SMP Islam Al-Kholili Kota Probolinggo, SMP Al-Kholili Kedopok, PPDB SMP Islam Al-Kholili, Sekolah Islam Probolinggo, Pondok Pesantren Al-Kholili Kedopok" />
+<meta name="author" content="SMP Islam Al-Kholili" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+<!-- Open Graph Protocol / Facebook / WhatsApp Preview -->
+<meta property="og:locale" content="id_ID" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="SMP Islam Al-Kholili Kota Probolinggo" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:image:alt" content="Logo SMP Islam Al-Kholili Kota Probolinggo" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+
+<!-- Local SEO & Geographic Tags -->
+<meta name="geo.region" content="ID-JI" />
+<meta name="geo.placename" content="Probolinggo, Jawa Timur" />
+<meta name="geo.position" content="-7.7667;113.2167" />
+<meta name="ICBM" content="-7.7667, 113.2167" />
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify(schoolSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+{isHome && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+{breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}

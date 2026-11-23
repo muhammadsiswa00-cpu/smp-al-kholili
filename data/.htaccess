@@ -1,0 +1,13 @@
+# =========================================================================
+# KEAMANAN FOLDER DATA - SMP ISLAM AL-KHOLILI
+# =========================================================================
+# Mencegah akses langsung browser ke file JSON dan session
+# Hanya skrip PHP di server yang diizinkan membaca/menulis file ini.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order Deny,Allow
+    Deny from all
+</IfModule>

@@ -1,0 +1,101 @@
+[
+    {
+        "id": "guru-1",
+        "nama": "Muhammad Taufiqur Rohman,S. Pd,",
+        "jabatan": "Kepala Sekolah",
+        "mapel": "Manajemen Pendidikan & Kepemimpinan",
+        "pendidikan": "S2 Manajemen Pendidikan",
+        "foto": "assets/uploads/kepsek_1794985994.png",
+        "color": "from-brand-700 to-emerald-600"
+    },
+    {
+        "id": "guru-3",
+        "nama": "rrrSiti Rohmah, S.Pd.",
+        "jabatan": "Waka Kesiswaan",
+        "mapel": "Matematika",
+        "pendidikan": "S1 Pendidikan Matematika",
+        "foto": "assets/img/teachers/female-1.svg",
+        "color": "from-blue-600 to-indigo-500"
+    },
+    {
+        "id": "guru-4",
+        "nama": "Ust. Ahmad Thohir, S.Q.",
+        "jabatan": "Koordinator Program Tahfidz",
+        "mapel": "Tahfidzul Qur'an & Tajwid",
+        "pendidikan": "S1 Ilmu Al-Qur'an & Tafsir (Hafidz 30 Juz)",
+        "foto": "assets/img/teachers/male-1.svg",
+        "color": "from-emerald-700 to-green-600"
+    },
+    {
+        "id": "guru-5",
+        "nama": "Nurul Hidayati, S.Pd.",
+        "jabatan": "Guru Mata Pelajaran",
+        "mapel": "Bahasa Indonesia",
+        "pendidikan": "S1 Pendidikan Bahasa & Sastra Indonesia",
+        "foto": "assets/img/teachers/female-1.svg",
+        "color": "from-amber-600 to-yellow-500"
+    },
+    {
+        "id": "guru-6",
+        "nama": "Bambang Kurniawan, S.Pd.",
+        "jabatan": "Guru Mata Pelajaran",
+        "mapel": "Bahasa Inggris",
+        "pendidikan": "S1 Pendidikan Bahasa Inggris",
+        "foto": "assets/img/teachers/male-1.svg",
+        "color": "from-cyan-600 to-blue-500"
+    },
+    {
+        "id": "guru-7",
+        "nama": "Dewi Anggraini, S.Si.",
+        "jabatan": "Guru Mata Pelajaran",
+        "mapel": "Ilmu Pengetahuan Alam (IPA)",
+        "pendidikan": "S1 Sains Fisika & Biologi",
+        "foto": "assets/img/teachers/female-1.svg",
+        "color": "from-teal-600 to-emerald-500"
+    },
+    {
+        "id": "guru-8",
+        "nama": "Fathur Rahman, S.Kom.",
+        "jabatan": "Guru Mata Pelajaran & IT",
+        "mapel": "Informatika / Komputer",
+        "pendidikan": "S1 Teknik Informatika",
+        "foto": "assets/img/teachers/male-1.svg",
+        "color": "from-purple-600 to-indigo-500"
+    },
+    {
+        "id": "guru-9",
+        "nama": "Hendra Prasetyo, S.Pd.",
+        "jabatan": "Guru Mata Pelajaran & Pembina Pramuka",
+        "mapel": "Pendidikan Jasmani & Olahraga (PJOK)",
+        "pendidikan": "S1 Pendidikan Olahraga & Kesehatan",
+        "foto": "assets/img/teachers/male-1.svg",
+        "color": "from-red-600 to-rose-500"
+    },
+    {
+        "id": "guru-10",
+        "nama": "Aisyah Zahira, S.Sos.",
+        "jabatan": "Guru Bimbingan Konseling (BK)",
+        "mapel": "Bimbingan & Konseling Siswa",
+        "pendidikan": "S1 Bimbingan Konseling",
+        "foto": "assets/img/teachers/female-1.svg",
+        "color": "from-pink-600 to-rose-400"
+    },
+    {
+        "id": "guru-11",
+        "nama": "M. Rizqi Pratama, A.Md.",
+        "jabatan": "Kepala Tata Usaha",
+        "mapel": "Administrasi & Layanan Surat-Menyurat",
+        "pendidikan": "D3 Administrasi Perkantoran",
+        "foto": "assets/img/teachers/male-1.svg",
+        "color": "from-slate-700 to-slate-500"
+    },
+    {
+        "id": "guru-12",
+        "nama": "Umi Hanik, S.E.",
+        "jabatan": "Staf Keuangan & Bendahara",
+        "mapel": "Administrasi Keuangan Sekolah",
+        "pendidikan": "S1 Manajemen Keuangan",
+        "foto": "assets/img/teachers/female-1.svg",
+        "color": "from-gold-600 to-amber-500"
+    }
+]

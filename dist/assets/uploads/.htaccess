@@ -1,0 +1,33 @@
+# =========================================================================
+# KEAMANAN FOLDER UPLOAD - SMP ISLAM AL-KHOLILI
+# =========================================================================
+# Menonaktifkan eksekusi skrip apapun di dalam folder uploads
+# Folder ini HANYA boleh melayani file gambar/media statis.
+
+<FilesMatch "(?i)\.(php|phtml|php3|php4|php5|php7|phps|pht|phar|inc|cgi|pl|py|sh|asp|aspx|jsp|exe|bin|bat)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Deny,Allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Matikan engine PHP di folder ini jika didukung oleh modul Apache
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# Pastikan file hanya disajikan sebagai tipe MIME yang benar (anti-MIME sniffing)
+AddType image/jpeg .jpg .jpeg
+AddType image/png .png
+AddType image/webp .webp
+AddType image/svg+xml .svg
+AddType image/gif .gif

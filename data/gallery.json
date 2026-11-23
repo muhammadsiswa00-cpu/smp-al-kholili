@@ -1,0 +1,68 @@
+[
+    {
+        "id": "gal-1",
+        "judul": "Sholat Berjamaah di Masjid Baiturrohman",
+        "kategori": "ibadah",
+        "kategori_label": "Keagamaan & Ibadah",
+        "tanggal": "Rutin Setiap Hari",
+        "deskripsi": "Pembiasaan sholat Dhuha dan Dhuhur berjamaah bersama seluruh dewan guru dan siswa.",
+        "icon": "fa-mosque",
+        "foto": "",
+        "gradient": "from-emerald-800 to-brand-950"
+    },
+    {
+        "id": "gal-2",
+        "judul": "Halaqah Tahfidzul Qur'an & Talaqqi",
+        "kategori": "tahfidz",
+        "kategori_label": "Tahfidz & Qur'an",
+        "tanggal": "Pagi Hari Pukul 07.00 WIB",
+        "deskripsi": "Siswa menyetorkan hafalan surat pilihan dan juz 30 dipandu ustadz pengampu tahfidz.",
+        "icon": "fa-book-quran",
+        "foto": "",
+        "gradient": "from-brand-900 to-emerald-950"
+    },
+    {
+        "id": "gal-3",
+        "judul": "Praktikum Sains & Pembelajaran Kelas Interaktif",
+        "kategori": "belajar",
+        "kategori_label": "Belajar Mengajar",
+        "tanggal": "Semester Berjalan",
+        "deskripsi": "Eksplorasi konsep sains fisika dan biologi dengan metode praktikum aktif dan menyenangkan.",
+        "icon": "fa-flask",
+        "foto": "",
+        "gradient": "from-blue-900 to-indigo-950"
+    },
+    {
+        "id": "gal-4",
+        "judul": "Latihan Grup Rebana & Seni Hadrah Shalawat",
+        "kategori": "ekskul",
+        "kategori_label": "Ekstrakurikuler",
+        "tanggal": "Setiap Rabu Sore",
+        "deskripsi": "Mengasah olah vokal religi dan ketukan terbang banjari untuk syiar shalawat nabi.",
+        "icon": "fa-drum",
+        "foto": "",
+        "gradient": "from-amber-900 to-amber-950"
+    },
+    {
+        "id": "gal-5",
+        "judul": "Kegiatan Kepanduan Pramuka & Outbound",
+        "kategori": "ekskul",
+        "kategori_label": "Ekstrakurikuler",
+        "tanggal": "Setiap Jumat Sore",
+        "deskripsi": "Melatih kemandirian, kekompakan tim, tali-temali, dan jiwa kepemimpinan generasi muda.",
+        "icon": "fa-campground",
+        "foto": "",
+        "gradient": "from-purple-900 to-slate-950"
+    },
+    {
+        "id": "gal-6",
+        "judul": "Laboratorium Komputer & Literasi Digital",
+        "kategori": "fasilitas",
+        "kategori_label": "Fasilitas Kampus",
+        "tanggal": "Fasilitas Harian",
+        "deskripsi": "Fasilitas komputer modern untuk simulasi ujian, pembelajaran TIK, dan riset ilmiah siswa.",
+        "icon": "fa-desktop",
+        "foto": "",
+        "gradient": "from-cyan-900 to-blue-950"
+    }
+]

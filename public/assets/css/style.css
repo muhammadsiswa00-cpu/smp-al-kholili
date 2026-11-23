@@ -1,0 +1,178 @@
+/* Custom styles for SMP Islam Al-Kholili */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+
+.font-arabic {
+    font-family: 'Amiri', serif;
+}
+
+.font-times {
+    font-family: "Times New Roman", Times, Georgia, serif;
+}
+
+/* Islamic Pattern Subtle Background */
+.bg-islamic-pattern {
+    background-color: #047857;
+    background-image: radial-gradient(#059669 1px, transparent 1px), radial-gradient(#059669 1px, #047857 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+}
+
+.bg-pattern-light {
+    background-color: #f8fafc;
+    background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+    background-size: 24px 24px;
+}
+
+/* Hero Gradient & Glow */
+.hero-mesh {
+    background: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.15) 0%, transparent 40%),
+                linear-gradient(135deg, #022c22 0%, #064e3b 50%, #065f46 100%);
+}
+
+/* Smooth Card Hover */
+.hover-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(4, 120, 87, 0.1), 0 10px 10px -5px rgba(4, 120, 87, 0.04);
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-card-dark {
+    background: rgba(6, 78, 59, 0.65);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Aesthetic Typography Glows - Toned Down & Subtle */
+.text-glow-gold {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+.text-glow-white {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+/* Animated Moving Text Gradient Keyframes - Clear & Noticeable Shimmer Sweep */
+@keyframes clearShimmerSweep {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+@keyframes gentleFloatSlow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Classes to apply moving animations with CLEAR, VISIBLE shining light sweep */
+.animate-moving-gold {
+    background: linear-gradient(
+        110deg,
+        #facc15 0%,
+        #fef08a 20%,
+        #ffffff 35%,
+        #ffffff 45%,
+        #fef08a 60%,
+        #eab308 80%,
+        #facc15 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
+    animation: clearShimmerSweep 3.5s linear infinite, gentleFloatSlow 4s ease-in-out 0.5s infinite;
+    display: inline-block;
+}
+
+.animate-moving-silver {
+    background: linear-gradient(
+        110deg,
+        #ffffff 0%,
+        #cbd5e1 20%,
+        #ffffff 35%,
+        #ffffff 45%,
+        #a7f3d0 60%,
+        #cbd5e1 80%,
+        #ffffff 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
+    animation: clearShimmerSweep 3.5s linear infinite, gentleFloatSlow 4s ease-in-out infinite;
+    display: inline-block;
+}
+
+.animate-floating {
+    animation: gentleFloat 4s ease-in-out infinite;
+}
+
+@keyframes spinSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+    animation: spinSlow 12s linear infinite;
+}
+
+/* Badge Glow */
+.badge-pulse {
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+    }
+}
+
+/* FAQ Accordion Styling */
+.faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease-out, opacity 0.25s ease-in-out;
+    opacity: 0;
+}
+.faq-item.active .faq-content {
+    max-height: 500px;
+    opacity: 1;
+}
+.faq-item.active .faq-icon {
+    transform: rotate(180deg);
+}
+.faq-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 9px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #047857;
+}

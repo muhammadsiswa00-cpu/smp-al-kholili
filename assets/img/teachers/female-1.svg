@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4ff"/>
+      <stop offset="100%" stop-color="#fae8ff"/>
+    </linearGradient>
+    <linearGradient id="hijab" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="skinF" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fce7d2"/>
+      <stop offset="100%" stop-color="#f5caa6"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgF)"/>
+  <circle cx="200" cy="200" r="180" fill="#ffffff" opacity="0.6"/>
+  <!-- Hijab Drape Body -->
+  <path d="M 80 400 C 90 310, 130 260, 200 260 C 270 260, 310 310, 320 400 Z" fill="url(#hijab)"/>
+  <!-- Hijab Head Wrap -->
+  <circle cx="200" cy="180" r="85" fill="url(#hijab)"/>
+  <!-- Inner Ciput / Band -->
+  <ellipse cx="200" cy="165" rx="52" ry="58" fill="#1e293b"/>
+  <!-- Face Oval -->
+  <ellipse cx="200" cy="180" rx="46" ry="52" fill="url(#skinF)"/>
+  <!-- Hijab Frame around face -->
+  <path d="M 152 170 Q 200 120 248 170 Q 240 228 200 240 Q 160 228 152 170 Z" fill="none" stroke="url(#hijab)" stroke-width="14"/>
+  <!-- Gentle Eyes & Brows -->
+  <path d="M 172 172 Q 183 167 192 171" stroke="#334155" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 208 171 Q 217 167 228 172" stroke="#334155" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <ellipse cx="182" cy="180" rx="4.5" ry="5.5" fill="#1e293b"/>
+  <ellipse cx="218" cy="180" rx="4.5" ry="5.5" fill="#1e293b"/>
+  <circle cx="184" cy="178" r="1.5" fill="#fff"/>
+  <circle cx="220" cy="178" r="1.5" fill="#fff"/>
+  <!-- Cheeks blush -->
+  <circle cx="172" cy="192" r="7" fill="#f43f5e" opacity="0.25"/>
+  <circle cx="228" cy="192" r="7" fill="#f43f5e" opacity="0.25"/>
+  <!-- Nose & Smile -->
+  <path d="M 199 184 Q 202 195 198 199" stroke="#d97706" stroke-width="1.8" fill="none"/>
+  <path d="M 188 210 Q 200 219 212 210" stroke="#be123c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+</svg>

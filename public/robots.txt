@@ -1,0 +1,35 @@
+# =========================================================================
+# ROBOTS.TXT - SMP ISLAM AL-KHOLILI KOTA PROBOLINGGO
+# =========================================================================
+
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /profil.php
+Allow: /guru.php
+Allow: /prestasi.php
+Allow: /galeri.php
+Allow: /berita.php
+Allow: /ppdb.php
+Allow: /kontak.php
+
+# Blokir crawler dari direktori admin & data rahasia
+Disallow: /admin/
+Disallow: /data/
+Disallow: /includes/
+
+# AI Crawlers (Google Gemini, OpenAI ChatGPT, Perplexity, Anthropic)
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Peta Situs (Sitemap)
+Sitemap: sitemap.xml

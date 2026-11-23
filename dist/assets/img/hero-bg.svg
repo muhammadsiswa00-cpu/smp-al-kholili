@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#021c15"/>
+      <stop offset="35%" stop-color="#063e2e"/>
+      <stop offset="70%" stop-color="#095c44"/>
+      <stop offset="100%" stop-color="#0d7054"/>
+    </linearGradient>
+
+    <linearGradient id="glowGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef3c7" stop-opacity="0.9"/>
+      <stop offset="30%" stop-color="#fef08a" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="buildingGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#042a20" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#021510" stop-opacity="0.98"/>
+    </linearGradient>
+
+    <linearGradient id="buildingGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#084736" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#032119" stop-opacity="0.95"/>
+    </linearGradient>
+
+    <pattern id="islamicGrid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#10b981" stroke-width="0.8" stroke-opacity="0.12"/>
+      <circle cx="30" cy="30" r="12" fill="none" stroke="#fbbf24" stroke-width="0.6" stroke-opacity="0.08"/>
+      <circle cx="30" cy="30" r="4" fill="#fbbf24" fill-opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <!-- Sky Background -->
+  <rect width="1920" height="1080" fill="url(#skyGrad)"/>
+
+  <!-- Islamic Geometric Pattern Overlay -->
+  <rect width="1920" height="1080" fill="url(#islamicGrid)"/>
+
+  <!-- Stars -->
+  <g fill="#fef08a" opacity="0.6">
+    <circle cx="150" cy="80" r="1.5" />
+    <circle cx="280" cy="140" r="2" />
+    <circle cx="420" cy="70" r="1.2" />
+    <circle cx="560" cy="180" r="1.8" />
+    <circle cx="720" cy="110" r="2.2" />
+    <circle cx="890" cy="60" r="1.5" />
+    <circle cx="1040" cy="130" r="2.5" />
+    <circle cx="1210" cy="90" r="1.8" />
+    <circle cx="1380" cy="150" r="2" />
+    <circle cx="1550" cy="75" r="1.5" />
+    <circle cx="1700" cy="120" r="2.2" />
+    <circle cx="1820" cy="60" r="1.5" />
+    <circle cx="320" cy="240" r="1.2" />
+    <circle cx="820" cy="220" r="1.5" />
+    <circle cx="1450" cy="210" r="1.5" />
+    <circle cx="1620" cy="230" r="1.8" />
+  </g>
+
+  <!-- Glowing Crescent & Aura -->
+  <circle cx="1600" cy="200" r="180" fill="url(#moonGlow)"/>
+  <path d="M1620 140 A 50 50 0 1 0 1620 220 A 42 42 0 1 1 1620 140 Z" fill="#fef3c7" opacity="0.85"/>
+
+  <!-- Distant Mountains/Hills (Probolinggo Bromo Foothills vibe) -->
+  <path d="M0 650 Q 280 570 600 630 T 1300 610 T 1920 640 L 1920 1080 L 0 1080 Z" fill="#043226" opacity="0.45"/>
+  <path d="M0 680 Q 450 610 950 670 T 1920 660 L 1920 1080 L 0 1080 Z" fill="#053b2d" opacity="0.6"/>
+
+  <!-- Background Mosque & Campus Silhouette -->
+  <!-- Left Wing Buildings -->
+  <g fill="url(#buildingGrad2)">
+    <rect x="0" y="620" width="380" height="460" />
+    <!-- Islamic Windows -->
+    <path d="M50 680 Q 75 640 100 680 L 100 740 L 50 740 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M130 680 Q 155 640 180 680 L 180 740 L 130 740 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M210 680 Q 235 640 260 680 L 260 740 L 210 740 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M290 680 Q 315 640 340 680 L 340 740 L 290 740 Z" fill="#fde68a" opacity="0.25"/>
+  </g>
+
+  <!-- Center Mosque Silhouette (Masjid Baiturrohman representation) -->
+  <g fill="url(#buildingGrad1)">
+    <!-- Main Center Dome -->
+    <path d="M 820 620 C 820 480, 960 410, 960 380 C 960 410, 1100 480, 1100 620 Z" fill="#03251c"/>
+    <!-- Dome Spire -->
+    <line x1="960" y1="380" x2="960" y2="310" stroke="#fbbf24" stroke-width="4"/>
+    <circle cx="960" cy="305" r="7" fill="#fbbf24"/>
+    <path d="M960 280 A 15 15 0 1 0 960 304 A 12 12 0 1 1 960 280 Z" fill="#fbbf24"/>
+
+    <!-- Small Left Dome -->
+    <path d="M 720 640 C 720 540, 800 490, 800 470 C 800 490, 880 540, 880 640 Z" fill="#053326"/>
+    <line x1="800" y1="470" x2="800" y2="430" stroke="#fbbf24" stroke-width="2.5"/>
+
+    <!-- Small Right Dome -->
+    <path d="M 1040 640 C 1040 540, 1120 490, 1120 470 C 1120 490, 1200 540, 1200 640 Z" fill="#053326"/>
+    <line x1="1120" y1="470" x2="1120" y2="430" stroke="#fbbf24" stroke-width="2.5"/>
+
+    <!-- Center Building Base -->
+    <rect x="680" y="620" width="560" height="460" fill="#021c15"/>
+
+    <!-- Grand Islamic Arch (Portal) -->
+    <path d="M 880 950 L 880 770 Q 960 700 1040 770 L 1040 950 Z" fill="#fef08a" opacity="0.35"/>
+    <path d="M 900 950 L 900 785 Q 960 725 1020 785 L 1020 950 Z" fill="#03251c"/>
+
+    <!-- Left Minaret (Menara Masjid) -->
+    <rect x="620" y="440" width="45" height="480" fill="#021c15"/>
+    <!-- Minaret Balcony -->
+    <polygon points="605,520 680,520 670,540 615,540" fill="#074232"/>
+    <polygon points="605,620 680,620 670,640 615,640" fill="#074232"/>
+    <!-- Minaret Dome Tip -->
+    <path d="M 620 440 C 620 380, 642.5 350, 642.5 330 C 642.5 350, 665 380, 665 440 Z" fill="#063e2e"/>
+    <line x1="642.5" y1="330" x2="642.5" y2="295" stroke="#fbbf24" stroke-width="2"/>
+    <circle cx="642.5" cy="290" r="4" fill="#fbbf24"/>
+
+    <!-- Right Minaret (Menara Masjid) -->
+    <rect x="1255" y="440" width="45" height="480" fill="#021c15"/>
+    <polygon points="1240,520 1315,520 1305,540 1250,540" fill="#074232"/>
+    <polygon points="1240,620 1315,620 1305,640 1250,640" fill="#074232"/>
+    <path d="M 1255 440 C 1255 380, 1277.5 350, 1277.5 330 C 1277.5 350, 1300 380, 1300 440 Z" fill="#063e2e"/>
+    <line x1="1277.5" y1="330" x2="1277.5" y2="295" stroke="#fbbf24" stroke-width="2"/>
+    <circle cx="1277.5" cy="290" r="4" fill="#fbbf24"/>
+
+    <!-- Arched Windows Rows -->
+    <g fill="#fde68a" opacity="0.3">
+      <path d="M720 700 Q 735 670 750 700 L 750 740 L 720 740 Z"/>
+      <path d="M770 700 Q 785 670 800 700 L 800 740 L 770 740 Z"/>
+      <path d="M820 700 Q 835 670 850 700 L 850 740 L 820 740 Z"/>
+      <path d="M1070 700 Q 1085 670 1100 700 L 1100 740 L 1070 740 Z"/>
+      <path d="M1120 700 Q 1135 670 1150 700 L 1150 740 L 1120 740 Z"/>
+      <path d="M1170 700 Q 1185 670 1200 700 L 1200 740 L 1170 740 Z"/>
+    </g>
+  </g>
+
+  <!-- Right Wing School Complex Building -->
+  <g fill="url(#buildingGrad2)">
+    <rect x="1350" y="600" width="570" height="480" />
+    <!-- Balcony Railing -->
+    <line x1="1350" y1="670" x2="1920" y2="670" stroke="#0f5c45" stroke-width="3"/>
+    <!-- Windows -->
+    <path d="M1390 700 Q 1415 660 1440 700 L 1440 760 L 1390 760 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M1470 700 Q 1495 660 1520 700 L 1520 760 L 1470 760 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M1550 700 Q 1575 660 1600 700 L 1600 760 L 1550 760 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M1630 700 Q 1655 660 1680 700 L 1680 760 L 1630 760 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M1710 700 Q 1735 660 1760 700 L 1760 760 L 1710 760 Z" fill="#fde68a" opacity="0.25"/>
+    <path d="M1790 700 Q 1815 660 1840 700 L 1840 760 L 1790 760 Z" fill="#fde68a" opacity="0.25"/>
+  </g>
+
+  <!-- Foreground Trees and Garden Palms -->
+  <g fill="#01130d" opacity="0.9">
+    <!-- Left Palm Trees -->
+    <path d="M120 750 Q 140 880 160 1080 L 130 1080 Q 120 880 100 750 Z"/>
+    <path d="M110 750 Q 60 720 10 760 Q 70 700 110 740 Z"/>
+    <path d="M120 740 Q 90 670 50 690 Q 90 660 120 730 Z"/>
+    <path d="M130 740 Q 170 660 210 680 Q 160 670 130 730 Z"/>
+    <path d="M140 750 Q 200 710 230 750 Q 180 710 140 750 Z"/>
+
+    <!-- Right Trees -->
+    <path d="M1780 760 Q 1770 890 1760 1080 L 1790 1080 Q 1790 890 1800 760 Z"/>
+    <path d="M1790 760 Q 1740 720 1700 760 Q 1750 710 1790 750 Z"/>
+    <path d="M1800 750 Q 1840 680 1880 700 Q 1830 680 1800 740 Z"/>
+    <path d="M1810 760 Q 1870 730 1900 770 Q 1860 720 1810 760 Z"/>
+
+    <!-- Garden Shrubbery line -->
+    <path d="M0 980 Q 120 950 240 980 T 600 970 T 1100 980 T 1600 960 T 1920 980 L 1920 1080 L 0 1080 Z"/>
+  </g>
+
+  <!-- Soft Ambient Light Glow at Bottom -->
+  <rect x="0" y="800" width="1920" height="280" fill="url(#glowGold)" opacity="0.15" />
+</svg>

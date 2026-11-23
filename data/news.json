@@ -1,0 +1,32 @@
+[
+    {
+        "id": "news-1",
+        "judul": "Sosialisasi Pembukaan PPDB Tahun Ajaran 2026/2027 di SMP Islam Al-Kholili",
+        "kategori": "Pengumuman PPDB",
+        "tanggal": "15 November 2026",
+        "penulis": "Humas Sekolah",
+        "ringkasan": "Panitia Penerimaan Peserta Didik Baru (PPDB) resmi membuka pendaftaran gelombang pertama dengan potongan khusus biaya seragam dan formulir gratis.",
+        "icon": "fa-bullhorn",
+        "badge": "bg-amber-100 text-amber-800"
+    },
+    {
+        "id": "news-2",
+        "judul": "Peringatan Hari Santri Nasional: Santri Berdaya Menuju Masa Depan Gemilang",
+        "kategori": "Kegiatan Islami",
+        "tanggal": "22 Oktober 2026",
+        "penulis" : "Kesiswaan",
+        "ringkasan": "Civitas akademika SMP Islam Al-Kholili menggelar upacara bendera bersarung dilanjutkan pawai ta'aruf dan lomba tartil Qur'an antar kelas.",
+        "icon": "fa-mosque",
+        "badge": "bg-emerald-100 text-emerald-800"
+    },
+    {
+        "id": "news-3",
+        "judul": "Ujian Munaqasyah Tahfidz Al-Qur'an Juz 30 dan Juz 1 Berjalan Khidmat",
+        "kategori": "Tahfidz",
+        "tanggal": "05 Oktober 2026",
+        "penulis": "Tim Tahfidz",
+        "ringkasan": "Sebanyak 45 santri mengikuti ujian munaqasyah di hadapan tim penguji dan disaksikan langsung oleh para orang tua santri di Masjid Baiturrohman.",
+        "icon": "fa-book-quran",
+        "badge": "bg-blue-100 text-blue-800"
+    }
+]

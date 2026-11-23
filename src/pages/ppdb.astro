@@ -1,0 +1,238 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSiteSettings } from '../lib/data';
+
+const siteSettings = await getSiteSettings();
+const ppdbUrl = siteSettings.ppdb_url || 'https://ppdb.smpislam-alkholili.sch.id';
+const isExt = ppdbUrl.startsWith('http');
+---
+
+<Layout 
+  title="PPDB Online - SMP Islam Al-Kholili Probolinggo"
+  description="Informasi pendaftaran peserta didik baru (PPDB) SMP Islam Al-Kholili Kota Probolinggo. Syarat mudah, kuota beasiswa, dan pendaftaran online resmi."
+  currentPage="ppdb"
+>
+  <!-- Page Header Banner -->
+  <section class="bg-gradient-to-r from-brand-950 via-brand-900 to-emerald-900 text-white py-14 border-b border-brand-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-gold-400 uppercase tracking-widest mb-2">
+          <i class="fa-solid fa-graduation-cap"></i> Penerimaan Siswa Baru
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-heading font-extrabold tracking-tight">PPDB Online Tahun Ajaran 2026/2027</h1>
+        <p class="text-emerald-200 text-sm mt-2 max-w-xl">
+          Bergabunglah bersama SMP Islam Al-Kholili Kedopok Probolinggo. Pendaftaran mudah, transparan, dan dapat dilakukan secara daring maupun luring.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-300 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm">
+        <a href="/" class="hover:text-white transition">Beranda</a>
+        <span>/</span>
+        <span class="text-gold-400 font-semibold">PPDB</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main PPDB Content -->
+  <section class="py-16 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- External PPDB Website Highlight Banner -->
+      <div class="mb-12 bg-gradient-to-r from-brand-900 via-emerald-800 to-brand-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl border-2 border-gold-400 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-gold-500/10 rounded-full blur-2xl"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div class="space-y-2">
+            <span class="inline-block px-3 py-1 rounded-full bg-gold-400 text-brand-950 text-xs font-extrabold uppercase tracking-wider">
+              Portal Utama PPDB
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-white">
+              Website Resmi Pendaftaran Siswa Baru (PPDB)
+            </h2>
+            <p class="text-emerald-100 text-sm max-w-xl">
+              Silakan akses sistem informasi dan pendaftaran online terpadu melalui website resmi PPDB SMP Islam Al-Kholili.
+            </p>
+          </div>
+          <div>
+            <a href={ppdbUrl} target={isExt ? "_blank" : undefined} rel={isExt ? "noopener noreferrer" : undefined} class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl font-extrabold text-base text-brand-950 bg-gradient-to-r from-gold-400 via-yellow-300 to-amber-300 hover:from-gold-300 hover:to-yellow-200 shadow-2xl shadow-gold-500/40 hover:scale-105 transition transform">
+              <i class="fa-solid fa-graduation-cap text-xl"></i>
+              <span>Buka Website PPDB Resmi</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Langkah Mudah -->
+      <div class="mb-14">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-3.5 py-1.5 rounded-full">
+            Tata Cara PPDB
+          </span>
+          <h2 class="font-heading font-extrabold text-2xl sm:text-3xl text-slate-900 mt-2">
+            4 Langkah Mudah Pendaftaran
+          </h2>
+          <p class="text-slate-500 text-sm mt-1">Alur penerimaan peserta didik baru SMP Islam Al-Kholili Kota Probolinggo.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
+            <span class="absolute -top-3.5 left-6 px-3 py-0.5 rounded-full text-xs font-extrabold bg-brand-700 text-white">Langkah 1</span>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-brand-700 flex items-center justify-center text-xl mt-2 mb-4">
+              <i class="fa-solid fa-file-signature"></i>
+            </div>
+            <h3 class="font-heading font-bold text-base text-slate-900 mb-1">Pengisian Formulir</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Mengisi formulir secara daring pada website PPDB atau langsung di kantor sekretariat SMP Islam Al-Kholili.
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
+            <span class="absolute -top-3.5 left-6 px-3 py-0.5 rounded-full text-xs font-extrabold bg-gold-500 text-white">Langkah 2</span>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl mt-2 mb-4">
+              <i class="fa-solid fa-folder-check"></i>
+            </div>
+            <h3 class="font-heading font-bold text-base text-slate-900 mb-1">Verifikasi Berkas</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Menyerahkan fotokopi Ijazah/SKL, Kartu Keluarga (KK), Akta Kelahiran, dan pas foto 3x4 (3 lembar).
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
+            <span class="absolute -top-3.5 left-6 px-3 py-0.5 rounded-full text-xs font-extrabold bg-blue-600 text-white">Langkah 3</span>
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl mt-2 mb-4">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <h3 class="font-heading font-bold text-base text-slate-900 mb-1">Observasi & Baca Qur'an</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Pemetaan kemampuan membaca Al-Qur'an (tahsin dasar) dan wawancara komitmen minat bakat peserta didik.
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
+            <span class="absolute -top-3.5 left-6 px-3 py-0.5 rounded-full text-xs font-extrabold bg-purple-600 text-white">Langkah 4</span>
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl mt-2 mb-4">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <h3 class="font-heading font-bold text-base text-slate-900 mb-1">Daftar Ulang & Seragam</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Pengambilan atribut seragam sekolah dan siap mengikuti kegiatan Masa Pengenalan Lingkungan Sekolah (MPLS).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        
+        <!-- Left: Jalur & Syarat -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm">
+            <h3 class="font-heading font-extrabold text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-route text-brand-700"></i> Pilihan Jalur Masuk
+            </h3>
+            <div class="space-y-3.5 text-xs sm:text-sm">
+              <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/60">
+                <strong class="text-brand-900 block font-heading font-bold">1. Jalur Tahfidz Qur'an</strong>
+                <p class="text-slate-600 mt-1">Khusus calon siswa yang memiliki hafalan minimal 1-3 juz Al-Qur'an (beasiswa pembebasan biaya).</p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/60">
+                <strong class="text-amber-900 block font-heading font-bold">2. Jalur Prestasi (Akademik & Non-Akademik)</strong>
+                <p class="text-slate-600 mt-1">Bagi peraih peringkat kelas atau juara perlombaan tingkat kecamatan/kota.</p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <strong class="text-slate-800 block font-heading font-bold">3. Jalur Reguler</strong>
+                <p class="text-slate-600 mt-1">Terbuka bagi seluruh lulusan SD/MI negeri maupun swasta yang ingin belajar dan bertumbuh di SMP Islam Al-Kholili.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm">
+            <h3 class="font-heading font-extrabold text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-list text-gold-500"></i> Berkas Persyaratan
+            </h3>
+            <ul class="space-y-2.5 text-xs sm:text-sm text-slate-600">
+              <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-600"></i> Mengisi formulir pendaftaran secara lengkap.</li>
+              <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-600"></i> FC Kartu Keluarga (KK) & KTP Orang Tua (2 lembar).</li>
+              <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-600"></i> FC Akta Kelahiran Siswa (2 lembar).</li>
+              <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-600"></i> FC Ijazah SD/MI atau Surat Keterangan Lulus (SKL).</li>
+              <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-600"></i> Pas foto berseragam ukuran 3x4 (3 lembar).</li>
+              <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-brand-600"></i> FC Piagam/Sertifikat prestasi (bila ada).</li>
+            </ul>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <div class="text-xs text-slate-500 mb-2">Butuh bantuan atau informasi formulir offline?</div>
+              <a href={`https://wa.me/${siteSettings.whatsapp_number}?text=Halo%20Panitia%20PPDB%20SMP%20Islam%20Al-Kholili,%20saya%20ingin%20tanya%20syarat%20pendaftaran`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-bold text-brand-700 hover:underline">
+                <i class="fa-brands fa-whatsapp text-green-500 text-sm"></i> Chat Panitia PPDB: {siteSettings.whatsapp_display}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Online Registration Form Directly via WhatsApp / Portal -->
+        <div class="lg:col-span-7">
+          <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-md">
+            <div class="mb-6">
+              <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-3 py-1 rounded-md">
+                Pendaftaran Langsung
+              </span>
+              <h3 class="text-2xl font-heading font-extrabold text-slate-900 mt-2">
+                Hubungi Panitia PPDB 2026/2027
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                Kunjungi website resmi PPDB atau langsung konsultasikan pendaftaran putra-putri Anda bersama Panitia Penerimaan Siswa Baru melalui WhatsApp.
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="p-6 rounded-2xl bg-gradient-to-tr from-brand-950 to-brand-900 text-white space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-xl bg-gold-400 text-brand-950 flex items-center justify-center text-xl font-bold">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-lg">Pendaftaran Melalui Web PPDB</h4>
+                    <p class="text-xs text-emerald-200">Sistem terintegrasi untuk pengisian biodata & unggah berkas</p>
+                  </div>
+                </div>
+                <a href={ppdbUrl} target={isExt ? "_blank" : undefined} rel={isExt ? "noopener noreferrer" : undefined} class="block w-full py-3.5 bg-gradient-to-r from-gold-400 to-amber-300 hover:from-gold-300 hover:to-amber-200 text-brand-950 font-extrabold text-center rounded-xl transition shadow-md">
+                  Buka Portal PPDB Online Sekarang
+                </a>
+              </div>
+
+              <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-xl bg-green-500 text-white flex items-center justify-center text-xl font-bold">
+                    <i class="fa-brands fa-whatsapp"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-lg text-slate-900">Konsultasi & Pendaftaran WhatsApp</h4>
+                    <p class="text-xs text-slate-600">Layanan ramah dan cepat dari panitia PPDB</p>
+                  </div>
+                </div>
+                <a href={`https://wa.me/${siteSettings.whatsapp_number}?text=Assalamu'alaikum%20Panitia%20PPDB%20SMP%20Islam%20Al-Kholili,%20saya%20ingin%20mendaftarkan%20putra/putri%20saya%20sebagai%20calon%20siswa%20baru.`} target="_blank" rel="noopener noreferrer" class="block w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold text-center rounded-xl transition shadow-md">
+                  Chat WhatsApp Panitia ({siteSettings.whatsapp_display})
+                </a>
+              </div>
+
+              <!-- Datang Langsung -->
+              <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+                <div class="flex items-start gap-3">
+                  <i class="fa-solid fa-building-columns text-brand-700 text-xl mt-1"></i>
+                  <div>
+                    <h5 class="font-bold text-sm text-slate-800">Sekretariat Pendaftaran Offline:</h5>
+                    <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                      Kampus SMP Islam Al-Kholili (Gedung Sekolah & Masjid Baiturrohman)<br />
+                      {siteSettings.alamat}<br />
+                      <span class="font-semibold text-brand-700">Waktu Layanan: {siteSettings.jam_kerja}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</Layout>
