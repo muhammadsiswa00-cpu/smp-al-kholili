@@ -98,9 +98,13 @@ AddDefaultCharset UTF-8
 </IfModule>
 
 # =========================================================================
-# 7. REWRITE ENGINE (SEO-Friendly URLs & Sitemap Routing)
+# 7. REWRITE ENGINE (SEO-Friendly URLs & Admin Routing)
 # =========================================================================
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    DirectoryIndex index.php index.html
+
+    # Ensure /admin or /login routes to admin login
+    RewriteRule ^admin/?$ admin/login.php [L,QSA]
+    RewriteRule ^login/?$ admin/login.php [L,QSA]
 </IfModule>

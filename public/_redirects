@@ -1,0 +1,5 @@
+/admin/login.php   /admin   301
+/admin/login       /admin   301
+/login.php         /admin   301
+/login             /admin   301
+/admin.php         /admin   301

@@ -1,0 +1,556 @@
+<!DOCTYPE html><html lang="id"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Panel Administrator - SMP Islam Al-Kholili</title><link rel="icon" type="image/png" href="assets/img/logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><script type="module" src="/_astro/hoisted.DzZ3SPb2.js"></script></head> <body class="bg-slate-100 font-sans text-slate-800 antialiased min-h-screen"> <!-- TOAST NOTIFICATION --> <div id="toastNotification" class="fixed top-6 right-6 z-50 transform translate-y-[-150%] transition-transform duration-300 pointer-events-none"> <div class="bg-slate-900/95 backdrop-blur-md text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700/80 flex items-center gap-3"> <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i> <span id="toastMsg" class="text-xs font-semibold">Tersimpan</span> </div> </div> <!-- ========================================================================= --> <!-- 1. LOGIN SCREEN (Visible if NOT authenticated) --> <!-- ========================================================================= --> <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-950 via-brand-900 to-slate-900"> <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-slate-100 relative overflow-hidden"> <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand-600 via-gold-400 to-emerald-500"></div> <div class="text-center mb-7"> <div class="w-20 h-20 mx-auto p-1 bg-gradient-to-tr from-brand-700 to-gold-400 rounded-2xl shadow-lg mb-4 flex items-center justify-center"> <img src="assets/img/logo.png" alt="Logo SMP Islam Al-Kholili" class="w-full h-full object-contain bg-white rounded-xl p-1"> </div> <h1 class="text-2xl font-heading font-extrabold text-slate-900">Login Administrator</h1> <p class="text-xs text-brand-700 font-bold uppercase tracking-wider mt-1">SMP ISLAM AL-KHOLILI</p> <p class="text-xs text-slate-500 mt-1">Akses pengelolaan website dan database Turso</p> </div> <div id="loginAlert" class="hidden mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2"> <i class="fa-solid fa-circle-exclamation text-base flex-shrink-0"></i> <span id="loginAlertMsg">Username atau password salah!</span> </div> <form id="loginForm" class="space-y-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adminUsername">Username Admin</label> <div class="relative"> <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"> <i class="fa-solid fa-user text-sm"></i> </span> <input type="text" id="adminUsername" required value="smp al-kholili" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm" placeholder="Masukkan username"> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adminPassword">Password Admin</label> <div class="relative"> <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400"> <i class="fa-solid fa-lock text-sm"></i> </span> <input type="password" id="adminPassword" required value="al-kholili" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm" placeholder="Masukkan password"> </div> </div> <div class="pt-2"> <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 transition shadow-lg shadow-brand-700/30 flex items-center justify-center gap-2 text-sm"> <i class="fa-solid fa-right-to-bracket"></i> <span>Masuk ke Panel Kendali</span> </button> </div> </form> <div class="mt-7 pt-4 border-t border-slate-100 text-center"> <a href="/" class="text-xs text-brand-700 hover:underline font-semibold inline-flex items-center gap-1.5"> <i class="fa-solid fa-arrow-left"></i> Kembali ke Website Utama
+</a> </div> </div> </div> <!-- ========================================================================= --> <!-- 2. MAIN ADMIN DASHBOARD (Visible if authenticated) --> <!-- ========================================================================= --> <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row"> <!-- Sidebar Navigation --> <aside class="w-full md:w-64 bg-brand-950 text-slate-300 border-r border-brand-800/60 p-5 space-y-6 flex-shrink-0 flex flex-col justify-between"> <div class="space-y-6"> <!-- Brand Header --> <div class="flex items-center gap-3 pb-5 border-b border-brand-800/80"> <div class="w-12 h-12 p-1 bg-white rounded-xl shadow flex items-center justify-center flex-shrink-0"> <img src="assets/img/logo.png" alt="Logo" class="w-full h-full object-contain"> </div> <div class="min-w-0"> <h2 class="text-white font-heading font-extrabold text-sm leading-tight truncate">SMP ISLAM AL-KHOLILI</h2> <span class="text-[10px] text-gold-400 font-bold uppercase tracking-wider">Panel Administrator</span> </div> </div> <!-- Navigation Tabs --> <nav class="space-y-1.5 text-xs font-semibold"> <button type="button" onclick="switchTab('tab-dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-dashboard"> <i class="fa-solid fa-chart-pie w-5 text-center text-gold-400"></i> <span>Ringkasan Dasbor</span> </button> <button type="button" onclick="switchTab('tab-pengaturan')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-pengaturan"> <i class="fa-solid fa-sliders w-5 text-center text-gold-400"></i> <div class="flex-1"> <span>Pengaturan Website</span> <span class="block text-[10px] text-emerald-300 font-normal">Logo, Begrond & PPDB</span> </div> </button> <button type="button" onclick="switchTab('tab-guru')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-guru"> <i class="fa-solid fa-chalkboard-user w-5 text-center text-gold-400"></i> <span>Data & Foto Guru</span> </button> <button type="button" onclick="switchTab('tab-galeri')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-galeri"> <i class="fa-solid fa-images w-5 text-center text-gold-400"></i> <span>Upload Galeri Foto</span> </button> <button type="button" onclick="switchTab('tab-berita')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-berita"> <i class="fa-solid fa-newspaper w-5 text-center text-gold-400"></i> <span>Berita Sekolah</span> </button> <button type="button" onclick="switchTab('tab-ppdb')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-ppdb"> <i class="fa-solid fa-user-graduate w-5 text-center text-gold-400"></i> <span>Data Masuk PPDB</span> </button> </nav> </div> <!-- Quick Links & Logout --> <div class="pt-5 border-t border-brand-800/80 space-y-2 text-xs"> <a href="/" target="_blank" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-emerald-200 transition"> <span class="flex items-center gap-2"><i class="fa-solid fa-globe"></i> Buka Website</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> </a> <button type="button" onclick="adminLogout()" class="w-full flex items-center gap-2 px-3.5 py-2 rounded-xl bg-red-950/60 hover:bg-red-900 text-red-200 transition"> <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar (Logout)</span> </button> </div> </aside> <!-- Main Content Container --> <main class="flex-1 flex flex-col min-w-0"> <!-- Topbar Header --> <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-sm"> <div> <h1 id="tabTitle" class="font-heading font-extrabold text-xl text-slate-800">Ringkasan Dasbor</h1> <p class="text-xs text-slate-500">Panel Kendali Modern & Database Turso (Cloud)</p> </div> <div class="flex items-center gap-3"> <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200"> <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span>Turso Cloud Aktif</span> </span> <a href="/" target="_blank" class="text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1.5"> <span>Buka Web</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> </a> </div> </header> <!-- Dynamic Tab Bodies --> <div class="p-6 md:p-8 flex-1 overflow-y-auto space-y-6"> <!-- ========================================== --> <!-- TAB 1: DASBOR OVERVIEW --> <!-- ========================================== --> <div id="tab-dashboard" class="tab-content space-y-6"> <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden"> <div class="relative z-10 space-y-2"> <span class="inline-block px-3 py-1 rounded-full bg-gold-400 text-brand-950 text-xs font-bold uppercase tracking-wider">
+Administrator Panel
+</span> <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">
+Selamat Datang di Dasbor Kontrol Sekolah
+</h2> <p class="text-emerald-100 text-xs sm:text-sm max-w-2xl leading-relaxed">
+Anda dapat mengganti logo, mengubah foto begrond hero, mengubah tautan pendaftaran PPDB, mengunggah foto guru dan galeri kegiatan yang langsung tersimpan di cloud database Turso.
+</p> </div> </div> <!-- Quick Metrics --> <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"> <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4"> <div class="w-12 h-12 rounded-xl bg-emerald-50 text-brand-700 flex items-center justify-center text-xl flex-shrink-0"> <i class="fa-solid fa-chalkboard-user"></i> </div> <div> <span class="text-xs text-slate-400 font-semibold uppercase">Total Guru</span> <strong id="metricGuru" class="text-2xl text-slate-900 font-heading block">11</strong> </div> </div> <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4"> <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0"> <i class="fa-solid fa-images"></i> </div> <div> <span class="text-xs text-slate-400 font-semibold uppercase">Foto Galeri</span> <strong id="metricGaleri" class="text-2xl text-slate-900 font-heading block">6</strong> </div> </div> <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4"> <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl flex-shrink-0"> <i class="fa-solid fa-newspaper"></i> </div> <div> <span class="text-xs text-slate-400 font-semibold uppercase">Kabar Berita</span> <strong id="metricBerita" class="text-2xl text-slate-900 font-heading block">3</strong> </div> </div> <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center gap-4"> <div class="w-12 h-12 rounded-xl bg-amber-50 text-gold-600 flex items-center justify-center text-xl flex-shrink-0"> <i class="fa-solid fa-user-graduate"></i> </div> <div> <span class="text-xs text-slate-400 font-semibold uppercase">Pendaftar PPDB</span> <strong id="metricPpdb" class="text-2xl text-slate-900 font-heading block">0</strong> </div> </div> </div> <!-- Shortcuts --> <div class="grid grid-cols-1 md:grid-cols-3 gap-5"> <button onclick="switchTab('tab-pengaturan')" class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-brand-600 hover:shadow-md transition text-left group"> <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 flex items-center justify-center mb-3 group-hover:bg-brand-700 group-hover:text-white transition"> <i class="fa-solid fa-sliders"></i> </div> <h3 class="font-heading font-bold text-slate-900 text-sm">Ganti Logo & Foto Begrond</h3> <p class="text-xs text-slate-500 mt-1">Sesuaikan tampilan halaman utama dan tautan web formulir PPDB.</p> </button> <button onclick="switchTab('tab-guru')" class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-brand-600 hover:shadow-md transition text-left group"> <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3 group-hover:bg-emerald-700 group-hover:text-white transition"> <i class="fa-solid fa-user-plus"></i> </div> <h3 class="font-heading font-bold text-slate-900 text-sm">Kelola Dewan Guru</h3> <p class="text-xs text-slate-500 mt-1">Perbarui profil dan upload foto formal dewan guru.</p> </button> <button onclick="switchTab('tab-galeri')" class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-brand-600 hover:shadow-md transition text-left group"> <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-3 group-hover:bg-blue-700 group-hover:text-white transition"> <i class="fa-solid fa-cloud-arrow-up"></i> </div> <h3 class="font-heading font-bold text-slate-900 text-sm">Upload Foto Kegiatan</h3> <p class="text-xs text-slate-500 mt-1">Tambahkan dokumentasi sholat, tahfidz, dan belajar ke galeri.</p> </button> </div> </div> <!-- ========================================== --> <!-- TAB 2: PENGATURAN WEBSITE --> <!-- ========================================== --> <div id="tab-pengaturan" class="tab-content hidden space-y-6"> <form id="formPengaturan" class="space-y-6"> <!-- Foto & Logo Section --> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6"> <div class="border-b border-slate-100 pb-4"> <h2 class="text-lg font-heading font-extrabold text-slate-900 flex items-center gap-2"> <i class="fa-solid fa-image text-brand-700"></i> Logo & Foto Tampilan (Hero)
+</h2> <p class="text-xs text-slate-500">Pilih file foto dari komputer/HP untuk mengganti logo atau gambar latar beranda.</p> </div> <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> <!-- 1. Logo Sekolah --> <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3"> <label class="block text-xs font-bold text-slate-700 uppercase">Logo Resmi Sekolah</label> <div class="w-24 h-24 mx-auto bg-white rounded-xl shadow p-2 flex items-center justify-center overflow-hidden border border-slate-200"> <img id="previewLogo" src="assets/img/logo.png" alt="Preview Logo" class="max-w-full max-h-full object-contain"> </div> <input type="file" id="inputLogoFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-700 file:text-white hover:file:bg-brand-800 cursor-pointer"> <input type="hidden" id="settingLogoVal" value="assets/img/logo.png"> </div> <!-- 2. Begrond Hero --> <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3"> <label class="block text-xs font-bold text-slate-700 uppercase">Foto Begrond (Latar Beranda)</label> <div class="w-full h-24 bg-slate-900 rounded-xl shadow overflow-hidden relative border border-slate-200"> <img id="previewHeroBg" src="assets/uploads/hero_bg_1795050753.jpeg" alt="Preview Hero Bg" class="w-full h-full object-cover"> </div> <input type="file" id="inputHeroBgFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-700 file:text-white hover:file:bg-brand-800 cursor-pointer"> <input type="hidden" id="settingHeroBgVal" value="assets/uploads/hero_bg_1795050753.jpeg"> </div> <!-- 3. Foto Kepala Sekolah --> <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3"> <label class="block text-xs font-bold text-slate-700 uppercase">Foto Kepala Sekolah</label> <div class="w-24 h-24 mx-auto bg-white rounded-xl shadow overflow-hidden border border-slate-200"> <img id="previewKepsek" src="assets/uploads/kepsek_1794985994.png" alt="Preview Kepala Sekolah" class="w-full h-full object-cover"> </div> <input type="file" id="inputKepsekFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-700 file:text-white hover:file:bg-brand-800 cursor-pointer"> <input type="hidden" id="settingKepsekFotoVal" value="assets/uploads/kepsek_1794985994.png"> </div> </div> </div> <!-- Teks & Identitas Website --> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5"> <div class="border-b border-slate-100 pb-4"> <h2 class="text-lg font-heading font-extrabold text-slate-900 flex items-center gap-2"> <i class="fa-solid fa-pen-nib text-brand-700"></i> Teks Identitas Sekolah
+</h2> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Resmi Sekolah</label> <input type="text" id="settingSiteName" value="SMP ISLAM AL-KHOLILI" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tagline Sekolah</label> <input type="text" id="settingSiteTagline" value="Kota Probolinggo • Berkarakter Qur'ani" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Utama Hero (Beranda)</label> <input type="text" id="settingHeroTitle" value="Selamat Datang Di SMP Islam Al-Kholili" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi / Subtitle Hero</label> <textarea id="settingHeroSubtitle" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none">Mewujudkan generasi Muslim yang kokoh dalam akidah, unggul dalam prestasi akademik, santun dalam budi pekerti, serta terampil dalam penguasaan teknologi.</textarea> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Kepala Sekolah</label> <input type="text" id="settingNamaKepsek" value="Muhammad Taufiqur Rohman, S.Pd," class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tautan Web PPDB Online (URL)</label> <input type="text" id="settingPpdbUrl" value="https://ppdb.smpislam-alkholili.sch.id" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> </div> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp Resmi (Contoh: 6285234567890)</label> <input type="text" id="settingWaNum" value="6285234567890" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tampilan Nomor WhatsApp (+62 852-3456-7890)</label> <input type="text" id="settingWaDisplay" value="+62 852-3456-7890" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alamat Lengkap</label> <input type="text" id="settingAlamat" value="Jl. KUA Blok Masjid Baiturrohman RT03 RW04 Kel. Kedopok, Kec. Kedopok, Kota Probolinggo" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div class="pt-4 border-t border-slate-100 flex justify-end"> <button type="submit" class="px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 transition shadow-md flex items-center gap-2 text-sm"> <i class="fa-solid fa-floppy-disk"></i> <span>Simpan Pengaturan ke Turso DB</span> </button> </div> </div> </form> </div> <!-- ========================================== --> <!-- TAB 3: DATA GURU --> <!-- ========================================== --> <div id="tab-guru" class="tab-content hidden space-y-6"> <!-- Form Tambah Guru --> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5"> <div class="border-b border-slate-100 pb-4"> <h2 class="text-lg font-heading font-extrabold text-slate-900 flex items-center gap-2"> <i class="fa-solid fa-user-plus text-brand-700"></i> Tambah / Perbarui Guru & Foto
+</h2> </div> <form id="formTeacher" class="space-y-4"> <input type="hidden" id="teacherId" value=""> <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap & Gelar *</label> <input type="text" id="teacherNama" required placeholder="Contoh: Ust. Ahmad Fauzi, S.Pd.I" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Jabatan Guru *</label> <input type="text" id="teacherJabatan" required placeholder="Contoh: Guru PAI / Waka Kesiswaan" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> </div> <div class="grid grid-cols-1 sm:grid-cols-2 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mata Pelajaran yang Diampu</label> <input type="text" id="teacherMapel" placeholder="Contoh: Tahfidz & Fiqih" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pendidikan Terakhir</label> <input type="text" id="teacherPendidikan" placeholder="Contoh: S1 Pendidikan Agama Islam" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Upload File Foto Guru (JPG / PNG)</label> <div class="flex items-center gap-4"> <div class="w-14 h-14 rounded-xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0 flex items-center justify-center"> <img id="teacherPhotoPreview" src="/assets/img/teachers/male-1.svg" class="w-full h-full object-cover"> </div> <input type="file" id="teacherPhotoFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-700 file:text-white hover:file:bg-brand-800 cursor-pointer"> <input type="hidden" id="teacherPhotoVal" value="/assets/img/teachers/male-1.svg"> </div> </div> <div class="flex items-center gap-3 pt-2"> <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-brand-700 hover:bg-brand-800 transition text-xs flex items-center gap-2"> <i class="fa-solid fa-save"></i> Simpan Data Guru
+</button> <button type="button" onclick="resetTeacherForm()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+Reset
+</button> </div> </form> </div> <!-- Daftar Guru Grid --> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4"> <h3 class="text-base font-heading font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+Daftar Dewan Guru Tersimpan
+</h3> <div id="teachersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"> <!-- Rendered via JS --> </div> </div> </div> <!-- ========================================== --> <!-- TAB 4: GALERI KEGIATAN --> <!-- ========================================== --> <div id="tab-galeri" class="tab-content hidden space-y-6"> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5"> <div class="border-b border-slate-100 pb-4"> <h2 class="text-lg font-heading font-extrabold text-slate-900 flex items-center gap-2"> <i class="fa-solid fa-cloud-arrow-up text-brand-700"></i> Upload Foto Kegiatan Baru
+</h2> </div> <form id="formGallery" class="space-y-4"> <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Kegiatan Foto *</label> <input type="text" id="galeriJudul" required placeholder="Contoh: Sholat Dhuha Berjamaah di Masjid" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori Kegiatan *</label> <select id="galeriKategori" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none bg-white"> <option value="ibadah">Keagamaan & Ibadah</option> <option value="tahfidz">Tahfidz & Kajian Qur'an</option> <option value="belajar" selected>Belajar Mengajar & Kelas</option> <option value="ekskul">Ekstrakurikuler</option> <option value="fasilitas">Fasilitas Kampus</option> </select> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pilih File Foto *</label> <div class="flex items-center gap-4"> <div class="w-16 h-12 rounded-xl bg-slate-900 overflow-hidden border border-slate-200 flex-shrink-0 flex items-center justify-center"> <img id="galeriPreview" src="" class="hidden w-full h-full object-cover"> <i id="galeriPreviewIcon" class="fa-solid fa-image text-slate-400"></i> </div> <input type="file" id="galeriFile" required accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-700 file:text-white hover:file:bg-brand-800 cursor-pointer"> <input type="hidden" id="galeriPhotoVal" value=""> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi Singkat</label> <input type="text" id="galeriDeskripsi" placeholder="Tuliskan keterangan suasana foto..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-brand-700 hover:bg-brand-800 transition text-xs flex items-center gap-2"> <i class="fa-solid fa-cloud-arrow-up"></i> Upload Foto ke Galeri
+</button> </form> </div> <!-- Galeri Grid --> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4"> <h3 class="text-base font-heading font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+Koleksi Foto Galeri Aktif
+</h3> <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> <!-- Rendered via JS --> </div> </div> </div> <!-- ========================================== --> <!-- TAB 5: BERITA SEKOLAH --> <!-- ========================================== --> <div id="tab-berita" class="tab-content hidden space-y-6"> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5"> <div class="border-b border-slate-100 pb-4"> <h2 class="text-lg font-heading font-extrabold text-slate-900 flex items-center gap-2"> <i class="fa-solid fa-pen-to-square text-brand-700"></i> Terbitkan Berita / Pengumuman Baru
+</h2> </div> <form id="formNews" class="space-y-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Berita *</label> <input type="text" id="newsJudul" required placeholder="Contoh: Peringatan Maulid Nabi di SMP Islam Al-Kholili" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"> </div> <div class="grid grid-cols-1 sm:grid-cols-3 gap-4"> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori</label> <input type="text" id="newsKategori" value="Kegiatan Sekolah" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Penulis</label> <input type="text" id="newsPenulis" value="Humas Sekolah" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm"> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tanggal</label> <input type="text" id="newsTanggal" value="23 November 2026" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm"> </div> </div> <div> <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ringkasan Berita *</label> <textarea id="newsRingkasan" rows="3" required placeholder="Tuliskan intisari kegiatan atau pengumuman secara singkat..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none"></textarea> </div> <button type="submit" class="px-5 py-2.5 rounded-xl font-bold text-white bg-brand-700 hover:bg-brand-800 transition text-xs flex items-center gap-2"> <i class="fa-solid fa-paper-plane"></i> Publikasikan Berita
+</button> </form> </div> <!-- News List --> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4"> <h3 class="text-base font-heading font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+Daftar Berita Terbit
+</h3> <div id="newsList" class="space-y-3"> <!-- Rendered via JS --> </div> </div> </div> <!-- ========================================== --> <!-- TAB 6: DATA MASUK PPDB --> <!-- ========================================== --> <div id="tab-ppdb" class="tab-content hidden space-y-6"> <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4"> <div class="flex items-center justify-between border-b border-slate-100 pb-4"> <div> <h2 class="text-lg font-heading font-extrabold text-slate-900">
+Data Pendaftar PPDB Online
+</h2> <p class="text-xs text-slate-500">Pendaftar baru yang masuk melalui portal formulir.</p> </div> </div> <div class="overflow-x-auto"> <table class="w-full text-left text-xs text-slate-600"> <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200"> <tr> <th class="px-4 py-3">No. Registrasi</th> <th class="px-4 py-3">Nama Siswa</th> <th class="px-4 py-3">Asal Sekolah</th> <th class="px-4 py-3">Jalur</th> <th class="px-4 py-3">WhatsApp</th> <th class="px-4 py-3">Waktu</th> </tr> </thead> <tbody id="ppdbTableBody" class="divide-y divide-slate-100"> <!-- Rendered via JS --> </tbody> </table> </div> </div> </div> </div> </main> </div> <!-- CLIENT-SIDE LOGIC SCRIPT --> <script>(function(){const initialSettings = {"site_name":"SMP ISLAM AL-KHOLILI","site_tagline":"Kota Probolinggo • Berkarakter Qur'ani","hero_title":"Selamat Datang Di SMP Islam Al-Kholili","hero_subtitle":"Mewujudkan generasi Muslim yang kokoh dalam akidah, unggul dalam prestasi akademik, santun dalam budi pekerti, serta terampil dalam penguasaan teknologi.","hero_bg":"assets/uploads/hero_bg_1795050753.jpeg","logo":"assets/img/logo.png","ppdb_url":"https://ppdb.smpislam-alkholili.sch.id","ppdb_open":true,"whatsapp_number":"6285234567890","whatsapp_display":"+62 852-3456-7890","phone":"(0335) 421xxx / 0852-3456-7890","email":"info@smpislam-alkholili.sch.id","alamat":"Jl. KUA Blok Masjid Baiturrohman RT03 RW04 Kel. Kedopok, Kec. Kedopok, Kota Probolinggo","jam_kerja":"Senin - Sabtu: 07.00 - 14.00 WIB","maps_embed":"https://maps.google.com/maps?q=Kedopok,+Kota+Probolinggo,+Jawa+Timur&t=&z=15&ie=UTF8&iwloc=&output=embed","nama_kepala_sekolah":"Muhammad Taufiqur Rohman, S.Pd,","kepala_sekolah_foto":"assets/uploads/kepsek_1794985994.png","admin_username":"admin","admin_password_hash":"$2y$10$bzZ4W3Rlyr2qZYqe0NsfHuAlcSLIRbprOh1v8ZxZdmlAdBbEbxGw6","sambutan_teks":"Assalamu’alaikum Warahmatullahi Wabarakaatuh.\r\n\r\nSalam sejahtera untuk kita semua. Selamat datang di website SMP Islam Al-Kholili. Website ini dibangun sebagai sarana atau media informasi dan komunikasi sekolah, karena sejalan dengan perkembangan teknologi industri 4.0 yang berguna untuk memudahkan mencari informasi tentang SMP Islam Al-Kholili. Kualitas layanan menjadi salah satu misi sekolah dan kaitannya dengan transparansi dan akuntabilitas sekolah.\r\n\r\nMenjalankan sebagai pimpinan di SMP Islam Al-Kholili, harapan tentu untuk mengembangkan sekolah besar ini menjadi lebih baik lagi, bertabur bintang baik akademik maupun non akademik. Sekolah yang akan melahirkan generasi yang inovatif, kreatif, religius, dan akhlakul karimah yang berwawasan luas serta mengabdi kepada agama, bangsa, dan negara.\r\n\r\nSelaku pimpinan saya mendorong terus perkembangan inovasi dan kreasi warga sekolah. Mengeratkan tali saliturahmi, kekeluargaan, dan kerjasama seluruh warga sekolah. Dari lubuk hati yang paling dalam, saya mengajak kepada seluruh civitas akademik SMP Islam Al-Kholili untuk sama-sama bergandeng tangan, berkolaborasi guna mengembangkan sekolah nyaman, aman, dan menyenangkan sebagai tempat belajar untuk putra-putri kita menuntut ilmu dan tetap mempertahankan serta mengembangkan image SMP Islam Al-Kholili sebagai sekolah unggulan di Kota Probolinggo.\r\n\r\nWassalamu’alaikum Warohmatullahi Wabarokatuh."};
+const initialTeachers = [{"id":"guru-1","nama":"Muhammad Taufiqur Rohman,S. Pd,","jabatan":"Kepala Sekolah","mapel":"Manajemen Pendidikan & Kepemimpinan","pendidikan":"S2 Manajemen Pendidikan","foto":"assets/uploads/kepsek_1794985994.png","color":"from-brand-700 to-emerald-600"},{"id":"guru-3","nama":"rrrSiti Rohmah, S.Pd.","jabatan":"Waka Kesiswaan","mapel":"Matematika","pendidikan":"S1 Pendidikan Matematika","foto":"assets/img/teachers/female-1.svg","color":"from-blue-600 to-indigo-500"},{"id":"guru-4","nama":"Ust. Ahmad Thohir, S.Q.","jabatan":"Koordinator Program Tahfidz","mapel":"Tahfidzul Qur'an & Tajwid","pendidikan":"S1 Ilmu Al-Qur'an & Tafsir (Hafidz 30 Juz)","foto":"assets/img/teachers/male-1.svg","color":"from-emerald-700 to-green-600"},{"id":"guru-5","nama":"Nurul Hidayati, S.Pd.","jabatan":"Guru Mata Pelajaran","mapel":"Bahasa Indonesia","pendidikan":"S1 Pendidikan Bahasa & Sastra Indonesia","foto":"assets/img/teachers/female-1.svg","color":"from-amber-600 to-yellow-500"},{"id":"guru-6","nama":"Bambang Kurniawan, S.Pd.","jabatan":"Guru Mata Pelajaran","mapel":"Bahasa Inggris","pendidikan":"S1 Pendidikan Bahasa Inggris","foto":"assets/img/teachers/male-1.svg","color":"from-cyan-600 to-blue-500"},{"id":"guru-7","nama":"Dewi Anggraini, S.Si.","jabatan":"Guru Mata Pelajaran","mapel":"Ilmu Pengetahuan Alam (IPA)","pendidikan":"S1 Sains Fisika & Biologi","foto":"assets/img/teachers/female-1.svg","color":"from-teal-600 to-emerald-500"},{"id":"guru-8","nama":"Fathur Rahman, S.Kom.","jabatan":"Guru Mata Pelajaran & IT","mapel":"Informatika / Komputer","pendidikan":"S1 Teknik Informatika","foto":"assets/img/teachers/male-1.svg","color":"from-purple-600 to-indigo-500"},{"id":"guru-9","nama":"Hendra Prasetyo, S.Pd.","jabatan":"Guru Mata Pelajaran & Pembina Pramuka","mapel":"Pendidikan Jasmani & Olahraga (PJOK)","pendidikan":"S1 Pendidikan Olahraga & Kesehatan","foto":"assets/img/teachers/male-1.svg","color":"from-red-600 to-rose-500"},{"id":"guru-10","nama":"Aisyah Zahira, S.Sos.","jabatan":"Guru Bimbingan Konseling (BK)","mapel":"Bimbingan & Konseling Siswa","pendidikan":"S1 Bimbingan Konseling","foto":"assets/img/teachers/female-1.svg","color":"from-pink-600 to-rose-400"},{"id":"guru-11","nama":"M. Rizqi Pratama, A.Md.","jabatan":"Kepala Tata Usaha","mapel":"Administrasi & Layanan Surat-Menyurat","pendidikan":"D3 Administrasi Perkantoran","foto":"assets/img/teachers/male-1.svg","color":"from-slate-700 to-slate-500"},{"id":"guru-12","nama":"Umi Hanik, S.E.","jabatan":"Staf Keuangan & Bendahara","mapel":"Administrasi Keuangan Sekolah","pendidikan":"S1 Manajemen Keuangan","foto":"assets/img/teachers/female-1.svg","color":"from-gold-600 to-amber-500"}];
+const initialGallery = [{"id":"gal-1","judul":"Sholat Berjamaah di Masjid Baiturrohman","kategori":"ibadah","kategori_label":"Keagamaan & Ibadah","tanggal":"Rutin Setiap Hari","deskripsi":"Pembiasaan sholat Dhuha dan Dhuhur berjamaah bersama seluruh dewan guru dan siswa.","icon":"fa-mosque","foto":"","gradient":"from-emerald-800 to-brand-950"},{"id":"gal-2","judul":"Halaqah Tahfidzul Qur'an & Talaqqi","kategori":"tahfidz","kategori_label":"Tahfidz & Qur'an","tanggal":"Pagi Hari Pukul 07.00 WIB","deskripsi":"Siswa menyetorkan hafalan surat pilihan dan juz 30 dipandu ustadz pengampu tahfidz.","icon":"fa-book-quran","foto":"","gradient":"from-brand-900 to-emerald-950"},{"id":"gal-3","judul":"Praktikum Sains & Pembelajaran Kelas Interaktif","kategori":"belajar","kategori_label":"Belajar Mengajar","tanggal":"Semester Berjalan","deskripsi":"Eksplorasi konsep sains fisika dan biologi dengan metode praktikum aktif dan menyenangkan.","icon":"fa-flask","foto":"","gradient":"from-blue-900 to-indigo-950"},{"id":"gal-4","judul":"Latihan Grup Rebana & Seni Hadrah Shalawat","kategori":"ekskul","kategori_label":"Ekstrakurikuler","tanggal":"Setiap Rabu Sore","deskripsi":"Mengasah olah vokal religi dan ketukan terbang banjari untuk syiar shalawat nabi.","icon":"fa-drum","foto":"","gradient":"from-amber-900 to-amber-950"},{"id":"gal-5","judul":"Kegiatan Kepanduan Pramuka & Outbound","kategori":"ekskul","kategori_label":"Ekstrakurikuler","tanggal":"Setiap Jumat Sore","deskripsi":"Melatih kemandirian, kekompakan tim, tali-temali, dan jiwa kepemimpinan generasi muda.","icon":"fa-campground","foto":"","gradient":"from-purple-900 to-slate-950"},{"id":"gal-6","judul":"Laboratorium Komputer & Literasi Digital","kategori":"fasilitas","kategori_label":"Fasilitas Kampus","tanggal":"Fasilitas Harian","deskripsi":"Fasilitas komputer modern untuk simulasi ujian, pembelajaran TIK, dan riset ilmiah siswa.","icon":"fa-desktop","foto":"","gradient":"from-cyan-900 to-blue-950"}];
+const initialNews = [{"id":"news-1","judul":"Sosialisasi Pembukaan PPDB Tahun Ajaran 2026/2027 di SMP Islam Al-Kholili","kategori":"Pengumuman PPDB","tanggal":"15 November 2026","penulis":"Humas Sekolah","ringkasan":"Panitia Penerimaan Peserta Didik Baru (PPDB) resmi membuka pendaftaran gelombang pertama dengan potongan khusus biaya seragam dan formulir gratis.","icon":"fa-bullhorn","badge":"bg-amber-100 text-amber-800"},{"id":"news-2","judul":"Peringatan Hari Santri Nasional: Santri Berdaya Menuju Masa Depan Gemilang","kategori":"Kegiatan Islami","tanggal":"22 Oktober 2026","penulis":"Kesiswaan","ringkasan":"Civitas akademika SMP Islam Al-Kholili menggelar upacara bendera bersarung dilanjutkan pawai ta'aruf dan lomba tartil Qur'an antar kelas.","icon":"fa-mosque","badge":"bg-emerald-100 text-emerald-800"},{"id":"news-3","judul":"Ujian Munaqasyah Tahfidz Al-Qur'an Juz 30 dan Juz 1 Berjalan Khidmat","kategori":"Tahfidz","tanggal":"05 Oktober 2026","penulis":"Tim Tahfidz","ringkasan":"Sebanyak 45 santri mengikuti ujian munaqasyah di hadapan tim penguji dan disaksikan langsung oleh para orang tua santri di Masjid Baiturrohman.","icon":"fa-book-quran","badge":"bg-blue-100 text-blue-800"}];
+const initialPpdb = [];
+const tursoEndpoint = "https://smp-memet.aws-ap-southeast-1.turso.io/v2/pipeline";
+const tursoBearer = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3OTU0MDY0NzYsImlkIjoiMDFhMjA2NzktM2EwMS03ZTJhLWJhNzUtMjg1NTA1YTA1YmM5Iiwia2lkIjoiUUFlRERrU0pVQTJoZl9TTjRWaE9ZTUFrT1g2MUV3VWo0YS1qYllhZHYwcyIsInJpZCI6ImNlNWM2ODdjLTRhYzQtNDFkYS1hN2VkLWRiZDI0NTU2MjJiZSJ9.6u2b8t47piQWRWs-SvW1LgHUgqMd5V5ev1ZM2YHZCA9sSkjXs1VxeYt6n_fDuQpnchgJKhMqcciS26plEWFPCQ";
+
+    // 1. STATE INITIALIZATION
+    let currentSettings = initialSettings;
+    let currentTeachers = initialTeachers;
+    let currentGallery = initialGallery;
+    let currentNews = initialNews;
+    let currentPpdb = initialPpdb;
+
+    // Check localStorage overrides
+    try {
+      const savedSettings = localStorage.getItem('smp_settings');
+      if (savedSettings) currentSettings = { ...currentSettings, ...JSON.parse(savedSettings) };
+      const savedTeachers = localStorage.getItem('smp_teachers');
+      if (savedTeachers) currentTeachers = JSON.parse(savedTeachers);
+      const savedGallery = localStorage.getItem('smp_gallery');
+      if (savedGallery) currentGallery = JSON.parse(savedGallery);
+      const savedNews = localStorage.getItem('smp_news');
+      if (savedNews) currentNews = JSON.parse(savedNews);
+      const savedPpdb = localStorage.getItem('smp_ppdb');
+      if (savedPpdb) currentPpdb = JSON.parse(savedPpdb);
+    } catch (e) {
+      console.warn("Storage read error", e);
+    }
+
+    // 2. AUTHENTICATION LOGIC
+    function checkAuth() {
+      const isLoggedIn = sessionStorage.getItem('alkholili_admin_auth') === 'true';
+      const loginSec = document.getElementById('loginSection');
+      const dashSec = document.getElementById('dashboardSection');
+      if (isLoggedIn) {
+        loginSec.classList.add('hidden');
+        dashSec.classList.remove('hidden');
+        renderAll();
+      } else {
+        loginSec.classList.remove('hidden');
+        dashSec.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('adminUsername').value.trim();
+      const p = document.getElementById('adminPassword').value.trim();
+
+      if ((u === 'smp al-kholili' && p === 'al-kholili') || (u === 'admin' && p === 'admin123')) {
+        sessionStorage.setItem('alkholili_admin_auth', 'true');
+        checkAuth();
+        showToast("Login Administrator Berhasil!", "success");
+      } else {
+        const alertBox = document.getElementById('loginAlert');
+        alertBox.classList.remove('hidden');
+      }
+    });
+
+    window.adminLogout = function() {
+      if (confirm('Yakin ingin keluar dari panel admin?')) {
+        sessionStorage.removeItem('alkholili_admin_auth');
+        checkAuth();
+      }
+    };
+
+    // 3. TOAST MESSAGES
+    function showToast(msg, type = "success") {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+      toastMsg.textContent = msg;
+      if (type === "success") {
+        toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-lg";
+      } else {
+        toastIcon.className = "fa-solid fa-circle-exclamation text-amber-400 text-lg";
+      }
+      toast.classList.remove('translate-y-[-150%]');
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-150%]');
+      }, 3500);
+    }
+
+    // 4. TAB SWITCHER
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('bg-brand-700', 'text-white', 'shadow');
+        el.classList.add('hover:bg-brand-900/80', 'hover:text-white');
+      });
+
+      const target = document.getElementById(tabId);
+      if (target) target.classList.remove('hidden');
+
+      const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+      if (activeBtn) {
+        activeBtn.classList.remove('hover:bg-brand-900/80');
+        activeBtn.classList.add('bg-brand-700', 'text-white', 'shadow');
+      }
+
+      const titles = {
+        'tab-dashboard': 'Ringkasan Dasbor',
+        'tab-pengaturan': 'Pengaturan Tampilan & Website',
+        'tab-guru': 'Kelola Data & Foto Dewan Guru',
+        'tab-galeri': 'Upload & Dokumentasi Galeri Kegiatan',
+        'tab-berita': 'Publikasi Berita Sekolah',
+        'tab-ppdb': 'Data Masuk Formulir PPDB Online'
+      };
+      document.getElementById('tabTitle').textContent = titles[tabId] || 'Dasbor Admin';
+    };
+
+    // 5. TURSO CLOUD SQL SYNC HELPER
+    async function executeTursoSql(sql, args = []) {
+      try {
+        const payload = {
+          requests: [
+            { type: "execute", stmt: { sql, args } },
+            { type: "close" }
+          ]
+        };
+        const res = await fetch(tursoEndpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${tursoBearer}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) console.warn("Turso sync response status:", res.status);
+      } catch (err) {
+        console.warn("Turso cloud query failed (fallback to localStorage):", err);
+      }
+    }
+
+    // 6. IMAGE RESIZER HELPER (FileReader -> WebP / JPEG Base64)
+    function handleImageUpload(inputEl, previewEl, hiddenValEl, maxWidth = 1000) {
+      inputEl.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const base64Data = canvas.toDataURL('image/webp', 0.85);
+            previewEl.src = base64Data;
+            previewEl.classList.remove('hidden');
+            hiddenValEl.value = base64Data;
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Setup Image Uploaders
+    handleImageUpload(
+      document.getElementById('inputLogoFile'),
+      document.getElementById('previewLogo'),
+      document.getElementById('settingLogoVal'),
+      500
+    );
+    handleImageUpload(
+      document.getElementById('inputHeroBgFile'),
+      document.getElementById('previewHeroBg'),
+      document.getElementById('settingHeroBgVal'),
+      1200
+    );
+    handleImageUpload(
+      document.getElementById('inputKepsekFile'),
+      document.getElementById('previewKepsek'),
+      document.getElementById('settingKepsekFotoVal'),
+      600
+    );
+    handleImageUpload(
+      document.getElementById('teacherPhotoFile'),
+      document.getElementById('teacherPhotoPreview'),
+      document.getElementById('teacherPhotoVal'),
+      600
+    );
+    handleImageUpload(
+      document.getElementById('galeriFile'),
+      document.getElementById('galeriPreview'),
+      document.getElementById('galeriPhotoVal'),
+      1000
+    );
+
+    // 7. SAVE PENGATURAN
+    document.getElementById('formPengaturan')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const updated = {
+        site_name: document.getElementById('settingSiteName').value.trim(),
+        site_tagline: document.getElementById('settingSiteTagline').value.trim(),
+        hero_title: document.getElementById('settingHeroTitle').value.trim(),
+        hero_subtitle: document.getElementById('settingHeroSubtitle').value.trim(),
+        nama_kepala_sekolah: document.getElementById('settingNamaKepsek').value.trim(),
+        ppdb_url: document.getElementById('settingPpdbUrl').value.trim(),
+        whatsapp_number: document.getElementById('settingWaNum').value.trim(),
+        whatsapp_display: document.getElementById('settingWaDisplay').value.trim(),
+        alamat: document.getElementById('settingAlamat').value.trim(),
+        logo: document.getElementById('settingLogoVal').value,
+        hero_bg: document.getElementById('settingHeroBgVal').value,
+        kepala_sekolah_foto: document.getElementById('settingKepsekFotoVal').value,
+      };
+
+      currentSettings = { ...currentSettings, ...updated };
+      localStorage.setItem('smp_settings', JSON.stringify(currentSettings));
+
+      // Push to Turso
+      await executeTursoSql(
+        `UPDATE pengaturan SET site_name = ?, site_tagline = ?, hero_title = ?, hero_subtitle = ?, alamat = ?, whatsapp_number = ?, whatsapp_display = ?, ppdb_url = ?, logo = ?, hero_bg = ?, nama_kepsek = ?, kepsek_foto = ? WHERE id = 1`,
+        [
+          { type: "text", value: updated.site_name },
+          { type: "text", value: updated.site_tagline },
+          { type: "text", value: updated.hero_title },
+          { type: "text", value: updated.hero_subtitle },
+          { type: "text", value: updated.alamat },
+          { type: "text", value: updated.whatsapp_number },
+          { type: "text", value: updated.whatsapp_display },
+          { type: "text", value: updated.ppdb_url },
+          { type: "text", value: updated.logo },
+          { type: "text", value: updated.hero_bg },
+          { type: "text", value: updated.nama_kepala_sekolah },
+          { type: "text", value: updated.kepala_sekolah_foto }
+        ]
+      );
+
+      showToast("Pengaturan berhasil disimpan ke Turso Cloud!");
+    });
+
+    // 8. MANAGE TEACHERS
+    function renderTeachers() {
+      const container = document.getElementById('teachersGrid');
+      if (!container) return;
+      container.innerHTML = currentTeachers.map(t => `
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4 flex items-center gap-3">
+          <div class="w-16 h-16 rounded-xl bg-white shadow overflow-hidden flex-shrink-0 border border-slate-200">
+            <img src="${t.foto || '/assets/img/teachers/male-1.svg'}" class="w-full h-full object-cover" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] font-bold uppercase text-brand-800 bg-brand-100 px-2 py-0.5 rounded-full inline-block truncate max-w-full">${t.jabatan || 'Guru'}</span>
+            <h4 class="font-heading font-extrabold text-sm text-slate-900 truncate">${t.nama}</h4>
+            <p class="text-xs text-gold-600 truncate">${t.mapel || '-'}</p>
+            <div class="mt-2 flex items-center gap-2">
+              <button onclick="editTeacher('${t.id}')" class="text-[11px] font-bold text-brand-700 hover:underline">Edit</button>
+              <button onclick="deleteTeacher('${t.id}')" class="text-[11px] font-bold text-red-600 hover:underline">Hapus</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('metricGuru').textContent = currentTeachers.length;
+    }
+
+    window.editTeacher = function(id) {
+      const t = currentTeachers.find(item => item.id == id);
+      if (!t) return;
+      document.getElementById('teacherId').value = t.id;
+      document.getElementById('teacherNama').value = t.nama;
+      document.getElementById('teacherJabatan').value = t.jabatan || '';
+      document.getElementById('teacherMapel').value = t.mapel || '';
+      document.getElementById('teacherPendidikan').value = t.pendidikan || '';
+      document.getElementById('teacherPhotoVal').value = t.foto || '';
+      document.getElementById('teacherPhotoPreview').src = t.foto || '/assets/img/teachers/male-1.svg';
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+    };
+
+    window.deleteTeacher = async function(id) {
+      if (!confirm('Hapus data guru ini?')) return;
+      currentTeachers = currentTeachers.filter(t => t.id != id);
+      localStorage.setItem('smp_teachers', JSON.stringify(currentTeachers));
+      renderTeachers();
+      await executeTursoSql(`DELETE FROM guru WHERE id = ?`, [{ type: "text", value: String(id) }]);
+      showToast("Data guru berhasil dihapus!");
+    };
+
+    window.resetTeacherForm = function() {
+      document.getElementById('teacherId').value = '';
+      document.getElementById('teacherNama').value = '';
+      document.getElementById('teacherJabatan').value = '';
+      document.getElementById('teacherMapel').value = '';
+      document.getElementById('teacherPendidikan').value = '';
+      document.getElementById('teacherPhotoVal').value = '/assets/img/teachers/male-1.svg';
+      document.getElementById('teacherPhotoPreview').src = '/assets/img/teachers/male-1.svg';
+    };
+
+    document.getElementById('formTeacher')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('teacherId').value || 'guru-' + Date.now();
+      const nama = document.getElementById('teacherNama').value.trim();
+      const jabatan = document.getElementById('teacherJabatan').value.trim();
+      const mapel = document.getElementById('teacherMapel').value.trim();
+      const pendidikan = document.getElementById('teacherPendidikan').value.trim();
+      const foto = document.getElementById('teacherPhotoVal').value;
+
+      const idx = currentTeachers.findIndex(t => t.id == id);
+      const newTeacher = { id, nama, jabatan, mapel, pendidikan, foto, color: 'from-brand-700 to-emerald-600' };
+
+      if (idx >= 0) {
+        currentTeachers[idx] = newTeacher;
+      } else {
+        currentTeachers.unshift(newTeacher);
+      }
+
+      localStorage.setItem('smp_teachers', JSON.stringify(currentTeachers));
+      renderTeachers();
+      resetTeacherForm();
+
+      // Push to Turso
+      await executeTursoSql(
+        `INSERT OR REPLACE INTO guru (id, nama, jabatan, mapel, pendidikan, foto, color) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          { type: "text", value: String(id) },
+          { type: "text", value: nama },
+          { type: "text", value: jabatan },
+          { type: "text", value: mapel },
+          { type: "text", value: pendidikan },
+          { type: "text", value: foto },
+          { type: "text", value: newTeacher.color }
+        ]
+      );
+
+      showToast("Data guru berhasil disimpan!");
+    });
+
+    // 9. MANAGE GALLERY
+    function renderGallery() {
+      const container = document.getElementById('galleryGrid');
+      if (!container) return;
+      container.innerHTML = currentGallery.map(g => `
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between">
+          <div>
+            <div class="aspect-[4/3] bg-slate-900 relative overflow-hidden flex items-center justify-center">
+              ${(g.foto || g.gambar) ? `<img src="${g.foto || g.gambar}" class="w-full h-full object-cover" />` : `<i class="fa-solid fa-image text-4xl text-slate-400"></i>`}
+              <span class="absolute top-2 left-2 text-[10px] font-bold uppercase bg-black/60 text-white px-2 py-0.5 rounded-full">${g.kategori_label || g.kategori}</span>
+            </div>
+            <div class="p-3">
+              <h4 class="font-heading font-bold text-xs text-slate-900 line-clamp-1">${g.judul}</h4>
+              <p class="text-[11px] text-slate-500 line-clamp-1 mt-0.5">${g.deskripsi || '-'}</p>
+            </div>
+          </div>
+          <div class="p-3 pt-0 border-t border-slate-200/60 flex items-center justify-between">
+            <span class="text-[10px] text-slate-400">${g.tanggal || ''}</span>
+            <button onclick="deleteGallery('${g.id}')" class="text-[11px] font-bold text-red-600 hover:underline">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('metricGaleri').textContent = currentGallery.length;
+    }
+
+    window.deleteGallery = async function(id) {
+      if (!confirm('Hapus foto kegiatan ini?')) return;
+      currentGallery = currentGallery.filter(g => g.id != id);
+      localStorage.setItem('smp_gallery', JSON.stringify(currentGallery));
+      renderGallery();
+      await executeTursoSql(`DELETE FROM galeri WHERE id = ?`, [{ type: "text", value: String(id) }]);
+      showToast("Foto galeri berhasil dihapus!");
+    };
+
+    document.getElementById('formGallery')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = 'gal-' + Date.now();
+      const judul = document.getElementById('galeriJudul').value.trim();
+      const kategori = document.getElementById('galeriKategori').value;
+      const deskripsi = document.getElementById('galeriDeskripsi').value.trim();
+      const foto = document.getElementById('galeriPhotoVal').value;
+
+      if (!foto) {
+        alert('Silakan pilih file foto terlebih dahulu!');
+        return;
+      }
+
+      const kategoriLabels = {
+        ibadah: "Keagamaan & Ibadah",
+        tahfidz: "Tahfidz & Qur'an",
+        belajar: "Belajar Mengajar",
+        ekskul: "Ekstrakurikuler",
+        fasilitas: "Fasilitas Kampus"
+      };
+
+      const newItem = {
+        id,
+        judul,
+        kategori,
+        kategori_label: kategoriLabels[kategori] || "Kegiatan",
+        tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+        deskripsi,
+        foto,
+        gambar: foto,
+        icon: "fa-image"
+      };
+
+      currentGallery.unshift(newItem);
+      localStorage.setItem('smp_gallery', JSON.stringify(currentGallery));
+      renderGallery();
+
+      document.getElementById('galeriJudul').value = '';
+      document.getElementById('galeriDeskripsi').value = '';
+      document.getElementById('galeriFile').value = '';
+      document.getElementById('galeriPreview').classList.add('hidden');
+      document.getElementById('galeriPhotoVal').value = '';
+
+      // Push to Turso
+      await executeTursoSql(
+        `INSERT INTO galeri (id, judul, kategori, kategori_label, tanggal, deskripsi, icon, foto, gradient) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          { type: "text", value: String(id) },
+          { type: "text", value: judul },
+          { type: "text", value: kategori },
+          { type: "text", value: newItem.kategori_label },
+          { type: "text", value: newItem.tanggal },
+          { type: "text", value: deskripsi },
+          { type: "text", value: newItem.icon },
+          { type: "text", value: foto },
+          { type: "text", value: "from-brand-900 to-emerald-950" }
+        ]
+      );
+
+      showToast("Foto berhasil diunggah ke Galeri!");
+    });
+
+    // 10. MANAGE NEWS
+    function renderNews() {
+      const container = document.getElementById('newsList');
+      if (!container) return;
+      container.innerHTML = currentNews.map(n => `
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 text-brand-800">${n.kategori || 'Berita'}</span>
+            <h4 class="font-heading font-bold text-sm text-slate-900 mt-1">${n.judul}</h4>
+            <p class="text-xs text-slate-600 line-clamp-1 mt-0.5">${n.ringkasan}</p>
+            <span class="text-[10px] text-slate-400 block mt-1">${n.tanggal} &bull; ${n.penulis || 'Humas'}</span>
+          </div>
+          <button onclick="deleteNews('${n.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-red-600 border border-red-200 hover:bg-red-50 transition self-start sm:self-auto">Hapus</button>
+        </div>
+      `).join('');
+      document.getElementById('metricBerita').textContent = currentNews.length;
+    }
+
+    window.deleteNews = async function(id) {
+      if (!confirm('Hapus berita ini?')) return;
+      currentNews = currentNews.filter(n => n.id != id);
+      localStorage.setItem('smp_news', JSON.stringify(currentNews));
+      renderNews();
+      await executeTursoSql(`DELETE FROM berita WHERE id = ?`, [{ type: "text", value: String(id) }]);
+      showToast("Berita berhasil dihapus!");
+    };
+
+    document.getElementById('formNews')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = 'news-' + Date.now();
+      const judul = document.getElementById('newsJudul').value.trim();
+      const kategori = document.getElementById('newsKategori').value.trim();
+      const penulis = document.getElementById('newsPenulis').value.trim();
+      const tanggal = document.getElementById('newsTanggal').value.trim();
+      const ringkasan = document.getElementById('newsRingkasan').value.trim();
+
+      const newItem = { id, judul, kategori, penulis, tanggal, ringkasan, icon: "fa-newspaper", badge: "bg-emerald-100 text-emerald-800" };
+      currentNews.unshift(newItem);
+      localStorage.setItem('smp_news', JSON.stringify(currentNews));
+      renderNews();
+
+      document.getElementById('newsJudul').value = '';
+      document.getElementById('newsRingkasan').value = '';
+
+      // Push to Turso
+      await executeTursoSql(
+        `INSERT INTO berita (id, judul, kategori, tanggal, penulis, ringkasan, icon, badge) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          { type: "text", value: String(id) },
+          { type: "text", value: judul },
+          { type: "text", value: kategori },
+          { type: "text", value: tanggal },
+          { type: "text", value: penulis },
+          { type: "text", value: ringkasan },
+          { type: "text", value: newItem.icon },
+          { type: "text", value: newItem.badge }
+        ]
+      );
+
+      showToast("Berita berhasil diterbitkan!");
+    });
+
+    // 11. MANAGE PPDB SUBMISSIONS
+    function renderPpdb() {
+      const container = document.getElementById('ppdbTableBody');
+      if (!container) return;
+      if (currentPpdb.length === 0) {
+        container.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">Belum ada data pendaftar baru yang masuk.</td></tr>`;
+      } else {
+        container.innerHTML = currentPpdb.map(p => `
+          <tr class="hover:bg-slate-50">
+            <td class="px-4 py-3 font-mono font-bold text-brand-800">${p.id || '-'}</td>
+            <td class="px-4 py-3 font-semibold text-slate-800">${p.nama || '-'}</td>
+            <td class="px-4 py-3">${p.asal_sekolah || '-'}</td>
+            <td class="px-4 py-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-brand-800 font-bold">${p.jalur || 'Reguler'}</span></td>
+            <td class="px-4 py-3">
+              <a href="https://wa.me/${(p.no_wa || '').replace(/[^0-9]/g, '')}" target="_blank" class="text-brand-700 hover:underline font-bold inline-flex items-center gap-1">
+                <i class="fa-brands fa-whatsapp text-emerald-600"></i> ${p.no_wa || '-'}
+              </a>
+            </td>
+            <td class="px-4 py-3 text-slate-400">${p.waktu || '-'}</td>
+          </tr>
+        `).join('');
+      }
+      document.getElementById('metricPpdb').textContent = currentPpdb.length;
+    }
+
+    function renderAll() {
+      renderTeachers();
+      renderGallery();
+      renderNews();
+      renderPpdb();
+    }
+
+    // Init on page load
+    checkAuth();
+  })();</script> </body> </html>

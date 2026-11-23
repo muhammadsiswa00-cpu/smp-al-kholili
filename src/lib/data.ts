@@ -214,3 +214,33 @@ export async function getNews(): Promise<NewsItem[]> {
     }
   ]);
 }
+
+export interface PpdbItem {
+  id: string | number;
+  nama: string;
+  asal_sekolah?: string;
+  jalur?: string;
+  no_wa?: string;
+  waktu?: string;
+}
+
+export async function getPpdbList(): Promise<PpdbItem[]> {
+  if (turso) {
+    try {
+      const res = await turso.execute("SELECT id, nama, asal_sekolah, jalur, no_wa, waktu FROM ppdb ORDER BY id DESC");
+      if (res.rows && res.rows.length > 0) {
+        return res.rows.map(r => ({
+          id: String(r.id),
+          nama: String(r.nama),
+          asal_sekolah: r.asal_sekolah ? String(r.asal_sekolah) : '-',
+          jalur: r.jalur ? String(r.jalur) : 'Reguler',
+          no_wa: r.no_wa ? String(r.no_wa) : '-',
+          waktu: r.waktu ? String(r.waktu) : '-'
+        }));
+      }
+    } catch (err) {
+      console.warn('[Turso] Error query ppdb, falling back to JSON:', err);
+    }
+  }
+  return readLocalJson<PpdbItem[]>('ppdb_submissions.json', []);
+}

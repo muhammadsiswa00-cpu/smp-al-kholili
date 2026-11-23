@@ -11,6 +11,45 @@ const ppdbUrl = siteSettings.ppdb_url || '/ppdb';
 const isPpdbExternal = ppdbUrl.startsWith('http');
 ---
 
+<!-- Topbar Info (Seperti Semula) -->
+<div class="bg-gradient-to-r from-brand-950 via-brand-900 to-brand-800 text-slate-200 text-xs py-2 px-3 sm:px-4 border-b border-brand-700/50">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+    
+    <!-- Lokasi & Jam Kerja -->
+    <div class="flex items-center gap-4 flex-wrap justify-center md:justify-start text-center md:text-left text-[11px] sm:text-xs">
+      <span class="inline-flex items-center gap-1.5 text-brand-100">
+        <i class="fa-solid fa-location-dot text-gold-400 flex-shrink-0"></i>
+        <span>{siteSettings.alamat}</span>
+      </span>
+      <span class="hidden lg:inline-flex items-center gap-1.5 text-slate-300">
+        <i class="fa-regular fa-clock text-gold-400"></i>
+        {siteSettings.jam_kerja}
+      </span>
+    </div>
+
+    <!-- Kontak WhatsApp & Medsos -->
+    <div class="flex items-center justify-center gap-2.5 sm:gap-3 flex-shrink-0">
+      <a href={`https://wa.me/${siteSettings.whatsapp_number}?text=Halo%20Admin%20SMP%20Islam%20Al-Kholili,%20saya%20ingin%20bertanya%20informasi%20sekolah`} 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="hover:text-gold-300 transition inline-flex items-center gap-1.5 font-semibold text-brand-100 whitespace-nowrap bg-brand-950/60 hover:bg-brand-900/80 px-2.5 py-1 rounded-full border border-brand-500/30 text-[11px] sm:text-xs">
+        <i class="fa-brands fa-whatsapp text-sm text-green-400 flex-shrink-0"></i>
+        <span class="tracking-wide whitespace-nowrap">{siteSettings.whatsapp_display}</span>
+      </a>
+
+      <span class="text-brand-600">|</span>
+
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <a href="#" class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold-500 hover:text-brand-950 transition" title="Facebook"><i class="fa-brands fa-facebook-f text-[11px]"></i></a>
+        <a href="#" class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold-500 hover:text-brand-950 transition" title="Instagram"><i class="fa-brands fa-instagram text-[11px]"></i></a>
+        <a href="#" class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold-500 hover:text-brand-950 transition" title="YouTube"><i class="fa-brands fa-youtube text-[11px]"></i></a>
+        <a href="/admin" class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-500 text-slate-300 hover:text-white transition ml-0.5" title="Login Dashboard Admin"><i class="fa-solid fa-lock text-[10px]"></i></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- Main Navigation Bar -->
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100 transition-all duration-300" id="mainHeader">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,6 +107,12 @@ const isPpdbExternal = ppdbUrl.startsWith('http');
           Kontak
         </a>
 
+        <!-- Admin Button (Seperti Semula) -->
+        <a href="/admin" class="px-3 py-2 rounded-lg text-sm font-bold text-slate-700 hover:text-brand-700 hover:bg-slate-50 border border-slate-200 hover:border-brand-300 transition flex items-center gap-1.5" title="Login Administrator">
+          <i class="fa-solid fa-lock text-xs text-brand-600"></i>
+          <span>Admin</span>
+        </a>
+
         <!-- PPDB Button CTA -->
         <a href={ppdbUrl} target={isPpdbExternal ? "_blank" : undefined} rel={isPpdbExternal ? "noopener noreferrer" : undefined} class="ml-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-brand-700 via-brand-600 to-emerald-600 hover:from-brand-800 hover:to-emerald-700 shadow-md shadow-brand-700/20 hover:shadow-lg hover:shadow-brand-700/30 transition transform hover:-translate-y-0.5" title="Buka Website PPDB Online">
           <i class="fa-solid fa-graduation-cap"></i>
@@ -82,9 +127,12 @@ const isPpdbExternal = ppdbUrl.startsWith('http');
 
       <!-- Mobile Menu Button -->
       <div class="flex items-center gap-2 lg:hidden">
-        <a href={ppdbUrl} target={isPpdbExternal ? "_blank" : undefined} rel={isPpdbExternal ? "noopener noreferrer" : undefined} class="px-3.5 py-2 rounded-lg text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-sm flex items-center gap-1.5">
-          <i class="fa-solid fa-graduation-cap text-xs"></i>
-          <span>PPDB Online</span>
+        <a href="/admin" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 flex items-center gap-1" title="Dasbor Admin">
+          <i class="fa-solid fa-lock text-[10px] text-brand-700"></i>
+          <span>Admin</span>
+        </a>
+        <a href={ppdbUrl} target={isPpdbExternal ? "_blank" : undefined} rel={isPpdbExternal ? "noopener noreferrer" : undefined} class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-brand-700 hover:bg-brand-800 shadow-sm flex items-center gap-1">
+          <span>PPDB</span>
           {isPpdbExternal && <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>}
         </a>
         <button id="mobileMenuBtn" type="button" class="p-2 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-slate-100 focus:outline-none" aria-label="Toggle Navigation">
@@ -122,10 +170,19 @@ const isPpdbExternal = ppdbUrl.startsWith('http');
     <a href="/kontak" class={`block px-3 py-2.5 rounded-lg text-base font-semibold ${currentPage === 'kontak' ? 'bg-brand-50 text-brand-700' : 'text-slate-700 hover:bg-slate-50'}`}>
       <i class="fa-solid fa-address-book w-6 text-brand-600"></i> Kontak Kami
     </a>
+    <a href="/admin" class="block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-50">
+      <i class="fa-solid fa-lock w-6 text-brand-600"></i> Panel Administrator
+    </a>
     <div class="pt-3">
       <a href={ppdbUrl} target={isPpdbExternal ? "_blank" : undefined} rel={isPpdbExternal ? "noopener noreferrer" : undefined} class="w-full text-center flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-base font-bold text-white bg-gradient-to-r from-brand-700 to-emerald-600 shadow-md">
         <i class="fa-solid fa-graduation-cap"></i> Buka Website PPDB Online
         {isPpdbExternal && <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>}
+      </a>
+    </div>
+    <div class="pt-2 border-t border-slate-100">
+      <a href="/admin" class="w-full text-center flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-300 transition">
+        <i class="fa-solid fa-shield-halved text-brand-700"></i>
+        <span>Login Admin Sekolah</span>
       </a>
     </div>
   </div>

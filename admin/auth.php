@@ -13,7 +13,11 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: login.php");
+    $scriptDir = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/\\');
+    if (!str_ends_with($scriptDir, 'admin')) {
+        $scriptDir .= '/admin';
+    }
+    header("Location: " . $scriptDir . "/login.php");
     exit;
 }
 
