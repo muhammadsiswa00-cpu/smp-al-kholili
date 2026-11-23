@@ -3,6 +3,12 @@ $admin_page = "berita";
 $admin_title = "Kelola Berita Sekolah";
 require_once __DIR__ . '/header.php';
 
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
 $newsFile = __DIR__ . '/../data/news.json';
 $newsList = [];
 if (file_exists($newsFile)) {

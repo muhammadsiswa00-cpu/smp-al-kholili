@@ -3,6 +3,12 @@ $admin_page = "galeri";
 $admin_title = "Upload & Kelola Foto Galeri";
 require_once __DIR__ . '/header.php';
 
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
 $galleryFile = __DIR__ . '/../data/gallery.json';
 $galleries = [];
 if (file_exists($galleryFile)) {
@@ -209,8 +215,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['delete_photo'
                 <div>
                     <!-- Visual Frame -->
                     <div class="aspect-[4/3] bg-gradient-to-br <?= $g['gradient'] ?? 'from-brand-900 to-emerald-950' ?> relative overflow-hidden flex items-center justify-center">
-                        <?php if (!empty($g['foto']) && file_exists(__DIR__ . '/../' . $g['foto'])): ?>
-                            <img src="../<?= htmlspecialchars($g['foto']) ?>" alt="<?= htmlspecialchars($g['judul']) ?>" class="w-full h-full object-cover">
+                        <?php 
+                            $photoVal = (string)($g['foto'] ?? '');
+                            $hasPhoto = !empty($photoVal) && (str_starts_with($photoVal, 'data:') || file_exists(__DIR__ . '/../' . $photoVal));
+                            if ($hasPhoto): 
+                                $galUrl = str_starts_with($photoVal, 'data:') ? $photoVal : '../' . ltrim($photoVal, '/');
+                        ?>
+                            <img src="<?= htmlspecialchars($galUrl) ?>" alt="<?= htmlspecialchars((string)($g['judul'] ?? 'Galeri')) ?>" class="w-full h-full object-cover">
                         <?php else: ?>
                             <i class="fa-solid <?= $g['icon'] ?? 'fa-image' ?> text-4xl text-gold-400/80"></i>
                         <?php endif; ?>

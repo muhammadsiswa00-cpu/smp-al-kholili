@@ -2,6 +2,22 @@
 $admin_page = "pengaturan";
 $admin_title = "Pengaturan Website & Tampilan";
 require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../includes/settings.php';
+
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings) || !is_array($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
+$logoRaw = (string)($siteSettings['logo'] ?? 'assets/img/logo.png');
+$previewLogo = (str_starts_with($logoRaw, 'data:') || str_starts_with($logoRaw, 'http')) ? $logoRaw : '../' . ltrim($logoRaw, '/');
+
+$heroBgRaw = (string)($siteSettings['hero_bg'] ?? 'assets/img/hero-bg.svg');
+$previewHeroBg = (str_starts_with($heroBgRaw, 'data:') || str_starts_with($heroBgRaw, 'http')) ? $heroBgRaw : '../' . ltrim($heroBgRaw, '/');
+
+$kepsekRaw = (string)($siteSettings['kepala_sekolah_foto'] ?? 'assets/img/kepala-sekolah.svg');
+$previewKepsek = (str_starts_with($kepsekRaw, 'data:') || str_starts_with($kepsekRaw, 'http')) ? $kepsekRaw : '../' . ltrim($kepsekRaw, '/');
 
 $success = "";
 $error = "";
@@ -156,11 +172,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_settings
                         </label>
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-16 h-16 p-2 bg-white rounded-2xl shadow border border-slate-200 flex items-center justify-center flex-shrink-0">
-                                <img src="../<?= htmlspecialchars($siteSettings['logo']) ?>" alt="Logo Saat Ini" class="w-full h-full object-contain">
+                                <img src="<?= htmlspecialchars($previewLogo) ?>" alt="Logo Saat Ini" class="w-full h-full object-contain">
                             </div>
                             <div>
                                 <span class="text-xs font-semibold text-slate-700 block">Logo Saat Ini</span>
-                                <span class="text-[10px] text-slate-400 font-mono block break-all"><?= htmlspecialchars($siteSettings['logo']) ?></span>
+                                <span class="text-[10px] text-slate-400 font-mono block break-all">Tersimpan di Database</span>
                             </div>
                         </div>
                     </div>
@@ -179,7 +195,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_settings
                             2. Foto Begrond Hero
                         </label>
                         <div class="rounded-xl overflow-hidden h-16 relative mb-4 border border-slate-300 bg-slate-200">
-                            <div class="w-full h-full" style="background: url('../<?= htmlspecialchars($siteSettings['hero_bg']) ?>') center/cover no-repeat;"></div>
+                            <div class="w-full h-full" style="background: url('<?= htmlspecialchars($previewHeroBg) ?>') center/cover no-repeat;"></div>
                             <div class="absolute bottom-1 right-2 bg-black/70 text-white text-[9px] font-mono px-1.5 py-0.5 rounded">
                                 Begrond
                             </div>
@@ -201,11 +217,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_settings
                         </label>
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-16 h-16 rounded-2xl shadow border border-emerald-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                                <img src="../<?= htmlspecialchars($siteSettings['kepala_sekolah_foto'] ?? 'assets/img/kepala-sekolah.svg') ?>" alt="Foto Kepala Sekolah" class="w-full h-full object-cover">
+                                <img src="<?= htmlspecialchars($previewKepsek) ?>" alt="Foto Kepala Sekolah" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <span class="text-xs font-semibold text-brand-900 block">Foto Kepala Sekolah</span>
-                                <span class="text-[10px] text-slate-500 font-mono block break-all"><?= htmlspecialchars($siteSettings['kepala_sekolah_foto'] ?? 'assets/img/kepala-sekolah.svg') ?></span>
+                                <span class="text-[10px] text-slate-500 font-mono block break-all">Tersimpan di Database</span>
                             </div>
                         </div>
                     </div>

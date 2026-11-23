@@ -1,0 +1,17 @@
+{
+  "intelephense.environment.includePaths": [
+    "includes",
+    "admin",
+    "data"
+  ],
+  "intelephense.diagnostics.undefinedVariables": false,
+  "intelephense.diagnostics.undefinedTypes": false,
+  "intelephense.diagnostics.undefinedFunctions": false,
+  "intelephense.diagnostics.undefinedConstants": false,
+  "intelephense.diagnostics.undefinedClassConstants": false,
+  "intelephense.diagnostics.undefinedMethods": false,
+  "intelephense.diagnostics.undefinedProperties": false,
+  "files.associations": {
+    "*.php": "php"
+  }
+}

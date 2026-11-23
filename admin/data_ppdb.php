@@ -3,6 +3,12 @@ $admin_page = "ppdb";
 $admin_title = "Data Pendaftar PPDB Online";
 require_once __DIR__ . '/header.php';
 
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
 $ppdbFile = __DIR__ . '/../data/ppdb_submissions.json';
 $ppdbList = [];
 if (file_exists($ppdbFile)) {

@@ -124,7 +124,7 @@ $isPpdbExt = !empty($siteSettings['ppdb_url']) && str_starts_with($siteSettings[
 
             <!-- Bottom Copyright & Credit -->
             <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-3">
-                <p>&copy; <?= date('Y') ?> <strong>SMP Islam Al-Kholili Kota Probolinggo</strong>. Hak Cipta Dilindungi Undang-Undang.</p>
+                <p>&copy; <?= date('Y') ?> <strong>SMP Islam Al-Kholili Kota Probolinggo</strong>. By AMIK Taruna Memet</p>
                 <p class="flex items-center gap-1">
                     <span>Mencetak Generasi Unggul & Berakhlakul Karimah</span>
                 </p>

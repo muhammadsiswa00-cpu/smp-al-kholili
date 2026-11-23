@@ -2,6 +2,16 @@
 $admin_page = "dashboard";
 $admin_title = "Ringkasan Dasbor";
 require_once __DIR__ . '/header.php';
+require_once __DIR__ . '/../includes/settings.php';
+
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings) || !is_array($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
+$ppdbUrl = isset($siteSettings['ppdb_url']) ? (string)$siteSettings['ppdb_url'] : '';
+$ppdbHost = (string)(parse_url($ppdbUrl, PHP_URL_HOST) ?: $ppdbUrl);
 
 // Count galleries
 $galleryFile = __DIR__ . '/../data/gallery.json';
@@ -84,8 +94,8 @@ if (file_exists($ppdbFile)) {
             </div>
             <div>
                 <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Web PPDB Anda</span>
-                <strong class="text-base text-slate-800 font-heading block truncate max-w-[150px]" title="<?= htmlspecialchars($siteSettings['ppdb_url']) ?>">
-                    <?= htmlspecialchars(parse_url($siteSettings['ppdb_url'], PHP_URL_HOST) ?: $siteSettings['ppdb_url']) ?>
+                <strong class="text-base text-slate-800 font-heading block truncate max-w-[150px]" title="<?= htmlspecialchars($ppdbUrl) ?>">
+                    <?= htmlspecialchars($ppdbHost) ?>
                 </strong>
                 <a href="pengaturan.php" class="text-xs text-gold-600 hover:underline font-bold mt-1 inline-block">Ubah tautan &rarr;</a>
             </div>

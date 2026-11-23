@@ -18,3 +18,4 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 }
 
 require_once __DIR__ . '/../includes/settings.php';
+$siteSettings = get_all_settings();

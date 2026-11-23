@@ -36,6 +36,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../includes/settings.php';
 
+/** @var array<string, mixed> $siteSettings */
+$siteSettings = get_all_settings();
+$logoRaw = (string)($siteSettings['logo'] ?? 'assets/img/logo.png');
+$logoUrl = str_starts_with($logoRaw, 'data:') ? $logoRaw : '../' . ltrim($logoRaw, '/');
+
 $error = "";
 
 // Proses Login Form
@@ -62,7 +67,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Administrator - SMP Islam Al-Kholili</title>
-    <link rel="icon" type="image/png" href="../<?= htmlspecialchars($siteSettings['logo']) ?>">
+    <link rel="icon" type="image/png" href="<?= htmlspecialchars($logoUrl) ?>">
     <!-- Google Fonts & Tailwind -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -102,7 +107,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         <div class="text-center mb-7">
             <div class="w-20 h-20 mx-auto p-1 bg-gradient-to-tr from-brand-700 to-gold-400 rounded-2xl shadow-lg mb-4 flex items-center justify-center">
-                <img src="../<?= htmlspecialchars($siteSettings['logo']) ?>" alt="Logo SMP Islam Al-Kholili" class="w-full h-full object-contain bg-white rounded-xl p-1">
+                <img src="<?= htmlspecialchars($logoUrl) ?>" alt="Logo SMP Islam Al-Kholili" class="w-full h-full object-contain bg-white rounded-xl p-1">
             </div>
             <h1 class="text-2xl font-heading font-extrabold text-slate-900">Login Administrator</h1>
             <p class="text-xs text-brand-700 font-bold uppercase tracking-wider mt-1">SMP ISLAM AL-KHOLILI KOTA PROBOLINGGO</p>

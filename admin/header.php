@@ -1,5 +1,17 @@
 <?php
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/../includes/settings.php';
+
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings) || !is_array($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
+$rawLogo = (string)($siteSettings['logo'] ?? 'assets/img/logo.png');
+$logoUrl = (str_starts_with($rawLogo, 'data:') || str_starts_with($rawLogo, 'http')) 
+    ? $rawLogo 
+    : '../' . ltrim($rawLogo, '/');
 
 if (!isset($admin_page)) {
     $admin_page = "dashboard";
@@ -11,7 +23,7 @@ if (!isset($admin_page)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($admin_title ?? 'Dasbor Admin') ?> - SMP Islam Al-Kholili</title>
-    <link rel="icon" type="image/png" href="../<?= htmlspecialchars($siteSettings['logo']) ?>">
+    <link rel="icon" type="image/png" href="<?= htmlspecialchars($logoUrl) ?>">
     <!-- Google Fonts & Tailwind -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -51,7 +63,7 @@ if (!isset($admin_page)) {
     <!-- Mobile Top Navigation Bar -->
     <div class="md:hidden bg-brand-950 text-white p-4 flex items-center justify-between border-b border-brand-800">
         <div class="flex items-center gap-2">
-            <img src="../<?= htmlspecialchars($siteSettings['logo']) ?>" alt="Logo" class="w-8 h-8 object-contain bg-white rounded p-0.5">
+            <img src="<?= htmlspecialchars($logoUrl) ?>" alt="Logo" class="w-8 h-8 object-contain bg-white rounded p-0.5">
             <span class="font-heading font-bold text-sm">Admin Al-Kholili</span>
         </div>
         <button id="adminMobileBtn" class="text-white focus:outline-none">
@@ -65,7 +77,7 @@ if (!isset($admin_page)) {
         <!-- Brand Logo & School Name -->
         <div class="flex items-center gap-3 pb-5 border-b border-brand-800/80">
             <div class="w-12 h-12 p-1 bg-white rounded-xl shadow flex items-center justify-center flex-shrink-0">
-                <img src="../<?= htmlspecialchars($siteSettings['logo']) ?>" alt="Logo" class="w-full h-full object-contain">
+                <img src="<?= htmlspecialchars($logoUrl) ?>" alt="Logo" class="w-full h-full object-contain">
             </div>
             <div>
                 <h2 class="text-white font-heading font-extrabold text-sm leading-tight">SMP ISLAM AL-KHOLILI</h2>

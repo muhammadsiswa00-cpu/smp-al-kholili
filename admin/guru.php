@@ -3,6 +3,12 @@ $admin_page = "guru";
 $admin_title = "Kelola Data & Foto Guru";
 require_once __DIR__ . '/header.php';
 
+/** @var array<string, mixed> $siteSettings */
+global $siteSettings;
+if (!isset($siteSettings)) {
+    $siteSettings = get_all_settings();
+}
+
 $teachersFile = __DIR__ . '/../data/teachers.json';
 $teachers = [];
 if (file_exists($teachersFile)) {
@@ -201,15 +207,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['delete_teache
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($teachers as $t): 
-                $fotoG = !empty($t['foto']) ? $t['foto'] : 'assets/img/teachers/male-1.svg';
+                $fotoG = !empty($t['foto']) ? (string)$t['foto'] : 'assets/img/teachers/male-1.svg';
                 if (($t['jabatan'] ?? '') === 'Kepala Sekolah' && !empty($siteSettings['kepala_sekolah_foto'])) {
-                    $fotoG = $siteSettings['kepala_sekolah_foto'];
+                    $fotoG = (string)$siteSettings['kepala_sekolah_foto'];
                 }
-                $namaG = ($t['jabatan'] ?? '') === 'Kepala Sekolah' && !empty($siteSettings['nama_kepala_sekolah']) ? $siteSettings['nama_kepala_sekolah'] : ($t['nama'] ?? 'Guru');
+                $namaG = ($t['jabatan'] ?? '') === 'Kepala Sekolah' && !empty($siteSettings['nama_kepala_sekolah']) ? (string)$siteSettings['nama_kepala_sekolah'] : ($t['nama'] ?? 'Guru');
+                $fotoUrl = str_starts_with($fotoG, 'data:') ? $fotoG : '../' . ltrim($fotoG, '/');
             ?>
             <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5 flex items-center gap-4 hover:shadow-md transition">
                 <div class="w-20 h-20 rounded-2xl overflow-hidden bg-white shadow-md border-2 border-emerald-200 flex-shrink-0 flex items-center justify-center">
-                    <img src="../<?= htmlspecialchars($fotoG) ?>" alt="<?= htmlspecialchars($namaG) ?>" class="w-full h-full object-cover">
+                    <img src="<?= htmlspecialchars($fotoUrl) ?>" alt="<?= htmlspecialchars($namaG) ?>" class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1 min-w-0">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full inline-block mb-1">
