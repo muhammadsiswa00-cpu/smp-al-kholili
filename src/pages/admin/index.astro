@@ -93,7 +93,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
               <i class="fa-solid fa-user text-sm"></i>
             </span>
-            <input type="text" id="adminUsername" required value="smp al-kholili" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm" placeholder="Masukkan username" />
+            <input type="text" id="adminUsername" required autocomplete="username" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm" placeholder="Masukkan username admin" />
           </div>
         </div>
 
@@ -103,7 +103,10 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
               <i class="fa-solid fa-lock text-sm"></i>
             </span>
-            <input type="password" id="adminPassword" required value="al-kholili" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm" placeholder="Masukkan password" />
+            <input type="password" id="adminPassword" required autocomplete="current-password" class="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm" placeholder="Masukkan password admin" />
+            <button type="button" id="togglePasswordBtn" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none" aria-label="Toggle password visibility">
+              <i class="fa-regular fa-eye text-sm" id="togglePasswordIcon"></i>
+            </button>
           </div>
         </div>
 
@@ -688,13 +691,44 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
       }
     }
 
-    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+    // Toggle Password Visibility
+    const togglePassBtn = document.getElementById('togglePasswordBtn');
+    const passInput = document.getElementById('adminPassword');
+    const passIcon = document.getElementById('togglePasswordIcon');
+    togglePassBtn?.addEventListener('click', () => {
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        passIcon.className = 'fa-regular fa-eye-slash text-sm';
+      } else {
+        passInput.type = 'password';
+        passIcon.className = 'fa-regular fa-eye text-sm';
+      }
+    });
+
+    // Helper: SHA-256 Hash
+    async function computeHash(text) {
+      const msgBuffer = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Hash valid credentials (smp al-kholili:al-kholili and admin:admin123)
+    const validHashes = [
+      '9739c2ecd04676a7de21f3b4b945cffb887b0b09df0309112eb2e7b1e21c5001',
+      'bf6b5bdb74c79ece9fc0ad0ac9fb0359f9555d4f35a83b2e6ec69ae99e09603d'
+    ];
+
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = document.getElementById('adminUsername').value.trim();
       const p = document.getElementById('adminPassword').value.trim();
 
-      if ((u === 'smp al-kholili' && p === 'al-kholili') || (u === 'admin' && p === 'admin123')) {
+      const hash = await computeHash(u + ':' + p);
+      if (validHashes.includes(hash)) {
         sessionStorage.setItem('alkholili_admin_auth', 'true');
+        document.getElementById('adminUsername').value = '';
+        document.getElementById('adminPassword').value = '';
         checkAuth();
         showToast("Login Administrator Berhasil!", "success");
       } else {
@@ -706,6 +740,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     window.adminLogout = function() {
       if (confirm('Yakin ingin keluar dari panel admin?')) {
         sessionStorage.removeItem('alkholili_admin_auth');
+        document.getElementById('adminUsername').value = '';
+        document.getElementById('adminPassword').value = '';
         checkAuth();
       }
     };
