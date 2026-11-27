@@ -126,6 +126,24 @@ if (!isset($admin_page)) {
                 <span>Data Masuk PPDB</span>
             </a>
 
+            <!-- Data Siswa Aktif -->
+            <a href="siswa.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'siswa' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
+                <i class="fa-solid fa-users w-5 text-center text-gold-400"></i>
+                <span>Data Siswa</span>
+            </a>
+
+            <!-- Absen Siswa -->
+            <a href="absen_siswa.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'absen_siswa' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
+                <i class="fa-solid fa-clipboard-user w-5 text-center text-gold-400"></i>
+                <span>Absen Siswa</span>
+            </a>
+
+            <!-- Absen Guru -->
+            <a href="absen_guru.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'absen_guru' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
+                <i class="fa-solid fa-user-check w-5 text-center text-gold-400"></i>
+                <span>Absen Guru</span>
+            </a>
+
         </nav>
 
         <!-- Quick External Link & Logout -->

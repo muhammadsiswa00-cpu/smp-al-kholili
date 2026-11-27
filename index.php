@@ -11,8 +11,8 @@ $heroBg = $siteSettings['hero_bg'] ?? 'assets/img/hero-bg.svg';
 $heroTitle = $siteSettings['hero_title'] ?? 'Selamat Datang di SMP Islam Al-Kholili';
 $heroSubtitle = $siteSettings['hero_subtitle'] ?? 'Mewujudkan generasi Muslim yang kokoh dalam akidah, unggul dalam prestasi akademik, santun dalam budi pekerti, serta terampil dalam penguasaan teknologi.';
 $logoImg = $siteSettings['logo'] ?? 'assets/img/logo.png';
-$ppdbLink = !empty($siteSettings['ppdb_url']) ? $siteSettings['ppdb_url'] : 'ppdb.php';
-$isPpdbExt = !empty($siteSettings['ppdb_url']) && str_starts_with($siteSettings['ppdb_url'], 'http');
+$ppdbLink = (!empty($siteSettings['ppdb_url']) && !str_contains($siteSettings['ppdb_url'], 'ppdb.smpislam-alkholili.sch.id')) ? $siteSettings['ppdb_url'] : 'ppdb.php';
+$isPpdbExt = !empty($siteSettings['ppdb_url']) && str_starts_with($siteSettings['ppdb_url'], 'http') && !str_contains($siteSettings['ppdb_url'], 'ppdb.smpislam-alkholili.sch.id');
 ?>
 
 <!-- ================= HERO SECTION WITH PHOTO BACKGROUND ================= -->

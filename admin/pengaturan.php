@@ -336,7 +336,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_settings
                         <?php endif; ?>
                     </div>
                     <p class="text-[11px] text-slate-500 mt-1">
-                        Contoh: <code>https://ppdb.smpislam-alkholili.sch.id</code> atau link Google Form pendaftaran Anda.
+                        Gunakan <code>ppdb.php</code> untuk formulir bawaan website, atau masukkan link eksternal (seperti Google Form).
                     </p>
                 </div>
             </div>

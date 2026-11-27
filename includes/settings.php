@@ -10,7 +10,7 @@ function get_all_settings() {
         "hero_subtitle" => "Mewujudkan generasi Muslim yang kokoh dalam akidah, unggul dalam prestasi akademik, santun dalam budi pekerti, serta terampil dalam penguasaan teknologi.",
         "hero_bg" => "assets/img/hero-bg.svg",
         "logo" => "assets/img/logo.png",
-        "ppdb_url" => "https://ppdb.smpislam-alkholili.sch.id",
+        "ppdb_url" => "ppdb.php",
         "ppdb_open" => true,
         "whatsapp_number" => "6285234567890",
         "whatsapp_display" => "+62 852-3456-7890",

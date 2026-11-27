@@ -40,8 +40,8 @@ if (!isset($current_page)) {
 
 $logoUrl = $siteSettings['logo'] ?? 'assets/img/logo.png';
 $ogImageUrl = (str_starts_with($logoUrl, 'http')) ? $logoUrl : ($siteBaseUrl . '/' . ltrim($logoUrl, '/'));
-$ppdbUrl = !empty($siteSettings['ppdb_url']) ? $siteSettings['ppdb_url'] : 'ppdb.php';
-$isPpdbExternal = !empty($siteSettings['ppdb_url']) && str_starts_with($siteSettings['ppdb_url'], 'http');
+$ppdbUrl = (!empty($siteSettings['ppdb_url']) && !str_contains($siteSettings['ppdb_url'], 'ppdb.smpislam-alkholili.sch.id')) ? $siteSettings['ppdb_url'] : 'ppdb.php';
+$isPpdbExternal = !empty($siteSettings['ppdb_url']) && str_starts_with($siteSettings['ppdb_url'], 'http') && !str_contains($siteSettings['ppdb_url'], 'ppdb.smpislam-alkholili.sch.id');
 ?>
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">

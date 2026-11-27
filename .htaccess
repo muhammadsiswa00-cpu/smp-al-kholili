@@ -107,4 +107,5 @@ AddDefaultCharset UTF-8
     # Ensure /admin or /login routes to admin login
     RewriteRule ^admin/?$ admin/login.php [L,QSA]
     RewriteRule ^login/?$ admin/login.php [L,QSA]
+    RewriteRule ^ppdb/?$ ppdb.php [L,QSA]
 </IfModule>

@@ -40,6 +40,22 @@ if (file_exists($ppdbFile)) {
         $recentPpdb = array_slice(array_reverse($ppdbData), 0, 5);
     }
 }
+
+// Count Students
+$studentsFile = __DIR__ . '/../data/students.json';
+$studentsCount = 0;
+if (file_exists($studentsFile)) {
+    $stData = json_decode(file_get_contents($studentsFile), true);
+    $studentsCount = is_array($stData) ? count($stData) : 0;
+}
+
+// Count Teachers
+$teachersFile = __DIR__ . '/../data/teachers.json';
+$teachersCount = 0;
+if (file_exists($teachersFile)) {
+    $tchData = json_decode(file_get_contents($teachersFile), true);
+    $teachersCount = is_array($tchData) ? count($tchData) : 0;
+}
 ?>
 
 <div class="space-y-8">
@@ -75,53 +91,51 @@ if (file_exists($ppdbFile)) {
     <!-- Metric Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
-        <!-- Logo & Begrond Status -->
+        <!-- Pendaftar PPDB Online -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
             <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-brand-700 flex items-center justify-center text-2xl flex-shrink-0">
-                <i class="fa-solid fa-image"></i>
+                <i class="fa-solid fa-user-graduate"></i>
             </div>
             <div>
-                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Logo & Begrond</span>
-                <strong class="text-base text-slate-800 font-heading block truncate max-w-[150px]">Kustom Aktif</strong>
-                <a href="pengaturan.php" class="text-xs text-brand-700 hover:underline font-bold mt-1 inline-block">Ganti di sini &rarr;</a>
+                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Pendaftar PPDB</span>
+                <strong class="text-2xl text-slate-800 font-extrabold font-heading block"><?= $ppdbCount ?> Siswa</strong>
+                <a href="data_ppdb.php" class="text-xs text-brand-700 hover:underline font-bold mt-1 inline-block">Buka data PPDB &rarr;</a>
             </div>
         </div>
 
-        <!-- PPDB Web Link Status -->
-        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-gold-600 flex items-center justify-center text-2xl flex-shrink-0">
-                <i class="fa-solid fa-graduation-cap"></i>
-            </div>
-            <div>
-                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Web PPDB Anda</span>
-                <strong class="text-base text-slate-800 font-heading block truncate max-w-[150px]" title="<?= htmlspecialchars($ppdbUrl) ?>">
-                    <?= htmlspecialchars($ppdbHost) ?>
-                </strong>
-                <a href="pengaturan.php" class="text-xs text-gold-600 hover:underline font-bold mt-1 inline-block">Ubah tautan &rarr;</a>
-            </div>
-        </div>
-
-        <!-- Gallery Photos Count -->
+        <!-- Total Siswa Aktif -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
             <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
-                <i class="fa-solid fa-images"></i>
+                <i class="fa-solid fa-users"></i>
             </div>
             <div>
-                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Foto Galeri</span>
-                <strong class="text-2xl text-slate-800 font-extrabold font-heading block"><?= $galleryCount ?></strong>
-                <a href="galeri.php" class="text-xs text-blue-600 hover:underline font-bold mt-1 inline-block">Kelola foto &rarr;</a>
+                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Data Siswa Aktif</span>
+                <strong class="text-2xl text-slate-800 font-extrabold font-heading block"><?= $studentsCount ?> Siswa</strong>
+                <a href="siswa.php" class="text-xs text-blue-600 hover:underline font-bold mt-1 inline-block">Kelola siswa &rarr;</a>
             </div>
         </div>
 
-        <!-- News Articles Count -->
+        <!-- Presensi Siswa -->
         <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl flex-shrink-0">
-                <i class="fa-solid fa-newspaper"></i>
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-gold-600 flex items-center justify-center text-2xl flex-shrink-0">
+                <i class="fa-solid fa-clipboard-user"></i>
             </div>
             <div>
-                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Kabar Berita</span>
-                <strong class="text-2xl text-slate-800 font-extrabold font-heading block"><?= $newsCount ?></strong>
-                <a href="berita.php" class="text-xs text-purple-600 hover:underline font-bold mt-1 inline-block">Kelola berita &rarr;</a>
+                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Presensi Siswa</span>
+                <strong class="text-base text-slate-800 font-heading block">Input Harian</strong>
+                <a href="absen_siswa.php" class="text-xs text-gold-600 hover:underline font-bold mt-1 inline-block">Rekap absensi &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Presensi Guru -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl flex-shrink-0">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block">Presensi Guru (<?= $teachersCount ?>)</span>
+                <strong class="text-base text-slate-800 font-heading block">Absen Guru</strong>
+                <a href="absen_guru.php" class="text-xs text-purple-600 hover:underline font-bold mt-1 inline-block">Presensi guru &rarr;</a>
             </div>
         </div>
 
