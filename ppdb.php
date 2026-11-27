@@ -11,31 +11,75 @@ $registration_id = "";
 $submitted_data = null;
 
 if (($_SERVER["REQUEST_METHOD"] ?? '') === "POST" && isset($_POST['submit_ppdb'])) {
-    $nama = trim($_POST['nama_siswa'] ?? '');
+    $nama = trim($_POST['nama_lengkap'] ?? $_POST['nama_siswa'] ?? '');
     $nisn = trim($_POST['nisn'] ?? '');
     $jk = trim($_POST['jenis_kelamin'] ?? '');
     $tempat_lahir = trim($_POST['tempat_lahir'] ?? '');
     $tanggal_lahir = trim($_POST['tanggal_lahir'] ?? '');
+    $alamat_lengkap = trim($_POST['alamat_lengkap'] ?? $_POST['alamat'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $asal_sekolah = trim($_POST['asal_sekolah'] ?? '');
-    $nama_ortu = trim($_POST['nama_ortu'] ?? '');
-    $no_wa = trim($_POST['no_wa'] ?? '');
+    $alamat_sekolah_asal = trim($_POST['alamat_sekolah_asal'] ?? '');
     $jalur = trim($_POST['jalur'] ?? 'Reguler');
-    $alamat = trim($_POST['alamat'] ?? '');
+    $no_wa = trim($_POST['no_wa'] ?? '');
+
+    // Ortu
+    $nama_ayah = trim($_POST['nama_ayah'] ?? '');
+    $tempat_lahir_ayah = trim($_POST['tempat_lahir_ayah'] ?? '');
+    $tanggal_lahir_ayah = trim($_POST['tanggal_lahir_ayah'] ?? '');
+    $pekerjaan_ayah = trim($_POST['pekerjaan_ayah'] ?? '');
+    $pendidikan_ayah = trim($_POST['pendidikan_ayah'] ?? '');
+    $telepon_ayah = trim($_POST['telepon_ayah'] ?? '');
+
+    $nama_ibu = trim($_POST['nama_ibu'] ?? '');
+    $tempat_lahir_ibu = trim($_POST['tempat_lahir_ibu'] ?? '');
+    $tanggal_lahir_ibu = trim($_POST['tanggal_lahir_ibu'] ?? '');
+    $pekerjaan_ibu = trim($_POST['pekerjaan_ibu'] ?? '');
+    $pendidikan_ibu = trim($_POST['pendidikan_ibu'] ?? '');
+    $telepon_ibu = trim($_POST['telepon_ibu'] ?? '');
+
+    $berkas_akta = trim($_POST['berkas_akta'] ?? '');
+    $berkas_ktp = trim($_POST['berkas_ktp'] ?? '');
+    $berkas_foto = trim($_POST['berkas_foto'] ?? '');
+    $berkas_rapor = trim($_POST['berkas_rapor'] ?? '');
+    $berkas_skl = trim($_POST['berkas_skl'] ?? '');
 
     if (!empty($nama) && !empty($no_wa)) {
         $registration_id = "AK-" . date('y') . "-" . rand(1000, 9999);
         $submission = [
             "id" => $registration_id,
+            "no_pendaftaran" => $registration_id,
             "waktu" => date('Y-m-d H:i:s'),
             "nama" => $nama,
+            "nama_lengkap" => $nama,
             "nisn" => $nisn,
             "jenis_kelamin" => $jk,
-            "ttl" => "$tempat_lahir, $tanggal_lahir",
+            "tempat_lahir" => $tempat_lahir,
+            "tanggal_lahir" => $tanggal_lahir,
+            "alamat_lengkap" => $alamat_lengkap,
+            "email" => $email,
             "asal_sekolah" => $asal_sekolah,
-            "nama_ortu" => $nama_ortu,
-            "no_wa" => $no_wa,
+            "alamat_sekolah_asal" => $alamat_sekolah_asal,
             "jalur" => $jalur,
-            "alamat" => $alamat
+            "no_wa" => $no_wa,
+            "nama_ayah" => $nama_ayah,
+            "tempat_lahir_ayah" => $tempat_lahir_ayah,
+            "tanggal_lahir_ayah" => $tanggal_lahir_ayah,
+            "pekerjaan_ayah" => $pekerjaan_ayah,
+            "pendidikan_ayah" => $pendidikan_ayah,
+            "telepon_ayah" => $telepon_ayah,
+            "nama_ibu" => $nama_ibu,
+            "tempat_lahir_ibu" => $tempat_lahir_ibu,
+            "tanggal_lahir_ibu" => $tanggal_lahir_ibu,
+            "pekerjaan_ibu" => $pekerjaan_ibu,
+            "pendidikan_ibu" => $pendidikan_ibu,
+            "telepon_ibu" => $telepon_ibu,
+            "berkas_akta" => $berkas_akta,
+            "berkas_ktp" => $berkas_ktp,
+            "berkas_foto" => $berkas_foto,
+            "berkas_rapor" => $berkas_rapor,
+            "berkas_skl" => $berkas_skl,
+            "status" => "Menunggu"
         ];
 
         $dataFile = __DIR__ . '/data/ppdb_submissions.json';
@@ -44,7 +88,7 @@ if (($_SERVER["REQUEST_METHOD"] ?? '') === "POST" && isset($_POST['submit_ppdb']
             $jsonContent = file_get_contents($dataFile);
             $currentList = json_decode($jsonContent, true) ?: [];
         }
-        $currentList[] = $submission;
+        array_unshift($currentList, $submission);
         @file_put_contents($dataFile, json_encode($currentList, JSON_PRETTY_PRINT));
 
         $submitted_data = $submission;

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "ATT-G-20261127",
+    "tanggal": "2026-11-27",
+    "total_guru": 5,
+    "hadir": 5,
+    "sakit": 0,
+    "izin": 0,
+    "dinas_luar": 0,
+    "records": [
+      { "guru_id": 1, "nama": "Muhammad Taufiqur Rohman, S.Pd,", "status": "Hadir", "jam_masuk": "06:40", "jam_pulang": "14:15", "keterangan": "Hadir & memimpin briefing pagi" },
+      { "guru_id": 2, "nama": "Ust. M. Khusnul Yakin, S.Pd.I.", "status": "Hadir", "jam_masuk": "06:45", "jam_pulang": "14:05", "keterangan": "Mengampu sholat dhuha berjamaah" },
+      { "guru_id": 3, "nama": "Siti Rohmah, S.Pd.", "status": "Hadir", "jam_masuk": "06:42", "jam_pulang": "14:00", "keterangan": "KBM Matematika" },
+      { "guru_id": 4, "nama": "Ust. Ahmad Thohir, S.Q.", "status": "Hadir", "jam_masuk": "06:30", "jam_pulang": "14:10", "keterangan": "Halaqah Tahfidz Pagi" },
+      { "guru_id": 5, "nama": "Nurul Hidayati, S.Pd.", "status": "Hadir", "jam_masuk": "06:50", "jam_pulang": "14:00", "keterangan": "KBM Bhs. Indonesia" }
+    ],
+    "created_at": "2026-11-27 07:00:00"
+  }
+]
