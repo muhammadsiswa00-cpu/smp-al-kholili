@@ -1873,8 +1873,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         // Tampilkan Tampilan Presensi Mandiri Guru, sembunyikan rekapan admin
         const selfView = document.getElementById('viewAbsenGuruSelf');
         const adminView = document.getElementById('viewAbsenGuruAdmin');
-        if (selfView) selfView.classList.remove('hidden');
-        if (adminView) adminView.classList.add('hidden');
+        if (selfView) { selfView.classList.remove('hidden'); selfView.style.display = 'block'; }
+        if (adminView) { adminView.classList.add('hidden'); adminView.style.display = 'none'; }
         initGuruSelfAttendance();
 
         // Redirect to tab-siswa if on admin-only tab
@@ -1899,8 +1899,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         // Tampilkan Tampilan Rekapan Admin, sembunyikan mode mandiri guru
         const selfView = document.getElementById('viewAbsenGuruSelf');
         const adminView = document.getElementById('viewAbsenGuruAdmin');
-        if (selfView) selfView.classList.add('hidden');
-        if (adminView) adminView.classList.remove('hidden');
+        if (selfView) { selfView.classList.add('hidden'); selfView.style.display = 'none'; }
+        if (adminView) { adminView.classList.remove('hidden'); adminView.style.display = 'block'; }
         loadTeacherAttendanceForDate();
 
         const currentActiveBtn = document.querySelector('.tab-btn.active');
@@ -2096,9 +2096,15 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
       if (tabId === 'tab-absen-siswa') initStudentAttendanceTab();
       if (tabId === 'tab-absen-guru') {
         const role = sessionStorage.getItem('alkholili_user_role') || 'admin';
+        const selfView = document.getElementById('viewAbsenGuruSelf');
+        const adminView = document.getElementById('viewAbsenGuruAdmin');
         if (role === 'guru') {
+          if (selfView) { selfView.classList.remove('hidden'); selfView.style.display = 'block'; }
+          if (adminView) { adminView.classList.add('hidden'); adminView.style.display = 'none'; }
           initGuruSelfAttendance();
         } else {
+          if (selfView) { selfView.classList.add('hidden'); selfView.style.display = 'none'; }
+          if (adminView) { adminView.classList.remove('hidden'); adminView.style.display = 'block'; }
           initTeacherAttendanceTab();
         }
       }
