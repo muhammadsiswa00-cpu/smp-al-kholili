@@ -332,10 +332,6 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
           </a>
         </div>
       </header>
-            <span>Form PPDB Publik</span>
-          </a>
-        </div>
-      </header>
 
       <!-- Dynamic Tab Bodies -->
       <div class="p-6 md:p-8 flex-1 overflow-y-auto space-y-6">
@@ -1442,6 +1438,9 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         adminOnlyElements.forEach(el => {
           el.style.display = '';
         });
+        const currentActiveBtn = document.querySelector('.tab-btn.active');
+        const activeTabId = currentActiveBtn?.getAttribute('data-tab') || 'tab-dashboard';
+        switchTab(activeTabId);
       }
     }
 
@@ -1569,7 +1568,10 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
 
     // 4. TAB NAVIGATION
     window.switchTab = function(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.add('hidden');
+        el.style.display = 'none';
+      });
       document.querySelectorAll('.tab-btn').forEach(el => {
         el.classList.remove('active', 'bg-brand-900', 'text-white');
         el.classList.add('text-slate-300');
@@ -1578,6 +1580,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
       const activeSection = document.getElementById(tabId);
       if (activeSection) {
         activeSection.classList.remove('hidden');
+        activeSection.style.display = 'block';
       }
       const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
       if (activeBtn) {
