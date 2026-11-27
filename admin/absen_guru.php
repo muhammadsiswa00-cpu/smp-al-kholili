@@ -16,91 +16,242 @@ if (file_exists($attendanceFile)) {
     $attendanceList = json_decode(file_get_contents($attendanceFile), true) ?: [];
 }
 
+$userRole = $_SESSION['admin_role'] ?? 'admin';
+$loggedUser = $_SESSION['admin_username'] ?? '';
+$loggedTeacherName = $_SESSION['teacher_nama'] ?? '';
+
+// Cari guru aktif berdasarkan sesi login
+$activeGuru = null;
+if (!empty($loggedTeacherName)) {
+    foreach ($teachers as $t) {
+        if (strcasecmp($t['nama'] ?? '', $loggedTeacherName) === 0) {
+            $activeGuru = $t;
+            break;
+        }
+    }
+}
+if (!$activeGuru && !empty($loggedUser)) {
+    foreach ($teachers as $t) {
+        if (($t['nip'] ?? '') === $loggedUser || strcasecmp($t['nama'] ?? '', $loggedUser) === 0) {
+            $activeGuru = $t;
+            break;
+        }
+    }
+}
+if (!$activeGuru && !empty($teachers)) {
+    $activeGuru = $teachers[0];
+}
+
 $alert = "";
+$alertType = "success";
 $selectedDate = $_GET['tanggal'] ?? date('Y-m-d');
 
-// Handle Save Attendance
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_guru_attendance'])) {
-    $postDate = $_POST['tanggal'] ?? date('Y-m-d');
-    $statusMap = $_POST['status'] ?? [];
-    $masukMap = $_POST['jam_masuk'] ?? [];
-    $pulangMap = $_POST['jam_pulang'] ?? [];
-    $ketMap = $_POST['keterangan'] ?? [];
+// 1. Handle Self-Attendance Submission (Guru Masuk / Pulang)
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['submit_self_attendance'])) {
+    $guruId = trim($_POST['guru_id'] ?? '');
+    $type = trim($_POST['presensi_type'] ?? 'Masuk');
+    $fotoSelfie = trim($_POST['foto_selfie'] ?? '');
+    $jarakMeter = intval($_POST['jarak_meter'] ?? 0);
+    $lat = trim($_POST['lat'] ?? '');
+    $lng = trim($_POST['lng'] ?? '');
+    $isDemo = isset($_POST['is_demo']) && $_POST['is_demo'] === '1';
 
-    $records = [];
-    $hadirCount = 0;
-    $terlambatCount = 0;
-    $sakitCount = 0;
-    $izinCount = 0;
-    $dinasCount = 0;
+    // Validasi radius sekolah (200m)
+    if ($jarakMeter > 200 && !$isDemo) {
+        $alert = "Gagal: Anda terdeteksi berada di luar radius sekolah ({$jarakMeter} meter)! Batas maksimal adalah 200 meter.";
+        $alertType = "danger";
+    } else {
+        $curDate = date('Y-m-d');
+        $curTime = date('H:i');
+        $attId = "ATT-G-" . str_replace('-', '', $curDate);
 
-    foreach ($statusMap as $gid => $st) {
-        $stVal = in_array($st, ['Hadir', 'Terlambat', 'Sakit', 'Izin', 'Dinas Luar']) ? $st : 'Hadir';
-        if ($stVal === 'Hadir') $hadirCount++;
-        elseif ($stVal === 'Terlambat') $terlambatCount++;
-        elseif ($stVal === 'Sakit') $sakitCount++;
-        elseif ($stVal === 'Izin') $izinCount++;
-        elseif ($stVal === 'Dinas Luar') $dinasCount++;
+        // Cari sesi hari ini
+        $foundSession = false;
+        foreach ($attendanceList as &$session) {
+            if (($session['id'] ?? '') === $attId || ($session['tanggal'] ?? '') === $curDate) {
+                $foundSession = true;
+                $records = &$session['records'];
+                $foundRec = false;
 
-        // Find teacher name
-        $gName = "Guru #" . $gid;
-        foreach ($teachers as $t) {
-            if (($t['id'] ?? '') === $gid) {
-                $gName = $t['nama'] ?? $gName;
+                foreach ($records as &$rec) {
+                    if (strval($rec['guru_id'] ?? '') === strval($guruId)) {
+                        $foundRec = true;
+                        if ($type === 'Masuk') {
+                            $rec['jam_masuk'] = $curTime;
+                            $rec['status'] = (date('H') > 7 || (date('H') == 7 && date('i') > 0)) ? 'Terlambat' : 'Hadir';
+                            if (!empty($fotoSelfie)) $rec['foto_selfie'] = $fotoSelfie;
+                            $rec['lat'] = $lat;
+                            $rec['lng'] = $lng;
+                            $rec['jarak_meter'] = $jarakMeter;
+                            $rec['metode'] = 'Wajah & GPS (Mandiri)';
+                        } elseif ($type === 'Pulang') {
+                            $rec['jam_pulang'] = $curTime;
+                            if (!empty($fotoSelfie)) $rec['foto_selfie'] = $fotoSelfie;
+                        }
+                        break;
+                    }
+                }
+
+                if (!$foundRec) {
+                    $gName = "Guru";
+                    foreach ($teachers as $t) {
+                        if (strval($t['id'] ?? '') === strval($guruId)) {
+                            $gName = $t['nama'] ?? 'Guru';
+                            break;
+                        }
+                    }
+                    $statusInit = ($type === 'Masuk' && (date('H') > 7 || (date('H') == 7 && date('i') > 0))) ? 'Terlambat' : 'Hadir';
+                    $records[] = [
+                        'guru_id' => $guruId,
+                        'nama' => $gName,
+                        'status' => $statusInit,
+                        'jam_masuk' => $type === 'Masuk' ? $curTime : '06:45',
+                        'jam_pulang' => $type === 'Pulang' ? $curTime : '',
+                        'keterangan' => $type === 'Masuk' ? 'Presensi mandiri wajah & GPS' : '',
+                        'foto_selfie' => $fotoSelfie,
+                        'lat' => $lat,
+                        'lng' => $lng,
+                        'jarak_meter' => $jarakMeter,
+                        'metode' => 'Wajah & GPS (Mandiri)'
+                    ];
+                }
                 break;
             }
         }
 
-        $records[] = [
-            'guru_id' => $gid,
-            'nama' => $gName,
-            'status' => $stVal,
-            'jam_masuk' => trim($masukMap[$gid] ?? '06:45'),
-            'jam_pulang' => trim($pulangMap[$gid] ?? '14:00'),
-            'keterangan' => trim($ketMap[$gid] ?? '')
-        ];
+        if (!$foundSession) {
+            $gName = "Guru";
+            foreach ($teachers as $t) {
+                if (strval($t['id'] ?? '') === strval($guruId)) {
+                    $gName = $t['nama'] ?? 'Guru';
+                    break;
+                }
+            }
+            $statusInit = ($type === 'Masuk' && (date('H') > 7 || (date('H') == 7 && date('i') > 0))) ? 'Terlambat' : 'Hadir';
+            $attendanceList[] = [
+                'id' => $attId,
+                'tanggal' => $curDate,
+                'total_guru' => count($teachers),
+                'hadir' => 1,
+                'terlambat' => $statusInit === 'Terlambat' ? 1 : 0,
+                'sakit' => 0,
+                'izin' => 0,
+                'dinas_luar' => 0,
+                'records' => [
+                    [
+                        'guru_id' => $guruId,
+                        'nama' => $gName,
+                        'status' => $statusInit,
+                        'jam_masuk' => $type === 'Masuk' ? $curTime : '06:45',
+                        'jam_pulang' => $type === 'Pulang' ? $curTime : '',
+                        'keterangan' => 'Presensi mandiri wajah & GPS',
+                        'foto_selfie' => $fotoSelfie,
+                        'lat' => $lat,
+                        'lng' => $lng,
+                        'jarak_meter' => $jarakMeter,
+                        'metode' => 'Wajah & GPS (Mandiri)'
+                    ]
+                ],
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+        }
+
+        file_put_contents($attendanceFile, json_encode($attendanceList, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $alert = "Presensi {$type} berhasil dikonfirmasi pada pukul {$curTime} WIB!";
+        $alertType = "success";
     }
+}
 
-    $sessionId = "ATT-G-" . str_replace('-', '', $postDate);
+// 2. Handle Manual Attendance (Admin / Guru Izin/Sakit)
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_manual_attendance'])) {
+    $guruId = trim($_POST['guru_id'] ?? '');
+    $status = trim($_POST['status'] ?? 'Hadir');
+    $masuk = trim($_POST['jam_masuk'] ?? '06:45');
+    $pulang = trim($_POST['jam_pulang'] ?? '14:00');
+    $keterangan = trim($_POST['keterangan'] ?? '');
+    $postDate = trim($_POST['tanggal'] ?? date('Y-m-d'));
 
-    // Replace if exists
-    $found = false;
-    foreach ($attendanceList as &$att) {
-        if (($att['id'] ?? '') === $sessionId || ($att['tanggal'] ?? '') === $postDate) {
-            $att['total_guru'] = count($records);
-            $att['hadir'] = $hadirCount;
-            $att['terlambat'] = $terlambatCount;
-            $att['sakit'] = $sakitCount;
-            $att['izin'] = $izinCount;
-            $att['dinas_luar'] = $dinasCount;
-            $att['records'] = $records;
-            $att['updated_at'] = date('Y-m-d H:i:s');
-            $found = true;
+    $attId = "ATT-G-" . str_replace('-', '', $postDate);
+    $foundSession = false;
+
+    foreach ($attendanceList as &$session) {
+        if (($session['id'] ?? '') === $attId || ($session['tanggal'] ?? '') === $postDate) {
+            $foundSession = true;
+            $records = &$session['records'];
+            $foundRec = false;
+
+            foreach ($records as &$rec) {
+                if (strval($rec['guru_id'] ?? '') === strval($guruId)) {
+                    $foundRec = true;
+                    $rec['status'] = $status;
+                    $rec['jam_masuk'] = $masuk;
+                    $rec['jam_pulang'] = $pulang;
+                    $rec['keterangan'] = $keterangan;
+                    $rec['metode'] = 'Manual';
+                    break;
+                }
+            }
+
+            if (!$foundRec) {
+                $gName = "Guru";
+                foreach ($teachers as $t) {
+                    if (strval($t['id'] ?? '') === strval($guruId)) {
+                        $gName = $t['nama'] ?? 'Guru';
+                        break;
+                    }
+                }
+                $records[] = [
+                    'guru_id' => $guruId,
+                    'nama' => $gName,
+                    'status' => $status,
+                    'jam_masuk' => $masuk,
+                    'jam_pulang' => $pulang,
+                    'keterangan' => $keterangan,
+                    'metode' => 'Manual'
+                ];
+            }
             break;
         }
     }
 
-    if (!$found) {
+    if (!$foundSession) {
+        $gName = "Guru";
+        foreach ($teachers as $t) {
+            if (strval($t['id'] ?? '') === strval($guruId)) {
+                $gName = $t['nama'] ?? 'Guru';
+                break;
+            }
+        }
         $attendanceList[] = [
-            'id' => $sessionId,
+            'id' => $attId,
             'tanggal' => $postDate,
-            'total_guru' => count($records),
-            'hadir' => $hadirCount,
-            'terlambat' => $terlambatCount,
-            'sakit' => $sakitCount,
-            'izin' => $izinCount,
-            'dinas_luar' => $dinasCount,
-            'records' => $records,
+            'total_guru' => count($teachers),
+            'hadir' => ($status === 'Hadir' || $status === 'Terlambat') ? 1 : 0,
+            'terlambat' => $status === 'Terlambat' ? 1 : 0,
+            'sakit' => $status === 'Sakit' ? 1 : 0,
+            'izin' => $status === 'Izin' ? 1 : 0,
+            'dinas_luar' => $status === 'Dinas Luar' ? 1 : 0,
+            'records' => [
+                [
+                    'guru_id' => $guruId,
+                    'nama' => $gName,
+                    'status' => $status,
+                    'jam_masuk' => $masuk,
+                    'jam_pulang' => $pulang,
+                    'keterangan' => $keterangan,
+                    'metode' => 'Manual'
+                ]
+            ],
             'created_at' => date('Y-m-d H:i:s')
         ];
     }
 
     file_put_contents($attendanceFile, json_encode($attendanceList, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-    $alert = "Data absensi guru tanggal " . htmlspecialchars($postDate) . " berhasil disimpan!";
-    $selectedDate = $postDate;
+    $alert = "Presensi manual berhasil disimpan!";
+    $alertType = "success";
 }
 
-// Find existing record for this date
+// Cari sesi tanggal terpilih
 $existingSession = null;
 foreach ($attendanceList as $att) {
     if (($att['tanggal'] ?? '') === $selectedDate) {
@@ -111,7 +262,7 @@ foreach ($attendanceList as $att) {
 $existingRecordsMap = [];
 if ($existingSession && !empty($existingSession['records'])) {
     foreach ($existingSession['records'] as $r) {
-        $existingRecordsMap[$r['guru_id']] = $r;
+        $existingRecordsMap[strval($r['guru_id'] ?? '')] = $r;
     }
 }
 ?>
@@ -119,21 +270,130 @@ if ($existingSession && !empty($existingSession['records'])) {
 <div class="space-y-6 max-w-7xl mx-auto">
 
     <?php if (!empty($alert)): ?>
-    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between">
+    <div class="p-4 rounded-2xl <?= $alertType === 'danger' ? 'bg-rose-50 border border-rose-300 text-rose-800' : 'bg-emerald-50 border border-emerald-300 text-emerald-800' ?> flex items-center justify-between">
         <div class="flex items-center gap-2">
-            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+            <i class="fa-solid <?= $alertType === 'danger' ? 'fa-triangle-exclamation text-rose-600' : 'fa-circle-check text-emerald-600' ?>"></i>
             <span class="text-sm font-semibold"><?= htmlspecialchars($alert) ?></span>
         </div>
         <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-700">&times;</button>
     </div>
     <?php endif; ?>
 
-    <!-- Header Filter Controls -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-6">
+    <?php if ($userRole === 'guru'): ?>
+    <!-- ======================================================== -->
+    <!-- TAMPILAN KHUSUS PORTAL GURU: PRESENSI MANDIRI           -->
+    <!-- ======================================================== -->
+    <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 p-1 backdrop-blur-md border border-white/20 shadow-inner flex-shrink-0">
+                    <img src="../<?= htmlspecialchars($activeGuru['foto'] ?? 'assets/img/teachers/male-1.svg') ?>" class="w-full h-full object-cover rounded-xl" alt="Foto Profil Guru">
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        Portal Presensi Mandiri
+                    </span>
+                    <h2 class="text-xl sm:text-2xl font-heading font-extrabold text-white"><?= htmlspecialchars($activeGuru['nama'] ?? 'Dewan Guru') ?></h2>
+                    <p class="text-xs text-slate-300 font-medium mt-0.5">NIP: <?= htmlspecialchars($activeGuru['nip'] ?? '-') ?> • <?= htmlspecialchars($activeGuru['jabatan'] ?? 'Guru') ?></p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:items-end gap-2 bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/15">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-200 flex items-center gap-1.5">
+                    <i class="fa-regular fa-clock"></i> Waktu Indonesia Barat (WIB)
+                </span>
+                <div id="phpLiveClock" class="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white font-mono">
+                    <?= date('H:i:s') ?>
+                </div>
+                <div class="text-xs text-slate-300 font-semibold">
+                    <?= date('l, d F Y') ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Presensi Wajah & GPS -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Geolocation Check -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b pb-3">
+                <i class="fa-solid fa-location-dot text-brand-700"></i> Verifikasi Lokasi GPS
+            </h3>
+
+            <div id="phpGpsCard" class="p-4 rounded-2xl border bg-slate-50 border-slate-200 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span id="phpGpsDot" class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
+                    <strong id="phpGpsTitle" class="text-xs font-bold text-slate-800">Mendeteksi Titik GPS...</strong>
+                </div>
+                <p id="phpGpsDesc" class="text-xs text-slate-500 leading-relaxed">
+                    Mengukur jarak Anda ke gerbang SMP Islam Al-Kholili (Radius maks: 200 meter).
+                </p>
+                <div class="pt-2 border-t border-slate-200 text-xs flex justify-between font-mono">
+                    <span class="text-slate-500">Jarak Terdeteksi:</span>
+                    <strong id="phpGpsDistVal" class="text-slate-800">-</strong>
+                </div>
+            </div>
+
+            <div class="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-center justify-between text-xs">
+                <div>
+                    <strong class="text-amber-900 block text-[11px]">Mode Simulasi GPS:</strong>
+                    <span class="text-[10px] text-amber-700">Gunakan untuk uji coba jika di luar sekolah</span>
+                </div>
+                <input type="checkbox" id="phpGpsDemoToggle" onchange="togglePhpGpsDemo(this.checked)" class="rounded text-brand-600 focus:ring-brand-500 h-4 w-4">
+            </div>
+        </div>
+
+        <!-- Kamera Webcam -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b pb-3">
+                <i class="fa-solid fa-camera text-brand-700"></i> Verifikasi Wajah (Selfie)
+            </h3>
+
+            <div class="relative w-full max-w-sm mx-auto aspect-[4/3] bg-slate-950 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border-2 border-slate-300">
+                <video id="phpVideoFeed" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                <canvas id="phpCanvas" class="hidden"></canvas>
+                <img id="phpSnapshotPreview" class="hidden absolute inset-0 w-full h-full object-cover z-10" alt="Selfie Guru">
+            </div>
+
+            <div class="flex items-center justify-center gap-2">
+                <button type="button" onclick="startPhpCamera()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold">
+                    <i class="fa-solid fa-video mr-1"></i> Buka Kamera
+                </button>
+                <button type="button" onclick="capturePhpSelfie()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold">
+                    <i class="fa-solid fa-camera mr-1"></i> Ambil Foto Wajah
+                </button>
+            </div>
+
+            <!-- Form Action Submit -->
+            <form method="POST" action="absen_guru.php" class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-3">
+                <input type="hidden" name="submit_self_attendance" value="1">
+                <input type="hidden" name="guru_id" value="<?= htmlspecialchars($activeGuru['id'] ?? '') ?>">
+                <input type="hidden" id="phpInputFoto" name="foto_selfie" value="">
+                <input type="hidden" id="phpInputJarak" name="jarak_meter" value="0">
+                <input type="hidden" id="phpInputLat" name="lat" value="">
+                <input type="hidden" id="phpInputLng" name="lng" value="">
+                <input type="hidden" id="phpInputDemo" name="is_demo" value="0">
+
+                <button type="submit" name="presensi_type" value="Masuk" class="py-3 bg-brand-700 hover:bg-brand-800 text-white rounded-xl text-xs font-bold shadow-md">
+                    <i class="fa-solid fa-right-to-bracket mr-1"></i> Absen Masuk
+                </button>
+                <button type="submit" name="presensi_type" value="Pulang" class="py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-md">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Absen Pulang
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <?php else: ?>
+    <!-- ======================================================== -->
+    <!-- TAMPILAN KHUSUS ADMIN: REKAPITULASI PRESENSI GURU       -->
+    <!-- ======================================================== -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
-                <h2 class="text-xl font-heading font-extrabold text-slate-900">Input Presensi Harian Guru & Staf</h2>
-                <p class="text-xs text-slate-500 mt-1">Catat kehadiran, jam datang, dan jam pulang pendidik</p>
+                <h2 class="text-xl font-heading font-extrabold text-slate-900">Rekapitulasi Presensi Dewan Guru & Staf</h2>
+                <p class="text-xs text-slate-500 mt-1">Data absensi otomatis dari presensi mandiri (wajah & GPS) serta input manual.</p>
             </div>
             
             <form method="GET" class="flex items-center gap-3">
@@ -142,167 +402,86 @@ if ($existingSession && !empty($existingSession['records'])) {
                     <input type="date" name="tanggal" value="<?= htmlspecialchars($selectedDate) ?>" onchange="this.form.submit()" class="px-3 py-2 text-xs rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
                 <div class="pt-4">
-                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
-                        <i class="fa-solid fa-arrows-rotate mr-1"></i> Muat
+                    <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
+                        <i class="fa-solid fa-print mr-1"></i> Cetak
                     </button>
                 </div>
             </form>
         </div>
 
-        <?php if ($existingSession): ?>
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
-            <div>
-                <span class="block text-[11px] text-emerald-600 font-bold uppercase">Hadir</span>
-                <span class="text-xl font-heading font-extrabold text-emerald-700"><?= $existingSession['hadir'] ?? 0 ?></span>
-            </div>
-            <div>
-                <span class="block text-[11px] text-amber-600 font-bold uppercase">Terlambat</span>
-                <span class="text-xl font-heading font-extrabold text-amber-700"><?= $existingSession['terlambat'] ?? 0 ?></span>
-            </div>
-            <div>
-                <span class="block text-[11px] text-blue-600 font-bold uppercase">Sakit</span>
-                <span class="text-xl font-heading font-extrabold text-blue-700"><?= $existingSession['sakit'] ?? 0 ?></span>
-            </div>
-            <div>
-                <span class="block text-[11px] text-purple-600 font-bold uppercase">Izin</span>
-                <span class="text-xl font-heading font-extrabold text-purple-700"><?= $existingSession['izin'] ?? 0 ?></span>
-            </div>
-            <div>
-                <span class="block text-[11px] text-indigo-600 font-bold uppercase">Dinas Luar</span>
-                <span class="text-xl font-heading font-extrabold text-indigo-700"><?= $existingSession['dinas_luar'] ?? 0 ?></span>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <!-- Attendance Form -->
-        <form method="POST">
-            <input type="hidden" name="save_guru_attendance" value="1">
-            <input type="hidden" name="tanggal" value="<?= htmlspecialchars($selectedDate) ?>">
-
-            <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-bold text-slate-600">
-                    Daftar Guru & Staf (<?= count($teachers) ?> Orang)
-                </span>
-                <button type="button" onclick="setAllGuruHadir()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-check-double"></i> Tandai Semua Hadir
-                </button>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
-                            <th class="p-3.5 rounded-l-xl w-12 text-center">No</th>
-                            <th class="p-3.5">Nama Guru</th>
-                            <th class="p-3.5">Jabatan / Mapel</th>
-                            <th class="p-3.5">Status Kehadiran</th>
-                            <th class="p-3.5">Jam Masuk</th>
-                            <th class="p-3.5">Jam Pulang</th>
-                            <th class="p-3.5 rounded-r-xl">Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
-                        <?php if (empty($teachers)): ?>
-                        <tr>
-                            <td colspan="7" class="py-10 text-center text-slate-400">
-                                Belum ada data guru. Silakan tambahkan di menu <a href="guru.php" class="text-brand-700 font-bold underline">Data Guru</a>.
-                            </td>
-                        </tr>
-                        <?php else: ?>
-                        <?php $no = 1; foreach ($teachers as $t): 
-                            $gid = $t['id'] ?? ('g-' . $no);
-                            $rec = $existingRecordsMap[$gid] ?? null;
-                            $curStatus = $rec['status'] ?? 'Hadir';
-                            $curMasuk = $rec['jam_masuk'] ?? '06:45';
-                            $curPulang = $rec['jam_pulang'] ?? '14:00';
-                            $curKet = $rec['keterangan'] ?? '';
-                        ?>
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="p-3.5 text-center text-slate-400 font-bold"><?= $no++ ?></td>
-                            <td class="p-3.5">
-                                <span class="font-bold text-slate-900 block"><?= htmlspecialchars($t['nama'] ?? '-') ?></span>
-                                <span class="text-[11px] text-slate-400"><?= htmlspecialchars($t['pendidikan'] ?? '') ?></span>
-                            </td>
-                            <td class="p-3.5">
-                                <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-50 text-brand-700">
-                                    <?= htmlspecialchars($t['jabatan'] ?? 'Guru') ?>
-                                </span>
-                            </td>
-                            <td class="p-3.5">
-                                <select name="status[<?= $gid ?>]" class="guru-status-select px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none">
-                                    <option value="Hadir" <?= $curStatus === 'Hadir' ? 'selected' : '' ?>>Hadir</option>
-                                    <option value="Terlambat" <?= $curStatus === 'Terlambat' ? 'selected' : '' ?>>Terlambat</option>
-                                    <option value="Sakit" <?= $curStatus === 'Sakit' ? 'selected' : '' ?>>Sakit</option>
-                                    <option value="Izin" <?= $curStatus === 'Izin' ? 'selected' : '' ?>>Izin</option>
-                                    <option value="Dinas Luar" <?= $curStatus === 'Dinas Luar' ? 'selected' : '' ?>>Dinas Luar</option>
-                                </select>
-                            </td>
-                            <td class="p-3.5">
-                                <input type="time" name="jam_masuk[<?= $gid ?>]" value="<?= htmlspecialchars($curMasuk) ?>" class="guru-masuk-input px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-1 focus:ring-brand-500 focus:outline-none">
-                            </td>
-                            <td class="p-3.5">
-                                <input type="time" name="jam_pulang[<?= $gid ?>]" value="<?= htmlspecialchars($curPulang) ?>" class="guru-pulang-input px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-1 focus:ring-brand-500 focus:outline-none">
-                            </td>
-                            <td class="p-3.5">
-                                <input type="text" name="keterangan[<?= $gid ?>]" value="<?= htmlspecialchars($curKet) ?>" placeholder="Catatan kegiatan..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:ring-1 focus:ring-brand-500 focus:outline-none">
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-
-            <?php if (!empty($teachers)): ?>
-            <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100 mt-6">
-                <button type="submit" class="px-6 py-3 rounded-xl font-bold text-white bg-brand-700 hover:bg-brand-800 shadow transition flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-floppy-disk"></i> Simpan Rekap Presensi Guru
-                </button>
-            </div>
-            <?php endif; ?>
-        </form>
-
-    </div>
-
-    <!-- Riwayat Rekap Presensi Guru -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-        <h3 class="text-base font-heading font-extrabold text-slate-900 mb-4">Riwayat Rekap Presensi Guru</h3>
+        <!-- Tabel Rekapan Admin -->
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
                 <thead>
                     <tr class="bg-slate-50 text-slate-600 font-bold uppercase tracking-wider border-b border-slate-200">
-                        <th class="p-3 rounded-l-xl">Tanggal</th>
-                        <th class="p-3">Total Guru</th>
-                        <th class="p-3 text-emerald-700">Hadir</th>
-                        <th class="p-3 text-amber-700">Terlambat</th>
-                        <th class="p-3 text-blue-700">Sakit</th>
-                        <th class="p-3 text-purple-700">Izin</th>
-                        <th class="p-3 text-indigo-700">Dinas Luar</th>
-                        <th class="p-3 text-right rounded-r-xl">Aksi</th>
+                        <th class="p-3.5 w-12 text-center rounded-l-xl">No</th>
+                        <th class="p-3.5">Foto Wajah</th>
+                        <th class="p-3.5">Nama Guru & NIP</th>
+                        <th class="p-3.5">Status Kehadiran</th>
+                        <th class="p-3.5">Jam Masuk</th>
+                        <th class="p-3.5">Jam Pulang</th>
+                        <th class="p-3.5">Lokasi & Metode</th>
+                        <th class="p-3.5">Keterangan</th>
+                        <th class="p-3.5 text-center rounded-r-xl">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium">
-                    <?php if (empty($attendanceList)): ?>
+                    <?php if (empty($teachers)): ?>
                     <tr>
-                        <td colspan="8" class="py-6 text-center text-slate-400">Belum ada rekapan absensi guru tersimpan.</td>
+                        <td colspan="9" class="p-6 text-center text-slate-400">Belum ada data guru terdaftar.</td>
                     </tr>
                     <?php else: ?>
                     <?php 
-                    $reversed = array_reverse($attendanceList);
-                    foreach (array_slice($reversed, 0, 10) as $att): 
+                    $no = 1;
+                    foreach ($teachers as $g): 
+                        $gid = strval($g['id'] ?? '');
+                        $rec = $existingRecordsMap[$gid] ?? null;
+                        $status = $rec['status'] ?? 'Belum Presensi';
+                        $masuk = $rec['jam_masuk'] ?? '-';
+                        $pulang = $rec['jam_pulang'] ?? '-';
+                        $foto = $rec['foto_selfie'] ?? '';
+                        $jarak = $rec['jarak_meter'] ?? null;
+                        $metode = $rec['metode'] ?? ($foto ? 'Wajah & GPS' : 'Manual');
+                        $ket = $rec['keterangan'] ?? '-';
                     ?>
                     <tr class="hover:bg-slate-50 transition">
-                        <td class="p-3 font-bold text-slate-800"><?= htmlspecialchars($att['tanggal'] ?? '-') ?></td>
-                        <td class="p-3 font-bold"><?= $att['total_guru'] ?? 0 ?></td>
-                        <td class="p-3 text-emerald-600 font-bold"><?= $att['hadir'] ?? 0 ?></td>
-                        <td class="p-3 text-amber-600 font-bold"><?= $att['terlambat'] ?? 0 ?></td>
-                        <td class="p-3 text-blue-600 font-bold"><?= $att['sakit'] ?? 0 ?></td>
-                        <td class="p-3 text-purple-600 font-bold"><?= $att['izin'] ?? 0 ?></td>
-                        <td class="p-3 text-indigo-600 font-bold"><?= $att['dinas_luar'] ?? 0 ?></td>
-                        <td class="p-3 text-right">
-                            <a href="?tanggal=<?= urlencode($att['tanggal'] ?? '') ?>" class="px-3 py-1.5 rounded-lg bg-brand-50 text-brand-700 hover:bg-brand-100 font-bold text-xs inline-flex items-center gap-1">
-                                <i class="fa-solid fa-pen-to-square"></i> Buka / Edit
+                        <td class="p-3.5 text-center font-bold text-slate-400"><?= $no++ ?></td>
+                        <td class="p-3.5">
+                            <?php if (!empty($foto)): ?>
+                            <a href="<?= htmlspecialchars($foto) ?>" target="_blank" class="block w-10 h-10 rounded-xl overflow-hidden border border-emerald-300 shadow hover:scale-105 transition" title="Klik lihat foto wajah">
+                                <img src="<?= htmlspecialchars($foto) ?>" class="w-full h-full object-cover">
                             </a>
+                            <?php else: ?>
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <?php endif; ?>
+                        </td>
+                        <td class="p-3.5">
+                            <strong class="text-slate-900 block"><?= htmlspecialchars($g['nama']) ?></strong>
+                            <span class="text-[10px] text-slate-500 font-mono">NIP: <?= htmlspecialchars($g['nip'] ?? '-') ?> • <?= htmlspecialchars($g['jabatan'] ?? 'Guru') ?></span>
+                        </td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold <?= $status === 'Hadir' ? 'bg-emerald-100 text-emerald-800' : ($status === 'Terlambat' ? 'bg-amber-100 text-amber-800' : ($status === 'Sakit' ? 'bg-rose-100 text-rose-800' : ($status === 'Izin' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-600'))) ?>">
+                                <?= htmlspecialchars($status) ?>
+                            </span>
+                        </td>
+                        <td class="p-3.5 font-mono font-semibold text-slate-800"><?= htmlspecialchars($masuk) ?></td>
+                        <td class="p-3.5 font-mono font-semibold text-slate-800"><?= htmlspecialchars($pulang) ?></td>
+                        <td class="p-3.5">
+                            <?php if ($jarak !== null): ?>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                                <i class="fa-solid fa-location-dot"></i> <?= intval($jarak) ?>m (Valid)
+                            </span>
+                            <?php else: ?>
+                            <span class="text-[10px] text-slate-500"><?= htmlspecialchars($metode) ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="p-3.5 text-slate-600"><?= htmlspecialchars($ket) ?></td>
+                        <td class="p-3.5 text-center">
+                            <button type="button" onclick="openPhpEditModal('<?= htmlspecialchars($gid) ?>', '<?= htmlspecialchars(addslashes($g['nama'])) ?>', '<?= htmlspecialchars($status) ?>', '<?= htmlspecialchars($masuk) ?>', '<?= htmlspecialchars($pulang) ?>', '<?= htmlspecialchars(addslashes($ket)) ?>')" class="p-1.5 text-brand-700 hover:bg-brand-50 rounded-lg transition" title="Edit Manual">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -312,19 +491,162 @@ if ($existingSession && !empty($existingSession['records'])) {
         </div>
     </div>
 
+    <!-- MODAL EDIT MANUAL ADMIN -->
+    <div id="phpEditModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h4 class="font-bold text-base text-slate-900" id="phpModalTitle">Edit Presensi Manual</h4>
+                <button type="button" onclick="document.getElementById('phpEditModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">&times;</button>
+            </div>
+            <form method="POST" action="absen_guru.php" class="space-y-4 text-xs">
+                <input type="hidden" name="save_manual_attendance" value="1">
+                <input type="hidden" id="phpModalGuruId" name="guru_id" value="">
+                <input type="hidden" name="tanggal" value="<?= htmlspecialchars($selectedDate) ?>">
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Status Kehadiran</label>
+                    <select id="phpModalStatus" name="status" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold">
+                        <option value="Hadir">Hadir</option>
+                        <option value="Terlambat">Terlambat</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Dinas Luar">Dinas Luar</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Jam Masuk</label>
+                        <input type="time" id="phpModalMasuk" name="jam_masuk" value="06:45" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Jam Pulang</label>
+                        <input type="time" id="phpModalPulang" name="jam_pulang" value="14:00" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Keterangan</label>
+                    <input type="text" id="phpModalKet" name="keterangan" placeholder="Keterangan dinas / izin..." class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('phpEditModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-brand-700 text-white rounded-xl font-bold">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
+
 </div>
 
 <script>
-function setAllGuruHadir() {
-    document.querySelectorAll('.guru-status-select').forEach(sel => {
-        sel.value = 'Hadir';
-    });
-    document.querySelectorAll('.guru-masuk-input').forEach(inp => {
-        inp.value = '06:45';
-    });
-    document.querySelectorAll('.guru-pulang-input').forEach(inp => {
-        inp.value = '14:00';
-    });
+const SCHOOL_COORDS = { lat: -7.77884, lng: 113.20853, radiusMeters: 200 };
+let isPhpDemo = false;
+let phpStream = null;
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3;
+    const φ1 = lat1 * Math.PI / 180, φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180, Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+function detectPhpLocation() {
+    const card = document.getElementById('phpGpsCard');
+    const dot = document.getElementById('phpGpsDot');
+    const title = document.getElementById('phpGpsTitle');
+    const desc = document.getElementById('phpGpsDesc');
+    const distVal = document.getElementById('phpGpsDistVal');
+
+    if (!navigator.geolocation) {
+        if (title) title.textContent = "GPS tidak didukung browser";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const dist = calculateDistance(pos.coords.latitude, pos.coords.longitude, SCHOOL_COORDS.lat, SCHOOL_COORDS.lng);
+            if (distVal) distVal.textContent = dist + " Meter";
+            const inpJarak = document.getElementById('phpInputJarak');
+            const inpLat = document.getElementById('phpInputLat');
+            const inpLng = document.getElementById('phpInputLng');
+            if (inpJarak) inpJarak.value = dist;
+            if (inpLat) inpLat.value = pos.coords.latitude;
+            if (inpLng) inpLng.value = pos.coords.longitude;
+
+            if (dist <= 200 || isPhpDemo) {
+                if (card) card.className = "p-4 rounded-2xl border bg-emerald-50 border-emerald-300 space-y-2";
+                if (dot) dot.className = "w-3 h-3 rounded-full bg-emerald-500";
+                if (title) title.textContent = "Lokasi Valid di Lingkungan Sekolah";
+                if (desc) desc.textContent = "Titik GPS Anda terverifikasi di area sekolah (Jarak: " + dist + "m).";
+            } else {
+                if (card) card.className = "p-4 rounded-2xl border bg-rose-50 border-rose-300 space-y-2";
+                if (dot) dot.className = "w-3 h-3 rounded-full bg-rose-500";
+                if (title) title.textContent = "Di Luar Radius Sekolah (Maks: 200m)";
+                if (desc) desc.textContent = "Jarak Anda: " + dist + " meter. Presensi di luar sekolah tidak diizinkan.";
+            }
+        },
+        err => {
+            console.warn(err);
+            if (isPhpDemo) {
+                if (card) card.className = "p-4 rounded-2xl border bg-emerald-50 border-emerald-300 space-y-2";
+                if (title) title.textContent = "Mode Simulasi GPS Aktif";
+            }
+        }
+    );
+}
+
+function togglePhpGpsDemo(val) {
+    isPhpDemo = val;
+    document.getElementById('phpInputDemo').value = val ? '1' : '0';
+    detectPhpLocation();
+}
+
+async function startPhpCamera() {
+    const video = document.getElementById('phpVideoFeed');
+    try {
+        phpStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        video.srcObject = phpStream;
+    } catch (err) {
+        alert("Gagal membuka kamera: " + err.message);
+    }
+}
+
+function capturePhpSelfie() {
+    const video = document.getElementById('phpVideoFeed');
+    const canvas = document.getElementById('phpCanvas');
+    const preview = document.getElementById('phpSnapshotPreview');
+    if (!video || !canvas) return;
+
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+    ctx.fillStyle = '#10b981';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('SMP ISLAM AL-KHOLILI - PRESENSI WAJAH', 15, canvas.height - 15);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    document.getElementById('phpInputFoto').value = dataUrl;
+    preview.src = dataUrl;
+    preview.classList.remove('hidden');
+}
+
+function openPhpEditModal(id, nama, status, masuk, pulang, ket) {
+    document.getElementById('phpModalGuruId').value = id;
+    document.getElementById('phpModalTitle').textContent = "Edit Presensi: " + nama;
+    document.getElementById('phpModalStatus').value = status !== 'Belum Presensi' ? status : 'Hadir';
+    document.getElementById('phpModalMasuk').value = masuk !== '-' ? masuk : '06:45';
+    document.getElementById('phpModalPulang').value = pulang !== '-' ? pulang : '14:00';
+    document.getElementById('phpModalKet').value = ket !== '-' ? ket : '';
+    document.getElementById('phpEditModal').classList.remove('hidden');
+}
+
+if (document.getElementById('phpGpsCard')) {
+    detectPhpLocation();
 }
 </script>
 
