@@ -16,6 +16,15 @@ $logoUrl = (str_starts_with($rawLogo, 'data:') || str_starts_with($rawLogo, 'htt
 if (!isset($admin_page)) {
     $admin_page = "dashboard";
 }
+
+$userRole = $_SESSION['admin_role'] ?? 'admin';
+
+// Proteksi hak akses role Guru: Hanya boleh mengakses siswa, absen siswa, dan absen guru
+$guruAllowedPages = ['siswa', 'absen_siswa', 'absen_guru'];
+if ($userRole === 'guru' && !in_array($admin_page, $guruAllowedPages)) {
+    header("Location: siswa.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -81,13 +90,16 @@ if (!isset($admin_page)) {
             </div>
             <div>
                 <h2 class="text-white font-heading font-extrabold text-sm leading-tight">SMP ISLAM AL-KHOLILI</h2>
-                <span class="text-[10px] text-gold-400 font-bold uppercase tracking-wider">Panel Administrator</span>
+                <span class="text-[10px] <?= $userRole === 'guru' ? 'text-emerald-300' : 'text-gold-400' ?> font-bold uppercase tracking-wider">
+                    <?= $userRole === 'guru' ? 'Portal Dewan Guru' : 'Panel Administrator' ?>
+                </span>
             </div>
         </div>
 
         <!-- Navigation Links -->
         <nav class="space-y-1.5 flex-1 text-sm font-medium">
             
+            <?php if ($userRole !== 'guru'): ?>
             <a href="index.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'dashboard' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
                 <i class="fa-solid fa-chart-pie w-5 text-center text-gold-400"></i>
                 <span>Ringkasan Dasbor</span>
@@ -125,20 +137,21 @@ if (!isset($admin_page)) {
                 <i class="fa-solid fa-user-graduate w-5 text-center text-gold-400"></i>
                 <span>Data Masuk PPDB</span>
             </a>
+            <?php endif; ?>
 
-            <!-- Data Siswa Aktif -->
+            <!-- Data Siswa Aktif (Tampil untuk Guru & Admin) -->
             <a href="siswa.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'siswa' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
                 <i class="fa-solid fa-users w-5 text-center text-gold-400"></i>
                 <span>Data Siswa</span>
             </a>
 
-            <!-- Absen Siswa -->
+            <!-- Absen Siswa (Tampil untuk Guru & Admin) -->
             <a href="absen_siswa.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'absen_siswa' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
                 <i class="fa-solid fa-clipboard-user w-5 text-center text-gold-400"></i>
                 <span>Absen Siswa</span>
             </a>
 
-            <!-- Absen Guru -->
+            <!-- Absen Guru (Tampil untuk Guru & Admin) -->
             <a href="absen_guru.php" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition <?= $admin_page == 'absen_guru' ? 'bg-brand-700 text-white shadow font-bold' : 'hover:bg-brand-900/80 hover:text-white' ?>">
                 <i class="fa-solid fa-user-check w-5 text-center text-gold-400"></i>
                 <span>Absen Guru</span>
@@ -172,7 +185,7 @@ if (!isset($admin_page)) {
             </div>
             <div class="flex items-center gap-3">
                 <span class="text-xs font-semibold px-3 py-1 bg-emerald-50 text-brand-700 rounded-full border border-emerald-200">
-                    <i class="fa-solid fa-circle-user mr-1"></i> Admin Aktif
+                    <i class="fa-solid <?= $userRole === 'guru' ? 'fa-chalkboard-user' : 'fa-circle-user' ?> mr-1"></i> <?= $userRole === 'guru' ? 'Guru Aktif' : 'Admin Aktif' ?>
                 </span>
                 <a href="../index.php" target="_blank" class="text-xs font-bold text-brand-700 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1.5">
                     <span>Buka Web</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>

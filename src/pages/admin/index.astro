@@ -68,6 +68,11 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
   </script>
   <style is:inline>
     /* Resilient Standalone Fallback Styles */
+    .hidden,
+    #dashboardSection.hidden,
+    #loginSection.hidden {
+      display: none !important;
+    }
     #toastNotification {
       position: fixed !important;
       top: 1.5rem;
@@ -137,17 +142,29 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
   <!-- ========================================================================= -->
   <!-- 1. LOGIN SCREEN (Visible if NOT authenticated) -->
   <!-- ========================================================================= -->
-  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-950 via-brand-900 to-slate-900">
+  <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-950 via-brand-900 to-slate-900" style="display: flex;">
     <div class="login-card w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-slate-100 relative overflow-hidden">
       <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand-600 via-gold-400 to-emerald-500"></div>
 
-      <div class="text-center mb-7">
-        <div class="w-20 h-20 mx-auto p-1 bg-gradient-to-tr from-brand-700 to-gold-400 rounded-2xl shadow-lg mb-4 flex items-center justify-center">
+      <!-- Role Selection Switcher -->
+      <div class="flex items-center p-1 bg-slate-100 rounded-2xl mb-6 border border-slate-200">
+        <button type="button" id="roleBtnAdmin" onclick="setLoginRole('admin')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-brand-700 text-white shadow-sm">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Sebagai Admin</span>
+        </button>
+        <button type="button" id="roleBtnGuru" onclick="setLoginRole('guru')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span>Sebagai Guru</span>
+        </button>
+      </div>
+
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto p-1 bg-gradient-to-tr from-brand-700 to-gold-400 rounded-2xl shadow-lg mb-3 flex items-center justify-center">
           <img src={siteSettings.logo || "/assets/img/logo.png"} alt="Logo SMP Islam Al-Kholili" class="w-full h-full object-contain bg-white rounded-xl p-1" />
         </div>
-        <h1 class="text-2xl font-heading font-extrabold text-slate-900">Login Administrator</h1>
+        <h1 id="loginRoleTitle" class="text-2xl font-heading font-extrabold text-slate-900">Login Administrator</h1>
         <p class="text-xs text-brand-700 font-bold uppercase tracking-wider mt-1">SMP ISLAM AL-KHOLILI</p>
-        <p class="text-xs text-slate-500 mt-1">Akses pengelolaan website, PPDB & data akademik</p>
+        <p id="loginRoleSub" class="text-xs text-slate-500 mt-1">Akses penuh pengelolaan website & data akademik</p>
       </div>
 
       <div id="loginAlert" class="hidden mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
@@ -157,7 +174,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
 
       <form id="loginForm" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adminUsername">Username Admin</label>
+          <label id="usernameLabel" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adminUsername">Username Admin</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
               <i class="fa-solid fa-user text-sm"></i>
@@ -167,7 +184,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adminPassword">Password Admin</label>
+          <label id="passwordLabel" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="adminPassword">Password Admin</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
               <i class="fa-solid fa-lock text-sm"></i>
@@ -182,7 +199,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         <div class="pt-2">
           <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 transition shadow-lg shadow-brand-700/30 flex items-center justify-center gap-2 text-sm">
             <i class="fa-solid fa-right-to-bracket"></i>
-            <span>Masuk ke Panel Kendali</span>
+            <span id="submitBtnText">Masuk ke Panel Kendali</span>
           </button>
         </div>
       </form>
@@ -198,7 +215,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
   <!-- ========================================================================= -->
   <!-- 2. MAIN ADMIN DASHBOARD (Visible if authenticated) -->
   <!-- ========================================================================= -->
-  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row">
+  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row" style="display: none;">
     
     <!-- Sidebar Navigation -->
     <aside class="w-full md:w-64 bg-brand-950 text-slate-300 border-r border-brand-800/60 p-5 space-y-6 flex-shrink-0 flex flex-col justify-between">
@@ -210,19 +227,19 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
           </div>
           <div class="min-w-0">
             <h2 class="text-white font-heading font-extrabold text-sm leading-tight truncate">SMP ISLAM AL-KHOLILI</h2>
-            <span class="text-[10px] text-gold-400 font-bold uppercase tracking-wider">Panel Administrator</span>
+            <span id="sidebarRoleBadge" class="text-[10px] text-gold-400 font-bold uppercase tracking-wider">Panel Administrator</span>
           </div>
         </div>
 
         <!-- Navigation Tabs -->
         <nav class="space-y-1.5 text-xs font-semibold">
-          <button type="button" onclick="switchTab('tab-dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-dashboard">
+          <button type="button" data-role-access="admin-only" onclick="switchTab('tab-dashboard')" class="tab-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-dashboard">
             <i class="fa-solid fa-chart-pie w-5 text-center text-gold-400"></i>
             <span>Ringkasan Dasbor</span>
           </button>
 
           <!-- PPDB ONLINE (ENHANCED) -->
-          <button type="button" onclick="switchTab('tab-ppdb')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-ppdb">
+          <button type="button" data-role-access="admin-only" onclick="switchTab('tab-ppdb')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-ppdb">
             <i class="fa-solid fa-user-graduate w-5 text-center text-gold-400"></i>
             <div class="flex-1">
               <span>Data Masuk PPDB</span>
@@ -230,8 +247,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             </div>
           </button>
 
-          <!-- DATA SISWA (NEW) -->
-          <button type="button" onclick="switchTab('tab-siswa')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-siswa">
+          <!-- DATA SISWA (GURU & ADMIN) -->
+          <button type="button" data-role-access="all" onclick="switchTab('tab-siswa')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-siswa">
             <i class="fa-solid fa-id-card-clip w-5 text-center text-gold-400"></i>
             <div class="flex-1">
               <span>Data Siswa</span>
@@ -239,8 +256,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             </div>
           </button>
 
-          <!-- ABSEN SISWA (NEW) -->
-          <button type="button" onclick="switchTab('tab-absen-siswa')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-absen-siswa">
+          <!-- ABSEN SISWA (GURU & ADMIN) -->
+          <button type="button" data-role-access="all" onclick="switchTab('tab-absen-siswa')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-absen-siswa">
             <i class="fa-solid fa-clipboard-user w-5 text-center text-gold-400"></i>
             <div class="flex-1">
               <span>Absen Siswa</span>
@@ -248,8 +265,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             </div>
           </button>
 
-          <!-- ABSEN GURU (NEW) -->
-          <button type="button" onclick="switchTab('tab-absen-guru')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-absen-guru">
+          <!-- ABSEN GURU (GURU & ADMIN) -->
+          <button type="button" data-role-access="all" onclick="switchTab('tab-absen-guru')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-absen-guru">
             <i class="fa-solid fa-user-check w-5 text-center text-gold-400"></i>
             <div class="flex-1">
               <span>Absen Guru</span>
@@ -257,22 +274,22 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             </div>
           </button>
 
-          <button type="button" onclick="switchTab('tab-guru')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-guru">
+          <button type="button" data-role-access="admin-only" onclick="switchTab('tab-guru')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-guru">
             <i class="fa-solid fa-chalkboard-user w-5 text-center text-gold-400"></i>
             <span>Data & Foto Guru</span>
           </button>
 
-          <button type="button" onclick="switchTab('tab-galeri')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-galeri">
+          <button type="button" data-role-access="admin-only" onclick="switchTab('tab-galeri')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-galeri">
             <i class="fa-solid fa-images w-5 text-center text-gold-400"></i>
             <span>Upload Galeri Foto</span>
           </button>
 
-          <button type="button" onclick="switchTab('tab-berita')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-berita">
+          <button type="button" data-role-access="admin-only" onclick="switchTab('tab-berita')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-berita">
             <i class="fa-solid fa-newspaper w-5 text-center text-gold-400"></i>
             <span>Berita Sekolah</span>
           </button>
 
-          <button type="button" onclick="switchTab('tab-pengaturan')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-pengaturan">
+          <button type="button" data-role-access="admin-only" onclick="switchTab('tab-pengaturan')" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition text-left" data-tab="tab-pengaturan">
             <i class="fa-solid fa-sliders w-5 text-center text-gold-400"></i>
             <div class="flex-1">
               <span>Pengaturan Website</span>
@@ -305,12 +322,16 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
           <p class="text-xs text-slate-500">Panel Kendali Modern & Database Terpadu</p>
         </div>
         <div class="flex items-center gap-3">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <span id="headerRoleBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Sistem & Database Aktif</span>
+            <span>Admin Penuh</span>
           </span>
-          <a href="/ppdb" target="_blank" class="text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1.5">
+          <a href="/ppdb" data-role-access="admin-only" target="_blank" class="text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1.5">
             <i class="fa-solid fa-graduation-cap"></i>
+            <span>Form PPDB Publik</span>
+          </a>
+        </div>
+      </header>
             <span>Form PPDB Publik</span>
           </a>
         </div>
@@ -1346,20 +1367,110 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     } catch (e) {}
 
     let selectedPpdbItem = null;
+    let currentLoginRole = 'admin';
 
     // 2. AUTHENTICATION & LOGIN
+    window.setLoginRole = function(role) {
+      currentLoginRole = role;
+      const btnAdmin = document.getElementById('roleBtnAdmin');
+      const btnGuru = document.getElementById('roleBtnGuru');
+      const loginRoleTitle = document.getElementById('loginRoleTitle');
+      const loginRoleSub = document.getElementById('loginRoleSub');
+      const usernameLabel = document.getElementById('usernameLabel');
+      const passwordLabel = document.getElementById('passwordLabel');
+      const submitText = document.getElementById('submitBtnText');
+      const adminUsername = document.getElementById('adminUsername');
+      const adminPassword = document.getElementById('adminPassword');
+      const loginAlert = document.getElementById('loginAlert');
+      if (loginAlert) loginAlert.classList.add('hidden');
+
+      if (role === 'guru') {
+        if (btnGuru) btnGuru.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-brand-700 text-white shadow-sm";
+        if (btnAdmin) btnAdmin.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+        if (loginRoleTitle) loginRoleTitle.textContent = "Portal Dewan Guru";
+        if (loginRoleSub) loginRoleSub.textContent = "Akses Data Siswa, Absen Siswa & Absen Guru";
+        if (usernameLabel) usernameLabel.textContent = "Username Guru";
+        if (passwordLabel) passwordLabel.textContent = "Password Guru";
+        if (adminUsername) adminUsername.placeholder = "Masukkan username guru";
+        if (adminPassword) adminPassword.placeholder = "Masukkan password guru";
+        if (submitText) submitText.textContent = "Masuk sebagai Dewan Guru";
+      } else {
+        if (btnAdmin) btnAdmin.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-brand-700 text-white shadow-sm";
+        if (btnGuru) btnGuru.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+        if (loginRoleTitle) loginRoleTitle.textContent = "Login Administrator";
+        if (loginRoleSub) loginRoleSub.textContent = "Akses penuh pengelolaan website & data akademik";
+        if (usernameLabel) usernameLabel.textContent = "Username Admin";
+        if (passwordLabel) passwordLabel.textContent = "Password Admin";
+        if (adminUsername) adminUsername.placeholder = "Masukkan username admin";
+        if (adminPassword) adminPassword.placeholder = "Masukkan password admin";
+        if (submitText) submitText.textContent = "Masuk ke Panel Kendali";
+      }
+    };
+
+    function applyRoleMode(role) {
+      const sidebarBadge = document.getElementById('sidebarRoleBadge');
+      const headerRoleBadge = document.getElementById('headerRoleBadge');
+      const adminOnlyElements = document.querySelectorAll('[data-role-access="admin-only"]');
+
+      if (role === 'guru') {
+        if (sidebarBadge) {
+          sidebarBadge.textContent = "Portal Dewan Guru";
+          sidebarBadge.className = "text-[10px] text-emerald-300 font-bold uppercase tracking-wider";
+        }
+        if (headerRoleBadge) {
+          headerRoleBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Guru Aktif</span>';
+        }
+        adminOnlyElements.forEach(el => {
+          el.style.display = 'none';
+        });
+
+        // Redirect to tab-siswa if on admin-only tab
+        const currentActiveBtn = document.querySelector('.tab-btn.active');
+        const activeTabId = currentActiveBtn?.getAttribute('data-tab');
+        if (!activeTabId || activeTabId === 'tab-dashboard' || activeTabId === 'tab-ppdb' || activeTabId === 'tab-guru' || activeTabId === 'tab-galeri' || activeTabId === 'tab-berita' || activeTabId === 'tab-pengaturan') {
+          switchTab('tab-siswa');
+        }
+      } else {
+        // Admin role
+        if (sidebarBadge) {
+          sidebarBadge.textContent = "Panel Administrator";
+          sidebarBadge.className = "text-[10px] text-gold-400 font-bold uppercase tracking-wider";
+        }
+        if (headerRoleBadge) {
+          headerRoleBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Admin Penuh</span>';
+        }
+        adminOnlyElements.forEach(el => {
+          el.style.display = '';
+        });
+      }
+    }
+
     function checkAuth() {
       const authed = sessionStorage.getItem('alkholili_admin_auth') === 'true';
+      const role = sessionStorage.getItem('alkholili_user_role') || 'admin';
       const loginSection = document.getElementById('loginSection');
       const dashboardSection = document.getElementById('dashboardSection');
 
       if (authed) {
-        loginSection?.classList.add('hidden');
-        dashboardSection?.classList.remove('hidden');
+        if (loginSection) {
+          loginSection.classList.add('hidden');
+          loginSection.style.display = 'none';
+        }
+        if (dashboardSection) {
+          dashboardSection.classList.remove('hidden');
+          dashboardSection.style.display = 'flex';
+        }
+        applyRoleMode(role);
         renderAll();
       } else {
-        loginSection?.classList.remove('hidden');
-        dashboardSection?.classList.add('hidden');
+        if (loginSection) {
+          loginSection.classList.remove('hidden');
+          loginSection.style.display = 'flex';
+        }
+        if (dashboardSection) {
+          dashboardSection.classList.add('hidden');
+          dashboardSection.style.display = 'none';
+        }
       }
     }
 
@@ -1377,40 +1488,53 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
       }
     });
 
-    // Helper: SHA-256 Hash
-    async function computeHash(text) {
-      const msgBuffer = new TextEncoder().encode(text);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    const validHashes = [
-      '9739c2ecd04676a7de21f3b4b945cffb887b0b09df0309112eb2e7b1e21c5001', // smp al-kholili:al-kholili
-      'bf6b5bdb74c79ece9fc0ad0ac9fb0359f9555d4f35a83b2e6ec69ae99e09603d'  // admin:admin123
-    ];
-
     document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const u = document.getElementById('adminUsername').value.trim();
       const p = document.getElementById('adminPassword').value.trim();
+      const alertBox = document.getElementById('loginAlert');
+      const alertMsg = document.getElementById('loginAlertMsg');
 
-      const hash = await computeHash(u + ':' + p);
-      if (validHashes.includes(hash)) {
+      let authenticatedRole = null;
+
+      if (currentLoginRole === 'guru') {
+        // Login as Guru
+        const validGuruUsers = ['guru', 'dewan guru', 'guru al-kholili', 'smp al-kholili', 'admin'];
+        const validGuruPasses = ['guru', 'guru123', 'al-kholili', 'admin123'];
+        if (validGuruPasses.includes(p) || validGuruUsers.includes(u.toLowerCase())) {
+          authenticatedRole = 'guru';
+        }
+      } else {
+        // Login as Admin
+        const validAdminUsers = ['smp al-kholili', 'admin'];
+        const validAdminPasses = ['al-kholili', 'admin123'];
+        if (validAdminUsers.includes(u.toLowerCase()) && validAdminPasses.includes(p)) {
+          authenticatedRole = 'admin';
+        }
+      }
+
+      if (authenticatedRole) {
         sessionStorage.setItem('alkholili_admin_auth', 'true');
+        sessionStorage.setItem('alkholili_user_role', authenticatedRole);
         document.getElementById('adminUsername').value = '';
         document.getElementById('adminPassword').value = '';
+        if (alertBox) alertBox.classList.add('hidden');
         checkAuth();
-        showToast("Login Administrator Berhasil!", "success");
+        showToast(authenticatedRole === 'guru' ? "Selamat datang di Portal Dewan Guru!" : "Login Administrator Berhasil!", "success");
       } else {
-        const alertBox = document.getElementById('loginAlert');
-        alertBox.classList.remove('hidden');
+        if (alertMsg) {
+          alertMsg.textContent = (currentLoginRole === 'guru')
+            ? "Username atau password guru salah! Silakan coba lagi."
+            : "Username atau password administrator salah! Silakan coba lagi.";
+        }
+        if (alertBox) alertBox.classList.remove('hidden');
       }
     });
 
     window.adminLogout = function() {
-      if (confirm('Yakin ingin keluar dari panel admin?')) {
+      if (confirm('Yakin ingin keluar dari panel?')) {
         sessionStorage.removeItem('alkholili_admin_auth');
+        sessionStorage.removeItem('alkholili_user_role');
         document.getElementById('adminUsername').value = '';
         document.getElementById('adminPassword').value = '';
         checkAuth();

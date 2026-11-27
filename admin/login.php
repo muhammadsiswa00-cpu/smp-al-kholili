@@ -42,31 +42,60 @@ $logoRaw = (string)($siteSettings['logo'] ?? 'assets/img/logo.png');
 $logoUrl = str_starts_with($logoRaw, 'data:') ? $logoRaw : '../' . ltrim($logoRaw, '/');
 
 $error = "";
+$activeRole = $_POST['login_role'] ?? 'admin';
 
 // Proses Login Form
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $inputUser = trim($_POST['username'] ?? '');
     $inputPass = trim($_POST['password'] ?? '');
+    $selectedRole = trim($_POST['login_role'] ?? 'admin');
 
-    // Validasi fleksibel dengan akun kodingan (smp al-kholili maupun admin)
     $isValid = false;
-    if ($inputUser === $ADMIN_USERNAME && $inputPass === $ADMIN_PASSWORD) {
-        $isValid = true;
-    } elseif ($inputUser === 'admin' && in_array($inputPass, ['admin123', 'al-kholili', $ADMIN_PASSWORD])) {
-        $isValid = true;
-    } elseif ($inputUser === 'smp al-kholili' && in_array($inputPass, ['al-kholili', 'admin123', $ADMIN_PASSWORD])) {
-        $isValid = true;
+    $loggedRole = 'admin';
+
+    if ($selectedRole === 'guru') {
+        // Login Guru
+        $validGuruUsers = ['guru', 'dewan guru', 'guru al-kholili', 'smp al-kholili', 'admin'];
+        $validGuruPasses = ['guru', 'guru123', 'al-kholili', 'admin123'];
+        if (in_array(strtolower($inputUser), $validGuruUsers) && in_array($inputPass, $validGuruPasses)) {
+            $isValid = true;
+            $loggedRole = 'guru';
+        } elseif (in_array($inputPass, $validGuruPasses) && !empty($inputUser)) {
+            $isValid = true;
+            $loggedRole = 'guru';
+        }
+    } else {
+        // Login Admin
+        if ($inputUser === $ADMIN_USERNAME && $inputPass === $ADMIN_PASSWORD) {
+            $isValid = true;
+            $loggedRole = 'admin';
+        } elseif ($inputUser === 'admin' && in_array($inputPass, ['admin123', 'al-kholili', $ADMIN_PASSWORD])) {
+            $isValid = true;
+            $loggedRole = 'admin';
+        } elseif ($inputUser === 'smp al-kholili' && in_array($inputPass, ['al-kholili', 'admin123', $ADMIN_PASSWORD])) {
+            $isValid = true;
+            $loggedRole = 'admin';
+        }
     }
 
     if ($isValid) {
         // Anti Session Fixation: Regenerasi ID Session Baru
         session_regenerate_id(true);
         $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_role'] = $loggedRole;
         $_SESSION['admin_username'] = $inputUser;
-        header("Location: index.php");
+
+        if ($loggedRole === 'guru') {
+            header("Location: siswa.php");
+        } else {
+            header("Location: index.php");
+        }
         exit;
     } else {
-        $error = "Username atau Password yang Anda masukkan salah! Silakan coba lagi.";
+        $error = ($selectedRole === 'guru')
+            ? "Username atau Password Guru salah! Silakan coba lagi."
+            : "Username atau Password Admin salah! Silakan coba lagi.";
+        $activeRole = $selectedRole;
     }
 }
 ?>
@@ -114,13 +143,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <!-- Decorative Header bar -->
         <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand-600 via-gold-400 to-emerald-500"></div>
 
-        <div class="text-center mb-7">
-            <div class="w-20 h-20 mx-auto p-1 bg-gradient-to-tr from-brand-700 to-gold-400 rounded-2xl shadow-lg mb-4 flex items-center justify-center">
+        <!-- Role Selection Tabs -->
+        <div class="flex items-center p-1 bg-slate-100 rounded-2xl mb-6 border border-slate-200">
+            <button type="button" id="roleBtnAdmin" onclick="setRole('admin')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 <?= $activeRole === 'admin' ? 'bg-brand-700 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900' ?>">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Sebagai Admin</span>
+            </button>
+            <button type="button" id="roleBtnGuru" onclick="setRole('guru')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 <?= $activeRole === 'guru' ? 'bg-brand-700 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900' ?>">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <span>Sebagai Guru</span>
+            </button>
+        </div>
+
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 mx-auto p-1 bg-gradient-to-tr from-brand-700 to-gold-400 rounded-2xl shadow-lg mb-3 flex items-center justify-center">
                 <img src="<?= htmlspecialchars($logoUrl) ?>" alt="Logo SMP Islam Al-Kholili" class="w-full h-full object-contain bg-white rounded-xl p-1">
             </div>
-            <h1 class="text-2xl font-heading font-extrabold text-slate-900">Login Administrator</h1>
+            <h1 id="loginTitle" class="text-2xl font-heading font-extrabold text-slate-900">
+                <?= $activeRole === 'guru' ? 'Portal Dewan Guru' : 'Login Administrator' ?>
+            </h1>
             <p class="text-xs text-brand-700 font-bold uppercase tracking-wider mt-1">SMP ISLAM AL-KHOLILI KOTA PROBOLINGGO</p>
-            <p class="text-xs text-slate-500 mt-1">Masukkan username dan password untuk masuk ke fitur admin</p>
+            <p id="loginSubtitle" class="text-xs text-slate-500 mt-1">
+                <?= $activeRole === 'guru' ? 'Akses Data Siswa, Absen Siswa & Absen Guru' : 'Akses penuh pengelolaan website & data akademik' ?>
+            </p>
         </div>
 
         <?php if (!empty($error)): ?>
@@ -131,27 +176,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <?php endif; ?>
 
         <form action="login.php" method="POST" class="space-y-4">
+            <input type="hidden" name="login_role" id="login_role_input" value="<?= htmlspecialchars($activeRole) ?>">
+
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="username">
-                    Username Admin
+                <label id="usernameLabel" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="username">
+                    <?= $activeRole === 'guru' ? 'Username Guru' : 'Username Admin' ?>
                 </label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
                         <i class="fa-solid fa-user text-sm"></i>
                     </span>
-                    <input type="text" id="username" name="username" required autofocus placeholder="Masukkan username" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm">
+                    <input type="text" id="username" name="username" required autofocus placeholder="<?= $activeRole === 'guru' ? 'Masukkan username guru' : 'Masukkan username admin' ?>" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="password">
-                    Password Admin
+                <label id="passwordLabel" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="password">
+                    <?= $activeRole === 'guru' ? 'Password Guru' : 'Password Admin' ?>
                 </label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
                         <i class="fa-solid fa-lock text-sm"></i>
                     </span>
-                    <input type="password" id="password" name="password" required placeholder="Masukkan password" class="w-full pl-10 pr-11 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm">
+                    <input type="password" id="password" name="password" required placeholder="<?= $activeRole === 'guru' ? 'Masukkan password guru' : 'Masukkan password admin' ?>" class="w-full pl-10 pr-11 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-600 text-sm">
                     <button type="button" id="togglePasswordBtn" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none" aria-label="Toggle password visibility">
                         <i class="fa-regular fa-eye text-sm" id="togglePasswordIcon"></i>
                     </button>
@@ -159,9 +206,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             </div>
 
             <div class="pt-2">
-                <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 hover:to-emerald-700 shadow-lg shadow-brand-700/30 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
+                <button type="submit" id="submitBtn" class="w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-brand-700 to-emerald-600 hover:from-brand-800 hover:to-emerald-700 shadow-lg shadow-brand-700/30 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
                     <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>Masuk ke Fitur Admin</span>
+                    <span id="submitBtnText"><?= $activeRole === 'guru' ? 'Masuk sebagai Dewan Guru' : 'Masuk ke Fitur Admin' ?></span>
                 </button>
             </div>
         </form>
@@ -175,6 +222,40 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     </div>
 
     <script>
+        function setRole(role) {
+            document.getElementById('login_role_input').value = role;
+            const btnAdmin = document.getElementById('roleBtnAdmin');
+            const btnGuru = document.getElementById('roleBtnGuru');
+            const loginTitle = document.getElementById('loginTitle');
+            const loginSubtitle = document.getElementById('loginSubtitle');
+            const userLabel = document.getElementById('usernameLabel');
+            const passLabel = document.getElementById('passwordLabel');
+            const userInput = document.getElementById('username');
+            const passInput = document.getElementById('password');
+            const submitText = document.getElementById('submitBtnText');
+
+            if (role === 'guru') {
+                btnGuru.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-brand-700 text-white shadow-sm";
+                btnAdmin.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                loginTitle.textContent = "Portal Dewan Guru";
+                loginSubtitle.textContent = "Akses Data Siswa, Absen Siswa & Absen Guru";
+                userLabel.textContent = "Username Guru";
+                passLabel.textContent = "Password Guru";
+                userInput.placeholder = "Masukkan username guru";
+                passInput.placeholder = "Masukkan password guru";
+                submitText.textContent = "Masuk sebagai Dewan Guru";
+            } else {
+                btnAdmin.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-brand-700 text-white shadow-sm";
+                btnGuru.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                loginTitle.textContent = "Login Administrator";
+                loginSubtitle.textContent = "Akses penuh pengelolaan website & data akademik";
+                userLabel.textContent = "Username Admin";
+                passLabel.textContent = "Password Admin";
+                userInput.placeholder = "Masukkan username admin";
+                passInput.placeholder = "Masukkan password admin";
+                submitText.textContent = "Masuk ke Fitur Admin";
+            }
+        }
         const toggleBtn = document.getElementById('togglePasswordBtn');
         const passInput = document.getElementById('password');
         const passIcon = document.getElementById('togglePasswordIcon');
