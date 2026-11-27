@@ -396,17 +396,53 @@ if ($existingSession && !empty($existingSession['records'])) {
                 <p class="text-xs text-slate-500 mt-1">Data absensi otomatis dari presensi mandiri (wajah & GPS) serta input manual.</p>
             </div>
             
-            <form method="GET" class="flex items-center gap-3">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-0.5">Pilih Tanggal</label>
-                    <input type="date" name="tanggal" value="<?= htmlspecialchars($selectedDate) ?>" onchange="this.form.submit()" class="px-3 py-2 text-xs rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <div class="flex flex-wrap items-center gap-3">
+                <button type="button" onclick="openPhpAttendanceSettingsModal()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-sliders text-indigo-600"></i>
+                    <span>Atur Jam & Lokasi Sekolah</span>
+                </button>
+                <form method="GET" class="flex items-center gap-3">
+                    <div>
+                        <input type="date" name="tanggal" value="<?= htmlspecialchars($selectedDate) ?>" onchange="this.form.submit()" class="px-3 py-2 text-xs rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
+                            <i class="fa-solid fa-print mr-1"></i> Cetak
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Banner Kebijakan Jam Kerja & Lokasi Sekolah Aktif -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-slate-50 border border-emerald-200/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-700 text-white text-[10px] font-extrabold uppercase tracking-wide flex items-center gap-1 shadow-xs">
+                        <i class="fa-solid fa-shield-halved"></i> Proteksi Geofencing Sekolah Aktif
+                    </span>
+                    <span class="text-xs font-bold text-slate-800" id="phpPolicyLocationName">SMP Islam Al-Kholili (Kedopok, Probolinggo)</span>
                 </div>
-                <div class="pt-4">
-                    <button type="button" onclick="window.print()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
-                        <i class="fa-solid fa-print mr-1"></i> Cetak
-                    </button>
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-regular fa-clock text-emerald-600 font-bold"></i> Jam Masuk: <strong id="phpPolicyJamMasuk" class="text-slate-900 font-bold">06.45 WIB</strong> (Batas: <strong id="phpPolicyBatasTerlambat" class="text-amber-700 font-bold">07.00 WIB</strong>)
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-person-walking-arrow-right text-emerald-600 font-bold"></i> Jam Pulang: <strong id="phpPolicyJamPulang" class="text-slate-900 font-bold">14.00 WIB</strong>
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-dot text-rose-600 font-bold"></i> Radius Maksimal: <strong id="phpPolicyRadius" class="text-rose-700 font-bold">200 Meter</strong>
+                    </span>
                 </div>
-            </form>
+                <p class="text-[11px] text-emerald-800/90 font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-circle-info text-emerald-600"></i>
+                    <span>Guru yang berada di luar radius sekolah otomatis <strong>diblokir</strong> dan tidak dapat melakukan presensi mandiri.</span>
+                </p>
+            </div>
+            <button type="button" onclick="openPhpAttendanceSettingsModal()" class="px-3.5 py-2 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition whitespace-nowrap self-stretch md:self-auto justify-center">
+                <i class="fa-solid fa-gear text-emerald-600"></i>
+                <span>Ubah Jam & Lokasi</span>
+            </button>
         </div>
 
         <!-- Tabel Rekapan Admin -->
@@ -534,12 +570,195 @@ if ($existingSession && !empty($existingSession['records'])) {
             </form>
         </div>
     </div>
+
+    <!-- MODAL PENGATURAN JAM & LOKASI SEKOLAH (PHP) -->
+    <div id="modalAttendanceSettingsPhp" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200">
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-emerald-900 p-5 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-emerald-300 text-lg border border-white/20">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-heading font-extrabold text-white">Atur Jam Kerja & Lokasi Sekolah</h3>
+                        <p class="text-xs text-emerald-200/80">Atur jam masuk, jam pulang, dan radius geofence sekolah.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closePhpAttendanceSettingsModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="formAttendanceSettingsPhp" onsubmit="savePhpAttendanceSettings(event)" class="p-6 space-y-5 text-xs max-h-[80vh] overflow-y-auto">
+                <div class="space-y-3">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-1.5">
+                        <i class="fa-regular fa-clock text-brand-700"></i>
+                        <span>1. Aturan Jam Kerja Sekolah</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Jam Standar Masuk *</label>
+                            <input type="time" id="phpCfgJamMasuk" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-semibold text-slate-800 focus:outline-none">
+                            <span class="text-[10px] text-slate-400">Contoh: 06:45 WIB</span>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Batas Jam Terlambat *</label>
+                            <input type="time" id="phpCfgBatasTerlambat" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-semibold text-slate-800 focus:outline-none">
+                            <span class="text-[10px] text-slate-400">Lewat jam ini dihitung Terlambat (07:00)</span>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block font-bold text-slate-700 mb-1">Jam Standar Kepulangan *</label>
+                            <input type="time" id="phpCfgJamPulang" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 font-semibold text-slate-800 focus:outline-none">
+                            <span class="text-[10px] text-slate-400">Jam pulang resmi yang dianjurkan (14:00)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-2">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-rose-600"></i>
+                            <span>2. Titik Lokasi & Radius Sekolah</span>
+                        </h4>
+                        <button type="button" onclick="getPhpCurrentLocation()" class="text-[11px] text-brand-700 hover:text-brand-800 font-bold flex items-center gap-1 hover:underline">
+                            <i class="fa-solid fa-crosshairs"></i> Gunakan Lokasi Saya
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Nama Lokasi Sekolah</label>
+                        <input type="text" id="phpCfgLocationName" required class="w-full px-3 py-2 rounded-xl border border-slate-300 font-medium text-slate-800 focus:outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Latitude</label>
+                            <input type="text" id="phpCfgLatitude" required placeholder="-7.77884" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs text-slate-800 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Longitude</label>
+                            <input type="text" id="phpCfgLongitude" required placeholder="113.20853" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs text-slate-800 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Radius Toleransi Presensi (Meter) *</label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="phpCfgRadiusMeters" min="20" max="5000" step="10" required class="w-32 px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-800 focus:outline-none">
+                            <span class="text-xs text-slate-500 font-medium">Meter dari titik koordinat</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closePhpAttendanceSettingsModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs transition shadow-md flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Simpan Aturan Presensi</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <?php endif; ?>
 
 </div>
 
 <script>
-const SCHOOL_COORDS = { lat: -7.77884, lng: 113.20853, radiusMeters: 200 };
+const DEFAULT_ATTENDANCE_CONFIG = {
+    jamMasuk: "06:45",
+    batasTerlambat: "07:00",
+    jamPulang: "14:00",
+    lat: -7.77884,
+    lng: 113.20853,
+    radiusMeters: 200,
+    name: "SMP Islam Al-Kholili (Kedopok, Probolinggo)"
+};
+
+function getPhpAttendanceConfig() {
+    try {
+        const saved = localStorage.getItem('alkholili_attendance_settings');
+        if (saved) return { ...DEFAULT_ATTENDANCE_CONFIG, ...JSON.parse(saved) };
+    } catch (e) {}
+    return { ...DEFAULT_ATTENDANCE_CONFIG };
+}
+
+let activeAttendanceConfig = getPhpAttendanceConfig();
+
+function renderPhpPolicyDisplays() {
+    const cfg = activeAttendanceConfig;
+    const nameEl = document.getElementById('phpPolicyLocationName');
+    const masukEl = document.getElementById('phpPolicyJamMasuk');
+    const lambatEl = document.getElementById('phpPolicyBatasTerlambat');
+    const pulangEl = document.getElementById('phpPolicyJamPulang');
+    const radEl = document.getElementById('phpPolicyRadius');
+
+    if (nameEl) nameEl.textContent = cfg.name;
+    if (masukEl) masukEl.textContent = cfg.jamMasuk + " WIB";
+    if (lambatEl) lambatEl.textContent = cfg.batasTerlambat + " WIB";
+    if (pulangEl) pulangEl.textContent = cfg.jamPulang + " WIB";
+    if (radEl) radEl.textContent = cfg.radiusMeters + " Meter";
+}
+renderPhpPolicyDisplays();
+
+function openPhpAttendanceSettingsModal() {
+    const cfg = getPhpAttendanceConfig();
+    const inMasuk = document.getElementById('phpCfgJamMasuk');
+    const inLambat = document.getElementById('phpCfgBatasTerlambat');
+    const inPulang = document.getElementById('phpCfgJamPulang');
+    const inName = document.getElementById('phpCfgLocationName');
+    const inLat = document.getElementById('phpCfgLatitude');
+    const inLng = document.getElementById('phpCfgLongitude');
+    const inRad = document.getElementById('phpCfgRadiusMeters');
+
+    if (inMasuk) inMasuk.value = cfg.jamMasuk || "06:45";
+    if (inLambat) inLambat.value = cfg.batasTerlambat || "07:00";
+    if (inPulang) inPulang.value = cfg.jamPulang || "14:00";
+    if (inName) inName.value = cfg.name || "SMP Islam Al-Kholili";
+    if (inLat) inLat.value = cfg.lat ?? -7.77884;
+    if (inLng) inLng.value = cfg.lng ?? 113.20853;
+    if (inRad) inRad.value = cfg.radiusMeters || 200;
+
+    document.getElementById('modalAttendanceSettingsPhp')?.classList.remove('hidden');
+}
+
+function closePhpAttendanceSettingsModal() {
+    document.getElementById('modalAttendanceSettingsPhp')?.classList.add('hidden');
+}
+
+function getPhpCurrentLocation() {
+    if (!navigator.geolocation) {
+        alert("Browser tidak mendukung GPS.");
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            document.getElementById('phpCfgLatitude').value = pos.coords.latitude.toFixed(6);
+            document.getElementById('phpCfgLongitude').value = pos.coords.longitude.toFixed(6);
+        },
+        err => alert("Gagal mengambil titik GPS: " + err.message),
+        { enableHighAccuracy: true }
+    );
+}
+
+function savePhpAttendanceSettings(e) {
+    e.preventDefault();
+    const jamMasuk = document.getElementById('phpCfgJamMasuk').value;
+    const batasTerlambat = document.getElementById('phpCfgBatasTerlambat').value;
+    const jamPulang = document.getElementById('phpCfgJamPulang').value;
+    const name = document.getElementById('phpCfgLocationName').value.trim();
+    const lat = parseFloat(document.getElementById('phpCfgLatitude').value);
+    const lng = parseFloat(document.getElementById('phpCfgLongitude').value);
+    const radiusMeters = parseInt(document.getElementById('phpCfgRadiusMeters').value, 10);
+
+    activeAttendanceConfig = { jamMasuk, batasTerlambat, jamPulang, lat, lng, radiusMeters, name };
+    localStorage.setItem('alkholili_attendance_settings', JSON.stringify(activeAttendanceConfig));
+    closePhpAttendanceSettingsModal();
+    renderPhpPolicyDisplays();
+    detectPhpLocation();
+    alert("Aturan jam kerja dan lokasi sekolah berhasil disimpan!");
+}
+
 let isPhpDemo = false;
 let phpStream = null;
 
@@ -565,7 +784,7 @@ function detectPhpLocation() {
 
     navigator.geolocation.getCurrentPosition(
         pos => {
-            const dist = calculateDistance(pos.coords.latitude, pos.coords.longitude, SCHOOL_COORDS.lat, SCHOOL_COORDS.lng);
+            const dist = calculateDistance(pos.coords.latitude, pos.coords.longitude, activeAttendanceConfig.lat, activeAttendanceConfig.lng);
             if (distVal) distVal.textContent = dist + " Meter";
             const inpJarak = document.getElementById('phpInputJarak');
             const inpLat = document.getElementById('phpInputLat');
@@ -574,16 +793,16 @@ function detectPhpLocation() {
             if (inpLat) inpLat.value = pos.coords.latitude;
             if (inpLng) inpLng.value = pos.coords.longitude;
 
-            if (dist <= 200 || isPhpDemo) {
+            if (dist <= activeAttendanceConfig.radiusMeters || isPhpDemo) {
                 if (card) card.className = "p-4 rounded-2xl border bg-emerald-50 border-emerald-300 space-y-2";
                 if (dot) dot.className = "w-3 h-3 rounded-full bg-emerald-500";
                 if (title) title.textContent = "Lokasi Valid di Lingkungan Sekolah";
-                if (desc) desc.textContent = "Titik GPS Anda terverifikasi di area sekolah (Jarak: " + dist + "m).";
+                if (desc) desc.textContent = "Titik GPS Anda terverifikasi di area sekolah (Jarak: " + dist + "m dari " + activeAttendanceConfig.name + ").";
             } else {
                 if (card) card.className = "p-4 rounded-2xl border bg-rose-50 border-rose-300 space-y-2";
                 if (dot) dot.className = "w-3 h-3 rounded-full bg-rose-500";
-                if (title) title.textContent = "Di Luar Radius Sekolah (Maks: 200m)";
-                if (desc) desc.textContent = "Jarak Anda: " + dist + " meter. Presensi di luar sekolah tidak diizinkan.";
+                if (title) title.textContent = "Di Luar Radius Sekolah (Maks: " + activeAttendanceConfig.radiusMeters + "m)";
+                if (desc) desc.textContent = "Jarak Anda: " + dist + " meter. Presensi di luar sekolah tidak diizinkan!";
             }
         },
         err => {
