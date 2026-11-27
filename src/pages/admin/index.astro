@@ -982,12 +982,10 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
                     Memuat tanggal...
                   </div>
 
-                  <!-- Dropdown Switch Guru Jika Diperlukan -->
-                  <div class="mt-2 pt-2 border-t border-white/10 w-full sm:w-auto flex items-center gap-2">
-                    <label class="text-[10px] text-slate-300 whitespace-nowrap">Pilih Guru:</label>
-                    <select id="selectCurrentGuru" onchange="changeActiveGuru(this.value)" class="text-xs bg-slate-800 text-white border border-white/20 rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-emerald-400 outline-none w-full sm:w-48 font-medium">
-                      <!-- Rendered via JS -->
-                    </select>
+                  <!-- Status Terkunci Akun Guru Mandiri -->
+                  <div class="mt-2 pt-2 border-t border-white/10 w-full sm:w-auto flex items-center gap-2 text-emerald-300 text-xs font-semibold">
+                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                    <span>Akun Guru Mandiri Terverifikasi</span>
                   </div>
                 </div>
               </div>
@@ -2798,16 +2796,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     // 10.1 INIT PRESENSI MANDIRI (PORTAL GURU)
     window.initGuruSelfAttendance = function() {
       startLiveClock();
-      
-      // Populate select guru dropdown
-      const selGuru = document.getElementById('selectCurrentGuru');
-      if (selGuru) {
-        selGuru.innerHTML = currentTeachers.map(t => 
-          `<option value="${t.id}">${t.nama}</option>`
-        ).join('');
-      }
 
-      // Check logged in teacher
+      // Check logged in teacher - akun mandiri terkunci
       const savedTeacherId = sessionStorage.getItem('alkholili_teacher_id');
       const savedTeacherName = sessionStorage.getItem('alkholili_teacher_name');
       
@@ -2824,7 +2814,6 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
 
       if (matched) {
         activePresensiGuruId = matched.id;
-        if (selGuru) selGuru.value = matched.id;
         updateActiveGuruDisplay(matched);
       }
 
@@ -2838,13 +2827,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     };
 
     window.changeActiveGuru = function(guruId) {
-      const g = currentTeachers.find(t => String(t.id) === String(guruId));
-      if (!g) return;
-      activePresensiGuruId = g.id;
-      sessionStorage.setItem('alkholili_teacher_id', String(g.id));
-      sessionStorage.setItem('alkholili_teacher_name', g.nama);
-      updateActiveGuruDisplay(g);
-      renderSelfAttendanceHistory(g.id);
+      // Dinonaktifkan: presensi mandiri terkunci ke akun guru yang sedang login
     };
 
     function updateActiveGuruDisplay(guru) {
