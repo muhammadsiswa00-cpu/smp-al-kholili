@@ -7,7 +7,8 @@ export interface Props {
 
 const { siteSettings } = Astro.props;
 const currentYear = new Date().getFullYear();
-const ppdbUrl = siteSettings.ppdb_url || '/ppdb';
+const rawPpdb = siteSettings.ppdb_url || '/ppdb';
+const ppdbUrl = (rawPpdb.includes('ppdb.smpislam-alkholili.sch.id')) ? '/ppdb' : rawPpdb;
 const isPpdbExt = ppdbUrl.startsWith('http');
 ---
 

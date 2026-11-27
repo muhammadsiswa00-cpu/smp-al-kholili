@@ -3,7 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import { getSiteSettings } from '../lib/data';
 
 const siteSettings = await getSiteSettings();
-const ppdbUrl = siteSettings.ppdb_url || 'https://ppdb.smpislam-alkholili.sch.id';
+const rawPpdb = siteSettings.ppdb_url || '/ppdb';
+const ppdbUrl = (rawPpdb.includes('ppdb.smpislam-alkholili.sch.id')) ? '/ppdb' : rawPpdb;
 const isExt = ppdbUrl.startsWith('http');
 
 const tursoUrl = process.env.TURSO_DATABASE_URL || 'libsql://smp-memet.aws-ap-southeast-1.turso.io';
