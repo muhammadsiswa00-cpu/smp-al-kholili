@@ -1061,6 +1061,22 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
                 </div>
               </div>
 
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">NIP / NUPTK Guru</label>
+                  <input type="text" id="guruNip" placeholder="Contoh: 198507152010011002" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Password Akun Guru (Untuk Login)</label>
+                  <div class="relative">
+                    <input type="password" id="guruPassword" placeholder="Buat password login guru (default: guru123)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-600 outline-none pr-10" />
+                    <button type="button" onclick="toggleGuruPassVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600" title="Lihat/Sembunyikan Password">
+                      <i id="guruPassEyeIcon" class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <!-- Foto Guru Upload -->
               <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
                 <label class="block text-xs font-bold text-slate-700 uppercase">Upload Foto Guru</label>
@@ -1094,9 +1110,11 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
                     <tr>
                       <th class="px-4 py-3">Foto</th>
                       <th class="px-4 py-3">Nama Guru</th>
+                      <th class="px-4 py-3">NIP / NUPTK</th>
                       <th class="px-4 py-3">Jabatan</th>
                       <th class="px-4 py-3">Mata Pelajaran</th>
                       <th class="px-4 py-3">Pendidikan</th>
+                      <th class="px-4 py-3">Akses Login</th>
                       <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                   </thead>
@@ -1362,6 +1380,13 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     // 1. STATE INITIALIZATION
     let currentSettings = initialSettings;
     let currentTeachers = initialTeachers;
+    try {
+      const localTeachers = JSON.parse(localStorage.getItem('alkholili_teachers_data') || '[]');
+      if (localTeachers && localTeachers.length > 0) {
+        const ids = new Set(localTeachers.map(t => String(t.id)));
+        currentTeachers = [...localTeachers, ...initialTeachers.filter(t => !ids.has(String(t.id)))];
+      }
+    } catch (e) {}
     let currentGallery = initialGallery;
     let currentNews = initialNews;
     
@@ -1424,9 +1449,9 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         if (btnAdmin) btnAdmin.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
         if (loginRoleTitle) loginRoleTitle.textContent = "Portal Dewan Guru";
         if (loginRoleSub) loginRoleSub.textContent = "Akses Data Siswa, Absen Siswa & Absen Guru";
-        if (usernameLabel) usernameLabel.textContent = "Username Guru";
+        if (usernameLabel) usernameLabel.textContent = "NIP / Username Guru";
         if (passwordLabel) passwordLabel.textContent = "Password Guru";
-        if (adminUsername) adminUsername.placeholder = "Masukkan username guru";
+        if (adminUsername) adminUsername.placeholder = "Masukkan NIP atau nama guru";
         if (adminPassword) adminPassword.placeholder = "Masukkan password guru";
         if (submitText) submitText.textContent = "Masuk sebagai Dewan Guru";
       } else {
@@ -1540,7 +1565,21 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         // Login as Guru
         const validGuruUsers = ['guru', 'dewan guru', 'guru al-kholili', 'smp al-kholili', 'admin'];
         const validGuruPasses = ['guru', 'guru123', 'al-kholili', 'admin123'];
-        if (validGuruPasses.includes(p) || validGuruUsers.includes(u.toLowerCase())) {
+        
+        // Find matching teacher by NIP or Nama
+        const matchingTeacher = currentTeachers.find(t => 
+          (t.nip && t.nip.trim() === u) || 
+          (t.nama && t.nama.toLowerCase().trim() === u.toLowerCase()) ||
+          (t.nama && t.nama.toLowerCase().includes(u.toLowerCase()))
+        );
+
+        if (matchingTeacher) {
+          const expectedPass = matchingTeacher.password || 'guru123';
+          if (p === expectedPass || validGuruPasses.includes(p)) {
+            authenticatedRole = 'guru';
+            sessionStorage.setItem('alkholili_teacher_name', matchingTeacher.nama);
+          }
+        } else if (validGuruPasses.includes(p) && (validGuruUsers.includes(u.toLowerCase()) || !u)) {
           authenticatedRole = 'guru';
         }
       } else {
@@ -2435,6 +2474,25 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     // ========================================================
     // 11. MANAGE DEWAN GURU & FOTO
     // ========================================================
+    window.toggleGuruPassVisibility = function() {
+      const inp = document.getElementById('guruPassword');
+      const icon = document.getElementById('guruPassEyeIcon');
+      if (!inp) return;
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        if (icon) {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        }
+      } else {
+        inp.type = 'password';
+        if (icon) {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+    };
+
     function renderTeachers() {
       const container = document.getElementById('teachersTableBody');
       if (!container) return;
@@ -2446,14 +2504,21 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
             </div>
           </td>
           <td class="px-4 py-3 font-semibold text-slate-800">${t.nama}</td>
+          <td class="px-4 py-3 font-mono text-[11px] text-slate-600 font-semibold">${t.nip || '<span class="text-slate-400 italic">Belum diisi</span>'}</td>
           <td class="px-4 py-3">${t.jabatan || '-'}</td>
           <td class="px-4 py-3">${t.mapel || '-'}</td>
           <td class="px-4 py-3 text-slate-500">${t.pendidikan || '-'}</td>
-          <td class="px-4 py-3 text-center space-x-1">
-            <button type="button" onclick="editGuru(${t.id})" class="p-1.5 text-brand-700 hover:bg-brand-50 rounded-lg transition" title="Edit">
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold ${t.password ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+              <i class="fa-solid fa-key text-[9px]"></i>
+              <span>${t.password ? 'Siap Login' : 'Default (guru123)'}</span>
+            </span>
+          </td>
+          <td class="px-4 py-3 text-center space-x-1 whitespace-nowrap">
+            <button type="button" onclick="editGuru('${t.id}')" class="p-1.5 text-brand-700 hover:bg-brand-50 rounded-lg transition" title="Edit Data & Password">
               <i class="fa-solid fa-pen-to-square"></i>
             </button>
-            <button type="button" onclick="deleteGuru(${t.id})" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
+            <button type="button" onclick="deleteGuru('${t.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </td>
@@ -2463,13 +2528,15 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     }
 
     window.editGuru = function(id) {
-      const t = currentTeachers.find(item => item.id === id);
+      const t = currentTeachers.find(item => String(item.id) === String(id));
       if (!t) return;
       document.getElementById('guruEditId').value = t.id;
       document.getElementById('guruNama').value = t.nama;
       document.getElementById('guruJabatan').value = t.jabatan || '';
       document.getElementById('guruMapel').value = t.mapel || '';
       document.getElementById('guruPendidikan').value = t.pendidikan || '';
+      document.getElementById('guruNip').value = t.nip || '';
+      document.getElementById('guruPassword').value = t.password || '';
       document.getElementById('teacherPhotoVal').value = t.foto || '/assets/img/teachers/male-1.svg';
       document.getElementById('teacherPhotoPreview').src = t.foto || '/assets/img/teachers/male-1.svg';
 
@@ -2481,6 +2548,8 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     window.cancelGuruEdit = function() {
       document.getElementById('formGuru').reset();
       document.getElementById('guruEditId').value = '';
+      document.getElementById('guruNip').value = '';
+      document.getElementById('guruPassword').value = '';
       document.getElementById('teacherPhotoVal').value = '/assets/img/teachers/male-1.svg';
       document.getElementById('teacherPhotoPreview').src = '/assets/img/teachers/male-1.svg';
       document.getElementById('btnSubmitGuru').innerHTML = `<i class="fa-solid fa-user-plus"></i> <span>Simpan Data Guru</span>`;
@@ -2489,7 +2558,10 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
 
     window.deleteGuru = async function(id) {
       if (!confirm('Yakin ingin menghapus guru ini?')) return;
-      currentTeachers = currentTeachers.filter(t => t.id !== id);
+      currentTeachers = currentTeachers.filter(t => String(t.id) !== String(id));
+      try {
+        localStorage.setItem('alkholili_teachers_data', JSON.stringify(currentTeachers));
+      } catch (e) {}
       renderTeachers();
       await executeTursoSql(`DELETE FROM guru WHERE id = ?`, [{ type: "text", value: String(id) }]);
       showToast("Data guru berhasil dihapus!");
@@ -2508,32 +2580,42 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     document.getElementById('formGuru')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const editId = document.getElementById('guruEditId').value;
-      const id = editId ? Number(editId) : Date.now();
+      const id = editId ? editId : `guru-${Date.now()}`;
       const nama = document.getElementById('guruNama').value.trim();
       const jabatan = document.getElementById('guruJabatan').value.trim();
       const mapel = document.getElementById('guruMapel').value.trim();
       const pendidikan = document.getElementById('guruPendidikan').value.trim();
+      const nip = document.getElementById('guruNip').value.trim();
+      const password = document.getElementById('guruPassword').value.trim() || 'guru123';
       const foto = document.getElementById('teacherPhotoVal').value;
 
-      const teacherObj = { id, nama, jabatan, mapel, pendidikan, foto };
+      const teacherObj = { id, nama, jabatan, mapel, pendidikan, foto, nip, password };
 
       if (editId) {
-        currentTeachers = currentTeachers.map(t => t.id === Number(editId) ? teacherObj : t);
+        currentTeachers = currentTeachers.map(t => String(t.id) === String(editId) ? teacherObj : t);
       } else {
         currentTeachers.push(teacherObj);
       }
+      try {
+        localStorage.setItem('alkholili_teachers_data', JSON.stringify(currentTeachers));
+      } catch (e) {}
       renderTeachers();
       cancelGuruEdit();
 
+      await executeTursoSql(`ALTER TABLE guru ADD COLUMN nip TEXT`).catch(() => {});
+      await executeTursoSql(`ALTER TABLE guru ADD COLUMN password TEXT`).catch(() => {});
+
       await executeTursoSql(
-        `INSERT OR REPLACE INTO guru (id, nama, jabatan, mapel, pendidikan, foto) VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT OR REPLACE INTO guru (id, nama, jabatan, mapel, pendidikan, foto, nip, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           { type: "text", value: String(id) },
           { type: "text", value: nama },
           { type: "text", value: jabatan },
           { type: "text", value: mapel },
           { type: "text", value: pendidikan },
-          { type: "text", value: foto }
+          { type: "text", value: foto },
+          { type: "text", value: nip },
+          { type: "text", value: password }
         ]
       );
       showToast("Data guru berhasil disimpan!");

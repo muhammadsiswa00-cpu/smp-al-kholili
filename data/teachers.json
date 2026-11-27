@@ -2,6 +2,8 @@
     {
         "id": "guru-1",
         "nama": "Muhammad Taufiqur Rohman,S. Pd,",
+        "nip": "198005122005011003",
+        "password": "guru123",
         "jabatan": "Kepala Sekolah",
         "mapel": "Manajemen Pendidikan & Kepemimpinan",
         "pendidikan": "S2 Manajemen Pendidikan",
@@ -10,7 +12,9 @@
     },
     {
         "id": "guru-3",
-        "nama": "rrrSiti Rohmah, S.Pd.",
+        "nama": "Siti Rohmah, S.Pd.",
+        "nip": "198403152008012005",
+        "password": "guru123",
         "jabatan": "Waka Kesiswaan",
         "mapel": "Matematika",
         "pendidikan": "S1 Pendidikan Matematika",
@@ -20,6 +24,8 @@
     {
         "id": "guru-4",
         "nama": "Ust. Ahmad Thohir, S.Q.",
+        "nip": "198911202014021001",
+        "password": "guru123",
         "jabatan": "Koordinator Program Tahfidz",
         "mapel": "Tahfidzul Qur'an & Tajwid",
         "pendidikan": "S1 Ilmu Al-Qur'an & Tafsir (Hafidz 30 Juz)",
@@ -29,6 +35,8 @@
     {
         "id": "guru-5",
         "nama": "Nurul Hidayati, S.Pd.",
+        "nip": "198708142011012014",
+        "password": "guru123",
         "jabatan": "Guru Mata Pelajaran",
         "mapel": "Bahasa Indonesia",
         "pendidikan": "S1 Pendidikan Bahasa & Sastra Indonesia",
@@ -38,6 +46,8 @@
     {
         "id": "guru-6",
         "nama": "Bambang Kurniawan, S.Pd.",
+        "nip": "198604102010011022",
+        "password": "guru123",
         "jabatan": "Guru Mata Pelajaran",
         "mapel": "Bahasa Inggris",
         "pendidikan": "S1 Pendidikan Bahasa Inggris",
@@ -47,6 +57,8 @@
     {
         "id": "guru-7",
         "nama": "Dewi Anggraini, S.Si.",
+        "nip": "199002182015032008",
+        "password": "guru123",
         "jabatan": "Guru Mata Pelajaran",
         "mapel": "Ilmu Pengetahuan Alam (IPA)",
         "pendidikan": "S1 Sains Fisika & Biologi",
@@ -56,6 +68,8 @@
     {
         "id": "guru-8",
         "nama": "Fathur Rahman, S.Kom.",
+        "nip": "199206252019031007",
+        "password": "guru123",
         "jabatan": "Guru Mata Pelajaran & IT",
         "mapel": "Informatika / Komputer",
         "pendidikan": "S1 Teknik Informatika",
@@ -65,6 +79,8 @@
     {
         "id": "guru-9",
         "nama": "Hendra Prasetyo, S.Pd.",
+        "nip": "198809122012011015",
+        "password": "guru123",
         "jabatan": "Guru Mata Pelajaran & Pembina Pramuka",
         "mapel": "Pendidikan Jasmani & Olahraga (PJOK)",
         "pendidikan": "S1 Pendidikan Olahraga & Kesehatan",
@@ -74,6 +90,8 @@
     {
         "id": "guru-10",
         "nama": "Aisyah Zahira, S.Sos.",
+        "nip": "199304052020122009",
+        "password": "guru123",
         "jabatan": "Guru Bimbingan Konseling (BK)",
         "mapel": "Bimbingan & Konseling Siswa",
         "pendidikan": "S1 Bimbingan Konseling",
@@ -83,6 +101,8 @@
     {
         "id": "guru-11",
         "nama": "M. Rizqi Pratama, A.Md.",
+        "nip": "199411082021011004",
+        "password": "guru123",
         "jabatan": "Kepala Tata Usaha",
         "mapel": "Administrasi & Layanan Surat-Menyurat",
         "pendidikan": "D3 Administrasi Perkantoran",
@@ -92,6 +112,8 @@
     {
         "id": "guru-12",
         "nama": "Umi Hanik, S.E.",
+        "nip": "199107192017052003",
+        "password": "guru123",
         "jabatan": "Staf Keuangan & Bendahara",
         "mapel": "Administrasi Keuangan Sekolah",
         "pendidikan": "S1 Manajemen Keuangan",

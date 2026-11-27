@@ -28,6 +28,7 @@ export interface Teacher {
   id: number | string;
   nama: string;
   nip?: string;
+  password?: string;
   mapel: string;
   foto: string;
   jabatan?: string;
@@ -136,11 +137,13 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 export async function getTeachers(): Promise<Teacher[]> {
   if (turso) {
     try {
-      const res = await turso.execute("SELECT id, nama, jabatan, mapel, pendidikan, foto, urutan FROM guru ORDER BY urutan ASC, id ASC");
+      const res = await turso.execute("SELECT * FROM guru ORDER BY urutan ASC, id ASC");
       if (res.rows && res.rows.length > 0) {
         return res.rows.map(r => ({
           id: Number(r.id),
           nama: String(r.nama),
+          nip: r.nip ? String(r.nip) : undefined,
+          password: r.password ? String(r.password) : undefined,
           jabatan: r.jabatan ? String(r.jabatan) : 'Guru',
           mapel: String(r.mapel || '-'),
           pendidikan: r.pendidikan ? String(r.pendidikan) : '-',

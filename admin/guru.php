@@ -24,6 +24,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_teacher'
     $jabatan = trim($_POST['jabatan'] ?? '');
     $mapel = trim($_POST['mapel'] ?? '');
     $pendidikan = trim($_POST['pendidikan'] ?? '');
+    $nip = trim($_POST['nip'] ?? '');
+    $password = trim($_POST['password'] ?? '');
     $guruId = trim($_POST['guru_id'] ?? '');
 
     if (empty($nama) || empty($jabatan)) {
@@ -55,6 +57,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_teacher'
                     $t['jabatan'] = $jabatan;
                     $t['mapel'] = $mapel;
                     $t['pendidikan'] = $pendidikan;
+                    $t['nip'] = $nip;
+                    if (!empty($password)) {
+                        $t['password'] = $password;
+                    }
                     if (!empty($photoPath)) {
                         $t['foto'] = $photoPath;
                     }
@@ -75,6 +81,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['save_teacher'
             $newTeacher = [
                 "id" => "guru-" . time(),
                 "nama" => $nama,
+                "nip" => $nip,
+                "password" => !empty($password) ? $password : 'guru123',
                 "jabatan" => $jabatan,
                 "mapel" => $mapel,
                 "pendidikan" => $pendidikan,
@@ -156,6 +164,27 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['delete_teache
                 </div>
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="nip">
+                        NIP / NUPTK Guru
+                    </label>
+                    <input type="text" id="form_nip" name="nip" placeholder="Contoh: 198507152010011002" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="password">
+                        Password Akun Guru (Untuk Login)
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="form_password" name="password" placeholder="Password login guru (default: guru123)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm pr-10">
+                        <button type="button" onclick="togglePhpGuruPass()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600" title="Lihat/Sembunyikan Password">
+                            <i id="phpEyeIcon" class="fa-regular fa-eye text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5" for="mapel">
@@ -225,16 +254,27 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['delete_teache
                     <h4 class="font-heading font-extrabold text-sm text-slate-900 truncate" title="<?= htmlspecialchars($namaG) ?>">
                         <?= htmlspecialchars($namaG) ?>
                     </h4>
+                    <?php if (!empty($t['nip'])): ?>
+                    <p class="text-[11px] font-mono text-slate-600 font-semibold truncate">
+                        <i class="fa-solid fa-id-card text-[10px] text-brand-700 mr-1"></i>NIP: <?= htmlspecialchars($t['nip']) ?>
+                    </p>
+                    <?php endif; ?>
                     <p class="text-xs font-semibold text-gold-600 truncate">
                         <?= htmlspecialchars($t['mapel']) ?>
                     </p>
-                    <p class="text-[11px] text-slate-400 mt-1 truncate">
+                    <p class="text-[11px] text-slate-400 mt-0.5 truncate">
                         <?= htmlspecialchars($t['pendidikan']) ?>
                     </p>
+                    <div class="mt-1.5">
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full <?= !empty($t['password']) ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' ?>">
+                            <i class="fa-solid fa-key text-[8px]"></i>
+                            <?= !empty($t['password']) ? 'Password Khusus' : 'Password Default' ?>
+                        </span>
+                    </div>
 
                     <div class="mt-3 flex items-center gap-3 border-t border-slate-200/60 pt-2">
                         <button type="button" onclick='editTeacher(<?= json_encode($t) ?>)' class="text-[11px] font-bold text-brand-700 hover:underline">
-                            <i class="fa-solid fa-pen-to-square mr-1"></i> Ganti Foto / Edit
+                            <i class="fa-solid fa-pen-to-square mr-1"></i> Edit & Password
                         </button>
                         <form action="guru.php" method="POST" onsubmit="return confirm('Hapus guru ini?')">
                             <input type="hidden" name="teacher_id" value="<?= htmlspecialchars($t['id']) ?>">
@@ -252,12 +292,33 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['delete_teache
 </div>
 
 <script>
+function togglePhpGuruPass() {
+    const inp = document.getElementById('form_password');
+    const icon = document.getElementById('phpEyeIcon');
+    if (!inp) return;
+    if (inp.type === 'password') {
+        inp.type = 'text';
+        if (icon) {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    } else {
+        inp.type = 'password';
+        if (icon) {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+}
+
 function editTeacher(t) {
     document.getElementById('form_guru_id').value = t.id || '';
     document.getElementById('form_nama').value = t.nama || '';
     document.getElementById('form_jabatan').value = t.jabatan || '';
     document.getElementById('form_mapel').value = t.mapel || '';
     document.getElementById('form_pendidikan').value = t.pendidikan || '';
+    document.getElementById('form_nip').value = t.nip || '';
+    document.getElementById('form_password').value = t.password || '';
     window.scrollTo({ top: 150, behavior: 'smooth' });
 }
 
@@ -267,6 +328,8 @@ function resetForm() {
     document.getElementById('form_jabatan').value = '';
     document.getElementById('form_mapel').value = '';
     document.getElementById('form_pendidikan').value = '';
+    document.getElementById('form_nip').value = '';
+    document.getElementById('form_password').value = '';
 }
 </script>
 

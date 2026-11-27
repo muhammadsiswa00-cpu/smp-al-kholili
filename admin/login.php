@@ -57,7 +57,35 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         // Login Guru
         $validGuruUsers = ['guru', 'dewan guru', 'guru al-kholili', 'smp al-kholili', 'admin'];
         $validGuruPasses = ['guru', 'guru123', 'al-kholili', 'admin123'];
-        if (in_array(strtolower($inputUser), $validGuruUsers) && in_array($inputPass, $validGuruPasses)) {
+
+        // Load teachers from data/teachers.json
+        $tList = [];
+        $tPath = __DIR__ . '/../data/teachers.json';
+        if (file_exists($tPath)) {
+            $tList = json_decode(file_get_contents($tPath), true) ?: [];
+        }
+
+        $matchedTeacher = null;
+        foreach ($tList as $tg) {
+            $tNip = trim($tg['nip'] ?? '');
+            $tNama = trim($tg['nama'] ?? '');
+            if (!empty($tNip) && $tNip === $inputUser) {
+                $matchedTeacher = $tg;
+                break;
+            } elseif (!empty($tNama) && (stripos($tNama, $inputUser) !== false || stripos($inputUser, $tNama) !== false)) {
+                $matchedTeacher = $tg;
+                break;
+            }
+        }
+
+        if ($matchedTeacher) {
+            $expectedPass = $matchedTeacher['password'] ?? 'guru123';
+            if ($inputPass === $expectedPass || in_array($inputPass, $validGuruPasses)) {
+                $isValid = true;
+                $loggedRole = 'guru';
+                $_SESSION['teacher_nama'] = $matchedTeacher['nama'];
+            }
+        } elseif (in_array(strtolower($inputUser), $validGuruUsers) && in_array($inputPass, $validGuruPasses)) {
             $isValid = true;
             $loggedRole = 'guru';
         } elseif (in_array($inputPass, $validGuruPasses) && !empty($inputUser)) {
@@ -239,9 +267,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 btnAdmin.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
                 loginTitle.textContent = "Portal Dewan Guru";
                 loginSubtitle.textContent = "Akses Data Siswa, Absen Siswa & Absen Guru";
-                userLabel.textContent = "Username Guru";
+                userLabel.textContent = "NIP / Username Guru";
                 passLabel.textContent = "Password Guru";
-                userInput.placeholder = "Masukkan username guru";
+                userInput.placeholder = "Masukkan NIP atau nama guru";
                 passInput.placeholder = "Masukkan password guru";
                 submitText.textContent = "Masuk sebagai Dewan Guru";
             } else {
