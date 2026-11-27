@@ -73,6 +73,45 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
     #loginSection.hidden {
       display: none !important;
     }
+    #dashboardSection {
+      min-height: 100vh;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: stretch;
+      width: 100%;
+    }
+    #dashboardSection.hidden {
+      display: none !important;
+    }
+    #dashboardSection > aside {
+      width: 16rem !important; /* 256px navbar sidebar */
+      min-width: 16rem !important;
+      max-width: 16rem !important;
+      flex-shrink: 0 !important;
+      min-height: 100vh;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+    }
+    #dashboardSection > main {
+      flex: 1 1 0% !important;
+      min-width: 0 !important;
+      min-height: 100vh;
+      display: flex !important;
+      flex-direction: column !important;
+      background-color: #f8fafc;
+    }
+    @media (max-width: 768px) {
+      #dashboardSection {
+        flex-direction: column !important;
+      }
+      #dashboardSection > aside {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+      }
+    }
     #toastNotification {
       position: fixed !important;
       top: 1.5rem;
@@ -215,10 +254,10 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
   <!-- ========================================================================= -->
   <!-- 2. MAIN ADMIN DASHBOARD (Visible if authenticated) -->
   <!-- ========================================================================= -->
-  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row" style="display: none;">
+  <div id="dashboardSection" class="hidden min-h-screen flex flex-row" style="display: none;">
     
     <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-64 bg-brand-950 text-slate-300 border-r border-brand-800/60 p-5 space-y-6 flex-shrink-0 flex flex-col justify-between">
+    <aside class="w-64 bg-brand-950 text-slate-300 border-r border-brand-800/60 p-5 space-y-6 flex-shrink-0 flex flex-col justify-between">
       <div class="space-y-6">
         <!-- Brand Header -->
         <div class="flex items-center gap-3 pb-5 border-b border-brand-800/80">
@@ -1458,6 +1497,7 @@ const tursoHttpHost = tursoUrl.replace(/^libsql:\/\//, 'https://');
         if (dashboardSection) {
           dashboardSection.classList.remove('hidden');
           dashboardSection.style.display = 'flex';
+          dashboardSection.style.flexDirection = 'row';
         }
         applyRoleMode(role);
         renderAll();
